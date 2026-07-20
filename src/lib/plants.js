@@ -1,5 +1,11 @@
 import { supabase } from './supabase'
 
+export const SAMPLE_PLANTS = [
+  { id: 'sample-1', name: '몬스테라 몽이', species: '몬스테라 델리시오사', photo_url: '', last_watered_at: '2026-07-15', watering_interval_days: 7 },
+  { id: 'sample-2', name: '스투키 스투', species: '스투키', photo_url: '', last_watered_at: '2026-07-05', watering_interval_days: 21 },
+  { id: 'sample-3', name: '필레아 동전이', species: '필레아 페페로미오이데스', photo_url: '', last_watered_at: '2026-07-17', watering_interval_days: 5 },
+]
+
 export async function fetchMyPlants(ownerId) {
   const { data, error } = await supabase
     .from('plants')

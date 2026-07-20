@@ -10,6 +10,9 @@ import PostForm from './pages/PostForm'
 import MyGarden from './pages/MyGarden'
 import Marketplace from './pages/Marketplace'
 import MyPage from './pages/MyPage'
+import Encyclopedia from './pages/Encyclopedia'
+import Magazine from './pages/Magazine'
+import UserProfile from './pages/UserProfile'
 
 export default function App() {
   return (
@@ -27,6 +30,9 @@ export default function App() {
 
           <Route path="/garden" element={<MyGarden />} />
           <Route path="/market" element={<Marketplace />} />
+          <Route path="/encyclopedia" element={<Encyclopedia />} />
+          <Route path="/magazine" element={<Magazine />} />
+          <Route path="/users/:id" element={<UserProfile />} />
           <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         </Routes>
       </HashRouter>

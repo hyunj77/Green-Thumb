@@ -43,20 +43,23 @@ export default function Marketplace() {
 
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className={category === '' ? '' : 'secondary'} onClick={() => goCategory('')}>전체</button>
-          {MARKET_CATEGORIES.map((cat) => (
-            <button key={cat} className={category === cat ? '' : 'secondary'} onClick={() => goCategory(cat)}>
-              {MARKET_CATEGORY_LABEL[cat]}
-            </button>
-          ))}
-        </div>
-        {user && <button onClick={() => setShowForm((v) => !v)}><Plus size={16} /> 판매 등록</button>}
+      <h2 style={{ marginTop: 20 }}>🪴 로컬 장터</h2>
+      <div className="chip-row" style={{ marginTop: 0 }}>
+        <button className={`chip ${category === '' ? 'chip-active' : ''}`} onClick={() => goCategory('')}>전체</button>
+        {MARKET_CATEGORIES.map((cat) => (
+          <button key={cat} className={`chip ${category === cat ? 'chip-active' : ''}`} onClick={() => goCategory(cat)}>
+            {MARKET_CATEGORY_LABEL[cat]}
+          </button>
+        ))}
+        {user && (
+          <button className="chip chip-write" onClick={() => setShowForm((v) => !v)}>
+            <Plus size={14} /> 판매 등록
+          </button>
+        )}
       </div>
 
       {showForm && (
-        <form onSubmit={handleAdd} className="card" style={{ padding: 24, marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <form onSubmit={handleAdd} className="card" style={{ padding: 24, margin: '20px 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <select value={formCategory} onChange={(e) => setFormCategory(e.target.value)}>
             {MARKET_CATEGORIES.map((cat) => <option key={cat} value={cat}>{MARKET_CATEGORY_LABEL[cat]}</option>)}
           </select>
@@ -74,18 +77,22 @@ export default function Marketplace() {
       ) : listings.length === 0 ? (
         <p className="muted">등록된 매물이 없어요.</p>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
+        <div className="magazine-feed">
           {listings.map((item) => (
-            <div key={item.id} className="card" style={{ padding: 18 }}>
-              {item.image_url && <img src={item.image_url} alt="" style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 12, marginBottom: 10 }} />}
-              <span className="badge blue">{MARKET_CATEGORY_LABEL[item.category]}</span>
-              {item.status !== 'available' && <span className="badge" style={{ marginLeft: 6 }}>{item.status === 'sold' ? '거래완료' : '예약중'}</span>}
-              <div style={{ fontWeight: 700, color: 'var(--text-h)', marginTop: 8 }}>{item.title}</div>
-              <div style={{ fontWeight: 700 }}>{item.price > 0 ? `${item.price.toLocaleString()}원` : '나눔'}</div>
-              {item.location_text && (
-                <div className="muted"><MapPin size={12} style={{ verticalAlign: -1 }} /> {item.location_text}</div>
-              )}
-              <div className="muted">{item.seller?.username || '알 수 없음'}</div>
+            <div key={item.id} className="magazine-card">
+              <div className="magazine-card-media">
+                {item.image_url ? <img src={item.image_url} alt="" /> : <div className="magazine-card-media-placeholder">🪴</div>}
+              </div>
+              <div className="magazine-card-body">
+                <span className="badge">{MARKET_CATEGORY_LABEL[item.category]}</span>
+                {item.status !== 'available' && <span className="badge" style={{ marginLeft: 6 }}>{item.status === 'sold' ? '거래완료' : '예약중'}</span>}
+                <div className="magazine-card-title">{item.title}</div>
+                <div style={{ fontWeight: 700, color: 'var(--accent)' }}>{item.price > 0 ? `${item.price.toLocaleString()}원` : '나눔'}</div>
+                {item.location_text && (
+                  <div className="muted"><MapPin size={12} style={{ verticalAlign: -1 }} /> {item.location_text}</div>
+                )}
+                <div className="muted">{item.seller?.username || '알 수 없음'}</div>
+              </div>
             </div>
           ))}
         </div>

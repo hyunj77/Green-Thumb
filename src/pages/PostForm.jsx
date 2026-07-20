@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { createPost, updatePost, fetchPostById, CATEGORIES, CATEGORY_LABEL } from '../lib/posts'
+import { createPost, updatePost, fetchPostById, CATEGORIES, CATEGORY_GROUPS, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
 
 export default function PostForm({ mode }) {
@@ -58,7 +58,11 @@ export default function PostForm({ mode }) {
       <h2>{mode === 'edit' ? '게시물 수정' : '새 글쓰기'}</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {CATEGORIES.map((cat) => <option key={cat} value={cat}>{CATEGORY_LABEL[cat]}</option>)}
+          {CATEGORY_GROUPS.map((group) => (
+            <optgroup key={group.title} label={group.title}>
+              {group.categories.map((cat) => <option key={cat} value={cat}>{CATEGORY_LABEL[cat]}</option>)}
+            </optgroup>
+          ))}
         </select>
 
         {plants.length > 0 && (

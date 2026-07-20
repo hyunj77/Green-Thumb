@@ -1,27 +1,54 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { MessageCircle, Sprout, FileText, ThumbsUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPosts } from '../lib/posts'
+import { fetchMyStats } from '../lib/stats'
 import { supabase } from '../lib/supabase'
+import ActivityChart from '../components/ActivityChart'
 
 export default function MyPage() {
   const { user } = useAuth()
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
+  const [stats, setStats] = useState(null)
 
   useEffect(() => {
     if (!user) return
     supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data))
     fetchMyPosts(user.id).then(({ data }) => setPosts(data || []))
+    fetchMyStats(user.id).then(setStats)
   }, [user])
 
   if (!user) return null
+
+  const statItems = [
+    { label: '게시물', value: stats?.postCount, Icon: FileText },
+    { label: '등록 식물', value: stats?.plantCount, Icon: Sprout },
+    { label: '받은 반응', value: stats?.reactionCount, Icon: ThumbsUp },
+    { label: '받은 댓글', value: stats?.commentCount, Icon: MessageCircle },
+  ]
 
   return (
     <div style={{ padding: '0 20px 40px', maxWidth: 640, margin: '0 auto' }}>
       <div className="card" style={{ padding: '28px 32px', marginBottom: 20 }}>
         <h2>{profile?.username || '...'}</h2>
         <p className="muted">{user.email}</p>
+      </div>
+
+      <div className="stat-grid">
+        {statItems.map(({ label, value, Icon }) => (
+          <div key={label} className="stat-tile">
+            <Icon size={16} />
+            <div className="stat-tile-value">{value ?? '-'}</div>
+            <div className="muted">{label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="card" style={{ padding: '24px 32px', marginBottom: 20 }}>
+        <h3>최근 6주 활동</h3>
+        <ActivityChart posts={posts} />
       </div>
 
       <div className="card" style={{ padding: '24px 32px' }}>
