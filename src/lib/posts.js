@@ -36,7 +36,7 @@ export async function fetchPosts({ category, search, page = 1 } = {}) {
   let query = supabase
     .from('posts')
     .select(
-      'id, title, content, image_url, category, created_at, author:profiles(username), plant:plants(name), comments(count), post_reactions(count)',
+      'id, title, content, image_url, category, created_at, author:profiles(id, username), plant:plants(name), comments(count), post_reactions(count)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })
@@ -70,6 +70,18 @@ export async function fetchMyPosts(authorId) {
     .eq('author_id', authorId)
     .order('created_at', { ascending: false })
   return { data, error }
+}
+
+// Home 화면의 '루틴 챌린지 인증' 스토리 로우용 (사진이 있는 최신 인증 게시물)
+export async function fetchChallengeStories(limit = 8) {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('id, title, image_url, created_at')
+    .in('category', ['watering_proof', 'growth_proof'])
+    .not('image_url', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  return { data: data || [], error }
 }
 
 export async function fetchPostsByAuthor(authorId) {

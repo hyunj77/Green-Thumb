@@ -526,6 +526,7 @@ input:focus, textarea:focus, select:focus {
   padding: 16px 4px;
   border-bottom: 1px solid var(--border);
   color: inherit;
+  cursor: pointer;
 }
 
 .community-item-main {
@@ -632,4 +633,82 @@ input:focus, textarea:focus, select:focus {
   font-weight: 800;
   color: var(--text-h);
   margin: 4px 0 2px;
+}
+
+/* Shortcut banner row */
+.shortcut-banner-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.shortcut-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--green-light);
+  color: var(--accent);
+}
+
+.shortcut-banner-label {
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+/* Magazine overlay cards */
+.magazine-overlay-feed {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.magazine-overlay-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 320px;
+  display: block;
+  color: #fff;
+}
+
+.magazine-overlay-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.magazine-overlay-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 55%);
+}
+
+.magazine-overlay-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+}
+
+.magazine-overlay-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 8px 0 8px;
+  line-height: 1.4;
+}
+
+.magazine-overlay-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.magazine-overlay-meta .community-stat {
+  color: rgba(255, 255, 255, 0.85);
 }

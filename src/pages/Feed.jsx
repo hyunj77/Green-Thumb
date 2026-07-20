@@ -1,14 +1,21 @@
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { LayoutGrid, List, MessageCircle, Plus, Search, Sprout } from 'lucide-react'
+import { BookOpen, LayoutGrid, List, MessageCircle, Plus, Search, Sprout, Store } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchPosts, CATEGORY_GROUPS, CATEGORY_LABEL, PAGE_SIZE } from '../lib/posts'
+import { fetchPosts, fetchChallengeStories, CATEGORY_GROUPS, CATEGORY_LABEL, PAGE_SIZE } from '../lib/posts'
 import { timeAgo } from '../lib/time'
 import HeroBanner from '../components/HeroBanner'
 import GuestbookSection from '../components/GuestbookSection'
 
+const SHORTCUT_BANNERS = [
+  { to: '/garden', label: '마이 그린 도감', desc: '내 식물 기록하기', Icon: Sprout },
+  { to: '/market', label: '로컬 장터', desc: '나눔·거래 둘러보기', Icon: Store },
+  { to: '/encyclopedia', label: '식물 도감', desc: '관리법 찾아보기', Icon: BookOpen },
+]
+
 export default function Feed() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const category = searchParams.get('category') || ''
   const page = Number(searchParams.get('page') || '1')
@@ -19,6 +26,7 @@ export default function Feed() {
   const [viewMode, setViewMode] = useState('list')
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
+  const [challengeStories, setChallengeStories] = useState([])
 
   useEffect(() => {
     setLoading(true)
@@ -28,6 +36,10 @@ export default function Feed() {
       setLoading(false)
     })
   }, [category, search, page])
+
+  useEffect(() => {
+    fetchChallengeStories().then(({ data }) => setChallengeStories(data))
+  }, [])
 
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE))
   const goCategory = (cat) => setSearchParams(cat ? { category: cat } : {})
@@ -85,6 +97,31 @@ export default function Feed() {
         </div>
       )}
 
+      {challengeStories.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <h3 style={{ fontSize: 16, marginBottom: 10 }}>🏆 루틴 챌린지 인증 스토리</h3>
+          <div className="story-scroll">
+            {challengeStories.map((post) => (
+              <Link key={post.id} to={`/posts/${post.id}`} className="story-thumb">
+                <img src={post.image_url} alt="" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="shortcut-banner-row">
+        {SHORTCUT_BANNERS.map(({ to, label, desc, Icon }) => (
+          <Link key={to} to={to} className="shortcut-banner">
+            <Icon size={20} />
+            <div>
+              <div className="shortcut-banner-label">{label}</div>
+              <div className="muted" style={{ fontSize: 12 }}>{desc}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
       <div style={{ marginTop: 28 }}>
         <div className="view-toggle">
           <button className={viewMode === 'list' ? 'view-toggle-active' : ''} onClick={() => setViewMode('list')}>
@@ -102,11 +139,24 @@ export default function Feed() {
         ) : viewMode === 'list' ? (
           <div className="community-list">
             {posts.map((post) => (
-              <Link key={post.id} to={`/posts/${post.id}`} className="community-item">
+              <div key={post.id} className="community-item" onClick={() => navigate(`/posts/${post.id}`)}>
                 <div className="community-item-main">
                   <div className="community-item-head">
-                    <span className="avatar-circle">{(post.author?.username || '?')[0]}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text-h)' }}>{post.author?.username || '알 수 없음'}</span>
+                    {post.author?.id ? (
+                      <Link
+                        to={`/users/${post.author.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'inherit' }}
+                      >
+                        <span className="avatar-circle">{(post.author?.username || '?')[0]}</span>
+                        <span style={{ fontWeight: 700, color: 'var(--text-h)' }}>{post.author?.username || '알 수 없음'}</span>
+                      </Link>
+                    ) : (
+                      <>
+                        <span className="avatar-circle">?</span>
+                        <span style={{ fontWeight: 700, color: 'var(--text-h)' }}>알 수 없음</span>
+                      </>
+                    )}
                     <span className="muted">· {timeAgo(post.created_at)}</span>
                   </div>
                   <div className="community-item-text">
@@ -124,7 +174,7 @@ export default function Feed() {
                     <img src={post.image_url} alt="" />
                   </div>
                 )}
-              </Link>
+              </div>
             ))}
           </div>
         ) : (
