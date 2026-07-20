@@ -1,0 +1,180 @@
+:root {
+  --green: #2f6b45;
+  --green-light: #e6f2e9;
+  --sand: #f4efe4;
+  --text: #3c4a3f;
+  --text-h: #1f2b21;
+  --bg: #fbfaf6;
+  --border: #dfe6dd;
+  --accent: #3f8c5a;
+  --accent-2: #7cae7b;
+  --shadow: 0 8px 20px -6px rgba(47, 107, 69, 0.25);
+
+  font: 16px/1.5 'Segoe UI', system-ui, Roboto, sans-serif;
+  color: var(--text);
+  background: linear-gradient(160deg, var(--green-light), var(--sand));
+  min-height: 100svh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  max-width: 960px;
+  margin: 0 auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  color: var(--text-h);
+  margin: 0 0 12px;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+  font-size: 15px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.secondary {
+  background: #fff;
+  color: var(--accent);
+  border: 2px solid var(--accent-2);
+  box-shadow: none;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: #fff;
+  color: var(--text);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.error-text {
+  color: #c0392b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.muted {
+  color: #7c8c7d;
+  font-size: 14px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--green-light);
+  color: var(--accent);
+}
+
+.badge.blue {
+  background: #e4eef7;
+  color: #3a6ea5;
+}
+
+.auth-card input,
+.auth-card textarea,
+.auth-card select {
+  padding: 14px 16px;
+  font-size: 16px;
+}
+
+.auth-card button {
+  padding: 13px 20px;
+  font-size: 16px;
+  justify-content: center;
+}
+
+.auth-card h2 {
+  font-size: 26px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.navbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-h);
+}
+
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.navbar .nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-weight: 600;
+}
