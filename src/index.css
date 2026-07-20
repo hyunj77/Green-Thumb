@@ -206,8 +206,22 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   font-size: 13px;
   margin: 4px 2px;
+}
+
+.auth-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.auth-remember input {
+  width: auto;
+  margin: 0;
 }
 
 .auth-link-btn {
@@ -217,6 +231,8 @@ input:focus, textarea:focus, select:focus {
   color: var(--accent);
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .auth-social-row {

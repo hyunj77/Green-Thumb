@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { setRememberMe } from '../lib/supabase'
 import AuthModalCard from '../components/AuthModalCard'
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [remember, setRemember] = useState(true)
 
   const [showForgot, setShowForgot] = useState(false)
   const [forgotEmail, setForgotEmail] = useState('')
@@ -19,6 +21,7 @@ export default function Login() {
     e.preventDefault()
     setError('')
     setSubmitting(true)
+    setRememberMe(remember)
     const { error } = await signIn({ email, password })
     setSubmitting(false)
     if (error) {
@@ -60,7 +63,7 @@ export default function Login() {
           <div>
             <input
               type="email"
-              placeholder="이메일"
+              placeholder="이메일*"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -70,7 +73,7 @@ export default function Login() {
           <div>
             <input
               type="password"
-              placeholder="비밀번호"
+              placeholder="비밀번호*"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -79,7 +82,10 @@ export default function Login() {
           </div>
 
           <div className="auth-links-row">
-            <span className="muted">로그인 상태가 자동으로 유지돼요</span>
+            <label className="auth-remember">
+              <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+              자동 로그인
+            </label>
             <button type="button" className="auth-link-btn" onClick={() => setShowForgot(true)}>비밀번호 찾기</button>
           </div>
 

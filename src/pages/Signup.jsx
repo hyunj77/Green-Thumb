@@ -8,6 +8,7 @@ export default function Signup() {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -15,6 +16,10 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    if (password !== passwordConfirm) {
+      setError('비밀번호가 일치하지 않아요.')
+      return
+    }
     setSubmitting(true)
     const { error } = await signUp({ email, password, username })
     setSubmitting(false)
@@ -45,7 +50,7 @@ export default function Signup() {
         <div>
           <input
             type="text"
-            placeholder="닉네임"
+            placeholder="닉네임*"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -55,23 +60,38 @@ export default function Signup() {
         <div>
           <input
             type="email"
-            placeholder="이메일"
+            placeholder="이메일*"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <p className="auth-hint">로그인 시 아이디로 사용돼요</p>
+          <p className="auth-hint">로그인 시 아이디로 사용돼요 · 인증 메일이 발송돼요</p>
         </div>
         <div>
           <input
             type="password"
-            placeholder="비밀번호"
+            placeholder="비밀번호*"
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
           <p className="auth-hint">6자 이상 입력해주세요</p>
+        </div>
+        <div>
+          <input
+            type="password"
+            placeholder="비밀번호 확인*"
+            minLength={6}
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
+            required
+          />
+          {passwordConfirm && (
+            <p className={password === passwordConfirm ? 'auth-hint' : 'error-text'} style={password === passwordConfirm ? undefined : { margin: '5px 2px 0', fontSize: 12 }}>
+              {password === passwordConfirm ? '비밀번호가 일치해요' : '비밀번호가 일치하지 않아요'}
+            </p>
+          )}
         </div>
         {error && <p className="error-text">{error}</p>}
         <button type="submit" disabled={submitting} style={{ width: '100%', justifyContent: 'center', marginTop: 6 }}>
