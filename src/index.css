@@ -1,18 +1,19 @@
 :root {
-  --green: #2f6b45;
+  --green: #2d5a27;
   --green-light: #e6f2e9;
   --sand: #f4efe4;
+  --oat: #f9f8f6;
   --text: #3c4a3f;
   --text-h: #1f2b21;
-  --bg: #fbfaf6;
+  --bg: #ffffff;
   --border: #dfe6dd;
-  --accent: #3f8c5a;
-  --accent-2: #7cae7b;
-  --shadow: 0 8px 20px -6px rgba(47, 107, 69, 0.25);
+  --accent: #2d5a27;
+  --accent-2: #7a9b5e;
+  --shadow: 0 8px 20px -6px rgba(45, 90, 39, 0.25);
 
   font: 16px/1.5 'Segoe UI', system-ui, Roboto, sans-serif;
   color: var(--text);
-  background: linear-gradient(160deg, var(--green-light), var(--sand));
+  background: var(--bg);
   min-height: 100svh;
 }
 
@@ -177,4 +178,79 @@ input:focus, textarea:focus, select:focus {
   gap: 6px;
   color: var(--text);
   font-weight: 600;
+}
+
+/* Contact & Guestbook (Home) */
+.home-lower {
+  margin-top: 40px;
+  padding: 32px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.contact-card {
+  background: var(--oat);
+  border-radius: 16px;
+  padding: 22px 26px;
+  border: 1px solid var(--border);
+}
+
+.contact-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.contact-sprout {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  color: var(--accent);
+}
+
+.contact-row-label {
+  font-size: 13px;
+  color: var(--text-h);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.sns-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.sns-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  box-shadow: none;
+}
+
+.sns-icon-btn:hover {
+  background: var(--green-light);
+}
+
+.guestbook-section h3 {
+  margin-bottom: 4px;
+}
+
+.guestbook-entry {
+  padding: 18px 22px;
 }

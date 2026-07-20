@@ -2,6 +2,8 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { fetchPosts, CATEGORIES, CATEGORY_LABEL, PAGE_SIZE } from '../lib/posts'
+import ContactCard from '../components/ContactCard'
+import GuestbookSection from '../components/GuestbookSection'
 
 export default function Feed() {
   const { user } = useAuth()
@@ -75,6 +77,11 @@ export default function Feed() {
           ))}
         </div>
       )}
+
+      <div className="home-lower">
+        <ContactCard />
+        <GuestbookSection />
+      </div>
     </div>
   )
 }
