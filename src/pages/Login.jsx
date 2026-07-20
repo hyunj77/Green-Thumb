@@ -1,14 +1,19 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import AuthModalCard from '../components/AuthModalCard'
 
 export default function Login() {
-  const { signIn } = useAuth()
+  const { signIn, sendPasswordReset } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotStatus, setForgotStatus] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,32 +30,65 @@ export default function Login() {
     navigate('/')
   }
 
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault()
+    setForgotStatus('전송 중...')
+    const { error } = await sendPasswordReset(forgotEmail)
+    setForgotStatus(error ? '전송에 실패했어요. 이메일 주소를 확인해주세요.' : '재설정 링크를 이메일로 보냈어요. 받은편지함을 확인해주세요!')
+  }
+
   return (
-    <div className="card auth-card" style={{ maxWidth: 420, margin: '56px auto', padding: '36px 40px' }}>
-      <h2>로그인</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <input
-          type="email"
-          placeholder="이메일"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        {error && <p className="error-text">{error}</p>}
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="submit" disabled={submitting} style={{ flex: 1 }}>{submitting ? '로그인 중...' : '로그인'}</button>
-          <Link to="/signup" style={{ flex: 1 }}>
-            <button type="button" className="secondary" style={{ width: '100%' }}>회원가입</button>
-          </Link>
-        </div>
-      </form>
-    </div>
+    <AuthModalCard activeTab="login">
+      {showForgot ? (
+        <form onSubmit={handleForgotSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <p className="muted" style={{ margin: 0 }}>가입하신 이메일로 비밀번호 재설정 링크를 보내드려요.</p>
+          <input
+            type="email"
+            placeholder="이메일"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            required
+          />
+          {forgotStatus && <p className="muted" style={{ margin: 0 }}>{forgotStatus}</p>}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="submit" style={{ flex: 1 }}>재설정 링크 보내기</button>
+            <button type="button" className="secondary" style={{ flex: 1 }} onClick={() => setShowForgot(false)}>돌아가기</button>
+          </div>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div>
+            <input
+              type="email"
+              placeholder="이메일"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <p className="auth-hint">가입하신 이메일 주소를 입력해주세요</p>
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <p className="auth-hint">6자 이상 입력해주세요</p>
+          </div>
+
+          <div className="auth-links-row">
+            <span className="muted">로그인 상태가 자동으로 유지돼요</span>
+            <button type="button" className="auth-link-btn" onClick={() => setShowForgot(true)}>비밀번호 찾기</button>
+          </div>
+
+          {error && <p className="error-text">{error}</p>}
+          <button type="submit" disabled={submitting} style={{ width: '100%', justifyContent: 'center', marginTop: 6 }}>
+            {submitting ? '로그인 중...' : '로그인'}
+          </button>
+        </form>
+      )}
+    </AuthModalCard>
   )
 }

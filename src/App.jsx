@@ -13,6 +13,7 @@ import MyPage from './pages/MyPage'
 import Encyclopedia from './pages/Encyclopedia'
 import Magazine from './pages/Magazine'
 import UserProfile from './pages/UserProfile'
+import ResetPassword from './pages/ResetPassword'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/" element={<Feed />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="/write" element={<ProtectedRoute><PostForm mode="create" /></ProtectedRoute>} />
           <Route path="/posts/:id" element={<PostDetail />} />
