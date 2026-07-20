@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MessageCircle, Sprout, FileText, ThumbsUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPosts } from '../lib/posts'
+import { fetchMyPosts, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyStats } from '../lib/stats'
+import { fetchMyBookmarks } from '../lib/bookmarks'
 import { supabase } from '../lib/supabase'
 import ActivityChart from '../components/ActivityChart'
 
@@ -12,12 +13,14 @@ export default function MyPage() {
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
   const [stats, setStats] = useState(null)
+  const [bookmarks, setBookmarks] = useState([])
 
   useEffect(() => {
     if (!user) return
     supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data))
     fetchMyPosts(user.id).then(({ data }) => setPosts(data || []))
     fetchMyStats(user.id).then(setStats)
+    fetchMyBookmarks(user.id).then(({ data }) => setBookmarks(data || []))
   }, [user])
 
   if (!user) return null
@@ -49,6 +52,24 @@ export default function MyPage() {
       <div className="card" style={{ padding: '24px 32px', marginBottom: 20 }}>
         <h3>최근 6주 활동</h3>
         <ActivityChart posts={posts} />
+      </div>
+
+      <div className="card" style={{ padding: '24px 32px', marginBottom: 20 }}>
+        <h3>저장한 글</h3>
+        {bookmarks.length === 0 ? (
+          <p className="muted">저장한 게시물이 없어요. 마음에 드는 글을 저장해보세요!</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {bookmarks.map(({ id, post }) => post && (
+              <Link key={id} to={`/posts/${post.id}`} style={{ color: 'inherit' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                  <span>{post.title}</span>
+                  <span className="muted">{CATEGORY_LABEL[post.category] || post.category}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="card" style={{ padding: '24px 32px' }}>

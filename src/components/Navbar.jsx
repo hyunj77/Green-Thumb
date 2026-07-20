@@ -14,10 +14,6 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <button className="icon-btn" aria-label="알림">
-          <Bell size={18} />
-          <span className="icon-btn-dot" />
-        </button>
         <Link to="/" className="brand">
           <Leaf size={22} />
           Green Thumb
@@ -28,6 +24,10 @@ export default function Navbar() {
         <Link to="/encyclopedia" className="chip"><BookOpen size={14} /> 식물 도감</Link>
         <Link to="/magazine" className="chip"><Newspaper size={14} /> 매거진</Link>
         <Link to="/market" className="chip"><Store size={14} /> 로컬 장터</Link>
+        <button className="icon-btn" aria-label="알림">
+          <Bell size={18} />
+          <span className="icon-btn-dot" />
+        </button>
         {user ? (
           <>
             <Link to="/mypage" className="chip"><User size={14} /> 마이페이지</Link>
