@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import { fetchMyPosts, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyStats } from '../lib/stats'
 import { fetchMyBookmarks } from '../lib/bookmarks'
+import { fetchMyPlants } from '../lib/plants'
+import { computeGardenScore, getGrade } from '../lib/grade'
 import { supabase } from '../lib/supabase'
 import ActivityChart from '../components/ActivityChart'
 
@@ -14,6 +16,7 @@ export default function MyPage() {
   const [posts, setPosts] = useState([])
   const [stats, setStats] = useState(null)
   const [bookmarks, setBookmarks] = useState([])
+  const [plants, setPlants] = useState([])
 
   useEffect(() => {
     if (!user) return
@@ -21,9 +24,12 @@ export default function MyPage() {
     fetchMyPosts(user.id).then(({ data }) => setPosts(data || []))
     fetchMyStats(user.id).then(setStats)
     fetchMyBookmarks(user.id).then(({ data }) => setBookmarks(data || []))
+    fetchMyPlants(user.id).then(({ data }) => setPlants(data || []))
   }, [user])
 
   if (!user) return null
+
+  const grade = getGrade(computeGardenScore(plants))
 
   const statItems = [
     { label: '게시물', value: stats?.postCount, Icon: FileText },
@@ -35,8 +41,17 @@ export default function MyPage() {
   return (
     <div style={{ padding: '0 20px 40px', maxWidth: 640, margin: '0 auto' }}>
       <div className="card" style={{ padding: '28px 32px', marginBottom: 20 }}>
-        <h2>{profile?.username || '...'}</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <h2 style={{ margin: 0 }}>{profile?.username || '...'}</h2>
+          <span className="badge grade-badge">{grade.emoji} {grade.name}</span>
+        </div>
         <p className="muted">{user.email}</p>
+        {grade.next && (
+          <p className="muted" style={{ margin: '8px 0 0' }}>
+            다음 등급 {grade.next.emoji} {grade.next.name}까지 {grade.next.pointsToNext}점 남았어요 (그린 포인트 {grade.score})
+          </p>
+        )}
+        <Link to={`/users/${user.id}`} style={{ display: 'inline-block', marginTop: 10, fontSize: 14 }}>공개 프로필 보기 →</Link>
       </div>
 
       <div className="stat-grid">

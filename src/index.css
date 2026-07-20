@@ -712,3 +712,27 @@ input:focus, textarea:focus, select:focus {
 .magazine-overlay-meta .community-stat {
   color: rgba(255, 255, 255, 0.85);
 }
+
+/* Grade badge & profile stats */
+.grade-badge {
+  background: linear-gradient(135deg, var(--accent), #4a7a3f);
+  color: #fff;
+}
+
+.profile-stat-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.profile-stat {
+  text-align: center;
+}
+
+.profile-stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-h);
+}
