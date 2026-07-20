@@ -254,3 +254,25 @@ input:focus, textarea:focus, select:focus {
 .guestbook-entry {
   padding: 18px 22px;
 }
+
+.growth-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.growth-timeline-item {
+  display: flex;
+  gap: 10px;
+}
+
+.growth-timeline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  margin-top: 6px;
+  flex-shrink: 0;
+}

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Droplets, Plus, Trash2 } from 'lucide-react'
+import { Droplets, NotebookPen, Plus, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, deletePlant, nextWateringDate } from '../lib/plants'
+import GrowthDiary from '../components/GrowthDiary'
+import AiFeaturePreview from '../components/AiFeaturePreview'
 
 export default function MyGarden() {
   const { user } = useAuth()
@@ -12,6 +14,7 @@ export default function MyGarden() {
   const [species, setSpecies] = useState('')
   const [photoUrl, setPhotoUrl] = useState('')
   const [interval, setInterval_] = useState(7)
+  const [expandedId, setExpandedId] = useState(null)
 
   const load = () => {
     if (!user) return setLoading(false)
@@ -88,13 +91,25 @@ export default function MyGarden() {
                 )}
                 <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                   <button onClick={() => handleWater(plant.id)} style={{ flex: 1 }}><Droplets size={14} /> 물 줬어요</button>
+                  <button className="secondary" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
+                    <NotebookPen size={14} />
+                  </button>
                   <button className="secondary" onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
                 </div>
+
+                {expandedId === plant.id && (
+                  <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+                    <div className="contact-row-label" style={{ marginBottom: 8 }}>🌱 성장일기</div>
+                    <GrowthDiary plantId={plant.id} ownerId={plant.owner_id} currentUserId={user.id} />
+                  </div>
+                )}
               </div>
             )
           })}
         </div>
       )}
+
+      <AiFeaturePreview />
     </div>
   )
 }
