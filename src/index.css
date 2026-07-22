@@ -9,7 +9,7 @@
   --accent: #2d5a27;
   --shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.08);
 
-  font: 16px/1.5 'Segoe UI', system-ui, Roboto, sans-serif;
+  font: 17px/1.6 'Segoe UI', system-ui, Roboto, sans-serif;
   color: var(--text);
   background: var(--bg);
   min-height: 100svh;
@@ -101,12 +101,12 @@ input:focus, textarea:focus, select:focus {
 .error-text {
   color: #c0392b;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .muted {
   color: #7c8c7d;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .badge {
@@ -198,7 +198,7 @@ input:focus, textarea:focus, select:focus {
 
 .auth-hint {
   margin: 5px 2px 0;
-  font-size: 12px;
+  font-size: 13px;
   color: #8a978c;
 }
 
@@ -249,17 +249,25 @@ input:focus, textarea:focus, select:focus {
 }
 
 .auth-social-btn {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-shadow: none;
+  padding: 0;
 }
 
 .auth-social-btn-border {
   border: 1px solid var(--border);
+}
+
+.social-mark-svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
 }
 
 .navbar {
