@@ -972,3 +972,61 @@ input:focus, textarea:focus, select:focus {
     overflow-x: auto;
   }
 }
+
+/* Mobile bottom tab bar */
+.mobile-tab-bar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-tab-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  body {
+    padding-bottom: 68px;
+  }
+
+  .fab-write {
+    bottom: 84px;
+  }
+}
+
+.mobile-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #9aa79b;
+  font-size: 11px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.mobile-tab-active {
+  color: var(--accent);
+}
+
+.mobile-tab-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -26px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 16px -4px rgba(45, 90, 39, 0.5);
+  flex-shrink: 0;
+}

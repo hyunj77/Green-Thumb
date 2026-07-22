@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { MessageCircle, MessageSquare, Sprout } from 'lucide-react'
+import { Droplets, MessageCircle, MessageSquare, Sprout } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyNotifications, markNotificationRead, markAllNotificationsRead } from '../lib/notifications'
 import { timeAgo } from '../lib/time'
@@ -9,6 +9,7 @@ const TYPE_META = {
   comment: { Icon: MessageCircle, label: '댓글' },
   reaction: { Icon: Sprout, label: '반응' },
   message: { Icon: MessageSquare, label: '쪽지' },
+  watering: { Icon: Droplets, label: '물주기 알림' },
 }
 
 export default function Notifications() {
@@ -34,6 +35,7 @@ export default function Notifications() {
       setItems((prev) => prev.map((i) => (i.id === n.id ? { ...i, is_read: true } : i)))
     }
     if (n.type === 'message') navigate('/messages')
+    else if (n.type === 'watering') navigate('/garden')
     else if (n.post_id) navigate(`/posts/${n.post_id}`)
   }
 
@@ -67,7 +69,9 @@ export default function Notifications() {
                 <div className="community-item-main">
                   <div className="community-item-head">
                     <span className="avatar-circle">{Icon ? <Icon size={14} /> : '🔔'}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text-h)' }}>{n.actor?.username || '알 수 없음'}</span>
+                    <span style={{ fontWeight: 700, color: 'var(--text-h)' }}>
+                      {n.type === 'watering' ? '그린 썸' : (n.actor?.username || '알 수 없음')}
+                    </span>
                     <span className="muted">· {label} · {timeAgo(n.created_at)}</span>
                   </div>
                   <div className="community-item-text">{n.content_preview}</div>

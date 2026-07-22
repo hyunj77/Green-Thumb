@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Droplets, NotebookPen, Plus, Trash2 } from 'lucide-react'
+import { Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, deletePlant, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { findSpeciesInfo } from '../lib/encyclopedia'
 import GrowthDiary from '../components/GrowthDiary'
 import AiFeaturePreview from '../components/AiFeaturePreview'
 
@@ -16,7 +17,11 @@ export default function MyGarden() {
   const [species, setSpecies] = useState('')
   const [photoUrl, setPhotoUrl] = useState('')
   const [interval, setInterval_] = useState(7)
+  const [intervalTouched, setIntervalTouched] = useState(false)
   const [expandedId, setExpandedId] = useState(null)
+  const [tipId, setTipId] = useState(null)
+
+  const speciesInfo = findSpeciesInfo(species)
 
   const load = () => {
     if (!user) {
@@ -33,11 +38,15 @@ export default function MyGarden() {
 
   useEffect(load, [user])
 
+  useEffect(() => {
+    if (speciesInfo && !intervalTouched) setInterval_(speciesInfo.wateringDays)
+  }, [speciesInfo, intervalTouched])
+
   const handleAdd = async (e) => {
     e.preventDefault()
     const { data } = await createPlant({ ownerId: user.id, name, species, photoUrl, wateringIntervalDays: Number(interval) })
     if (data) setPlants((prev) => [data, ...prev])
-    setName(''); setSpecies(''); setPhotoUrl(''); setInterval_(7); setShowForm(false)
+    setName(''); setSpecies(''); setPhotoUrl(''); setInterval_(7); setIntervalTouched(false); setShowForm(false)
   }
 
   const handleWater = async (id) => {
@@ -69,12 +78,27 @@ export default function MyGarden() {
 
       {!isGuest && showForm && (
         <form onSubmit={handleAdd} className="card" style={{ padding: 24, marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <input type="text" placeholder="식물 이름 (예: 몬스테라)" value={name} onChange={(e) => setName(e.target.value)} required />
-          <input type="text" placeholder="품종 (선택 사항)" value={species} onChange={(e) => setSpecies(e.target.value)} />
+          <input type="text" placeholder="식물 이름 (예: 몽이)" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input type="text" placeholder="품종 (예: 몬스테라)" value={species} onChange={(e) => setSpecies(e.target.value)} />
+
+          {speciesInfo && (
+            <div className="contact-card" style={{ padding: 14 }}>
+              <div style={{ fontWeight: 700, color: 'var(--text-h)', marginBottom: 4 }}>{speciesInfo.emoji} {speciesInfo.name} 키우기 팁</div>
+              <div className="muted"><Droplets size={12} style={{ verticalAlign: -1 }} /> {speciesInfo.watering} (약 {speciesInfo.wateringDays}일 주기)</div>
+              <div className="muted"><Sun size={12} style={{ verticalAlign: -1 }} /> {speciesInfo.light}</div>
+              <div className="muted">난이도 {speciesInfo.difficulty} · {speciesInfo.petSafe ? '반려동물 안전' : '반려동물 주의'}</div>
+            </div>
+          )}
+
           <input type="url" placeholder="사진 URL (선택 사항)" value={photoUrl} onChange={(e) => setPhotoUrl(e.target.value)} />
           <label className="muted">
-            물주기 주기 (일)
-            <input type="number" min={1} value={interval} onChange={(e) => setInterval_(e.target.value)} />
+            물주기 주기 (일){speciesInfo && !intervalTouched && ' — 품종 기준 자동 입력됨'}
+            <input
+              type="number"
+              min={1}
+              value={interval}
+              onChange={(e) => { setInterval_(e.target.value); setIntervalTouched(true) }}
+            />
           </label>
           <button type="submit">등록</button>
         </form>
@@ -89,6 +113,7 @@ export default function MyGarden() {
           {plants.map((plant) => {
             const next = nextWateringDate(plant)
             const dueSoon = next && next <= new Date()
+            const info = findSpeciesInfo(plant.species)
             return (
               <div key={plant.id} className="magazine-card">
                 <div className="magazine-card-media">
@@ -105,13 +130,31 @@ export default function MyGarden() {
                       다음 물주기: {next.toLocaleDateString('ko-KR')} {dueSoon && '💧 필요해요!'}
                     </div>
                   )}
-                  {!isGuest && (
-                    <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                    {!isGuest && (
                       <button onClick={() => handleWater(plant.id)} style={{ flex: 1 }}><Droplets size={14} /> 물 줬어요</button>
-                      <button className="secondary" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
-                        <NotebookPen size={14} />
+                    )}
+                    {info && (
+                      <button className="secondary" onClick={() => setTipId(tipId === plant.id ? null : plant.id)}>
+                        <Info size={14} />
                       </button>
-                      <button className="secondary" onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
+                    )}
+                    {!isGuest && (
+                      <>
+                        <button className="secondary" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
+                          <NotebookPen size={14} />
+                        </button>
+                        <button className="secondary" onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
+                      </>
+                    )}
+                  </div>
+
+                  {tipId === plant.id && info && (
+                    <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+                      <div className="contact-row-label" style={{ marginBottom: 8 }}>{info.emoji} 키우기 팁</div>
+                      <div className="muted"><Droplets size={12} style={{ verticalAlign: -1 }} /> {info.watering} (약 {info.wateringDays}일 주기)</div>
+                      <div className="muted"><Sun size={12} style={{ verticalAlign: -1 }} /> {info.light}</div>
+                      <div className="muted">난이도 {info.difficulty} · {info.petSafe ? '반려동물 안전' : '반려동물 주의'}</div>
                     </div>
                   )}
 

@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
+import MobileTabBar from './components/MobileTabBar'
 import ProtectedRoute from './components/ProtectedRoute'
 import Feed from './pages/Feed'
 import Login from './pages/Login'
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
         </Routes>
+        <MobileTabBar />
       </HashRouter>
     </AuthProvider>
   )
