@@ -149,12 +149,12 @@ export default function GreenieCharacter({
     <div
       ref={wrapRef}
       className="greenie-character"
-      style={{ width: size, height: size * 1.1, cursor: interactive ? 'pointer' : 'default' }}
+      style={{ width: size, height: size * 1.31, cursor: interactive ? 'pointer' : 'default' }}
       onPointerDown={handlePointerDown}
       role={interactive ? 'button' : undefined}
       aria-label={interactive ? '그린이에게 물주기' : undefined}
     >
-      <motion.svg viewBox="0 -18 200 248" width="100%" height="100%">
+      <motion.svg viewBox="0 -32 200 262" width="100%" height="100%">
         <defs>
           <radialGradient id="greenie-body-grad" cx="38%" cy="30%" r="75%">
             <stop offset="0%" stopColor="#E3F5C4" />
@@ -185,28 +185,28 @@ export default function GreenieCharacter({
             initial={{ scale: 1 }}
             style={{ originX: 0.5, originY: 0.5 }}
           >
-            {/* 팔 */}
+            {/* 팔 (몸통에 바짝 붙은 작은 팔) */}
             <motion.ellipse
-              cx="31" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1"
+              cx="36" cy="150" rx="8" ry="13" fill="url(#greenie-body-grad)" stroke="#a9d488" strokeWidth="1"
               animate={{ rotate: expression === 'happy' ? [0, -18, 10, 0] : 0 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
             <motion.ellipse
-              cx="169" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1"
+              cx="164" cy="150" rx="8" ry="13" fill="url(#greenie-body-grad)" stroke="#a9d488" strokeWidth="1"
               animate={{ rotate: expression === 'happy' ? [0, 18, -10, 0] : 0 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
-            {/* 발 */}
+            {/* 발 (작고 가까이 붙은 발) */}
             <motion.ellipse
-              cx="78" cy="204" rx="15" ry="8" fill="#BFE89C"
+              cx="83" cy="202" rx="13" ry="7" fill="#BFE89C"
               animate={{ rotate: expression === 'happy' ? [0, -10, 6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
             <motion.ellipse
-              cx="122" cy="204" rx="15" ry="8" fill="#BFE89C"
+              cx="117" cy="202" rx="13" ry="7" fill="#BFE89C"
               animate={{ rotate: expression === 'happy' ? [0, 10, -6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
@@ -224,38 +224,29 @@ export default function GreenieCharacter({
                 style={{ originX: 0.25, originY: 0.85 }}
               >
                 <path
-                  d="M146,84 C162,76 170,62 166,48 C152,52 140,64 138,78 C138,83 142,86 146,84 Z"
+                  d="M144,80 C162,72 172,56 168,40 C152,44 138,58 134,74 C134,80 139,83 144,80 Z"
                   fill="url(#greenie-leaf-side-grad)"
                 />
               </motion.g>
 
-              {/* 몸통 (통통한 새싹 모양) */}
-              <path
-                d="M100,44
-                   C144,44 172,80 172,132
-                   C172,180 140,208 100,208
-                   C60,208 28,180 28,132
-                   C28,80 56,44 100,44 Z"
-                fill="url(#greenie-body-grad)"
-                stroke="#a9d488"
-                strokeWidth="1.5"
-              />
+              {/* 몸통 (깔끔한 동글동글 타원) */}
+              <ellipse cx="100" cy="126" rx="70" ry="82" fill="url(#greenie-body-grad)" stroke="#a9d488" strokeWidth="1.5" />
 
               {/* 줄기 */}
-              <path d="M93,30 C93,44 93,52 93,58 L107,58 C107,52 107,44 107,30 Z" fill="url(#greenie-stem-grad)" />
+              <path d="M93,28 C93,42 93,50 93,50 L107,50 C107,50 107,42 107,28 Z" fill="url(#greenie-stem-grad)" />
 
-              {/* 새싹 (두 갈래) */}
+              {/* 새싹 (두 갈래, 넉넉한 크기) */}
               <motion.g
                 animate={{ rotate: leafRotate }}
                 transition={{ duration: leafDuration, repeat: Infinity, ease: 'easeInOut' }}
                 style={{ originX: 0.5, originY: 1 }}
               >
                 <path
-                  d="M100,32 C84,14 68,2 52,-8 C50,16 62,34 100,32 Z"
+                  d="M100,24 C80,2 60,-12 40,-24 C38,4 52,26 100,24 Z"
                   fill="url(#greenie-leaf-grad)"
                 />
                 <path
-                  d="M100,32 C116,14 132,2 148,-8 C150,16 138,34 100,32 Z"
+                  d="M100,24 C120,2 140,-12 160,-24 C162,4 148,26 100,24 Z"
                   fill="url(#greenie-leaf-grad)"
                 />
               </motion.g>
