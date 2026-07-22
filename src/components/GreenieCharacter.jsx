@@ -1,6 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import greenieImg from '../assets/greenie-character.png'
+import faceWink from '../assets/face-wink.png'
+import faceCurious from '../assets/face-curious.png'
+import faceSurprised from '../assets/face-surprised.png'
+import faceCalm from '../assets/face-calm.png'
+import faceSparkle from '../assets/face-sparkle.png'
+
+const FACE_IMAGES = {
+  idle: greenieImg,
+  wink: faceWink,
+  curious: faceCurious,
+  surprised: faceSurprised,
+  calm: faceCalm,
+  sparkle: faceSparkle,
+}
 
 let dropletSeq = 0
 let sparkleSeq = 0
@@ -20,9 +34,11 @@ export default function GreenieCharacter({
   const lastTapRef = useRef(Date.now())
   const comboRef = useRef(0)
   const comboTimerRef = useRef(null)
+  const faceOverrideTimerRef = useRef(null)
   const prevLevelUpRef = useRef(levelUpSignal)
 
   const [mood, setMood] = useState('idle')
+  const [faceOverride, setFaceOverride] = useState(null)
   const [droplets, setDroplets] = useState([])
   const [sparkles, setSparkles] = useState([])
   const [hearts, setHearts] = useState([])
@@ -40,12 +56,19 @@ export default function GreenieCharacter({
     return () => clearInterval(timer)
   }, [interactive])
 
+  const flashFace = (face, duration) => {
+    clearTimeout(faceOverrideTimerRef.current)
+    setFaceOverride(face)
+    faceOverrideTimerRef.current = setTimeout(() => setFaceOverride(null), duration)
+  }
+
   // 레벨업 이펙트
   useEffect(() => {
     if (levelUpSignal === prevLevelUpRef.current) return
     prevLevelUpRef.current = levelUpSignal
     glowControls.start({ scale: [0, 2.3], opacity: [0.55, 0], transition: { duration: 0.9, ease: 'easeOut' } })
     bodyControls.start({ scale: [1, 1.28, 0.92, 1.05, 1], transition: { duration: 0.7, ease: 'easeInOut' } })
+    flashFace('surprised', 750)
     const newHearts = Array.from({ length: 5 }).map((_, i) => ({
       id: `heart-${Date.now()}-${i}`,
       x: 26 + Math.random() * 48,
@@ -97,13 +120,15 @@ export default function GreenieCharacter({
     setTimeout(() => {
       const intensity = 1 + Math.min(next, 10) * 0.03
       spawnSparkles()
+      flashFace('sparkle', 420)
       bodyControls.start({
         scaleY: [1, 0.82 * intensity, 1.08, 1],
         scaleX: [1, 1.12 * intensity, 0.96, 1],
-        rotate: [0, next % 2 === 0 ? -4 : 4, 0],
+        rotate: [0, next % 2 === 0 ? -6 : 6, 0],
         transition: { duration: 0.28, ease: 'easeOut' },
       })
       if (next % 10 === 0) {
+        flashFace('sparkle', 700)
         bodyControls.start({
           rotate: [0, 360],
           transition: { duration: 0.6, ease: 'easeInOut' },
@@ -114,12 +139,17 @@ export default function GreenieCharacter({
     onTap?.()
   }
 
+  const moodFace = mood === 'sleepy' ? 'calm' : mood === 'sad' ? 'curious' : mood === 'bored' ? 'wink' : 'idle'
+  const activeFace = faceOverride || moodFace
+
   const swayAnim = mood === 'bored'
-    ? { rotate: [-3, 3, -3] }
+    ? { rotate: [-5, 5, -5], x: [-3, 3, -3] }
     : mood === 'sad'
-      ? { rotate: [-1, 1, -1], y: [0, 3, 0] }
-      : { rotate: 0, y: 0 }
-  const swayDuration = mood === 'bored' ? 2.2 : mood === 'sad' ? 3 : 2.6
+      ? { rotate: [-2, 2, -2], y: [0, 4, 0] }
+      : mood === 'sleepy'
+        ? { rotate: [-2, 2, -2] }
+        : { rotate: [-2.5, 2.5, -2.5], y: [0, -6, 0] }
+  const swayDuration = mood === 'bored' ? 1.8 : mood === 'sad' ? 3 : mood === 'sleepy' ? 4.2 : 2.4
 
   return (
     <div
@@ -142,11 +172,24 @@ export default function GreenieCharacter({
         style={{ originX: 0.5, originY: 0.85, width: '100%', height: '100%' }}
       >
         <motion.div
-          animate={{ scale: [1, 1.02, 1], ...swayAnim }}
+          animate={{ scale: [1, 1.045, 1], ...swayAnim }}
           transition={{ duration: swayDuration, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ originX: 0.5, originY: 1, width: '100%', height: '100%', filter: mood === 'sleepy' ? 'brightness(0.94)' : 'none' }}
+          style={{ originX: 0.5, originY: 1, width: '100%', height: '100%', position: 'relative', filter: mood === 'sleepy' ? 'brightness(0.94)' : 'none' }}
         >
-          <img src={greenieImg} alt="그린이" className="greenie-character-img" draggable={false} />
+          <AnimatePresence>
+            <motion.img
+              key={activeFace}
+              src={FACE_IMAGES[activeFace]}
+              alt="그린이"
+              className="greenie-character-img"
+              draggable={false}
+              style={{ position: 'absolute', inset: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.12 }}
+            />
+          </AnimatePresence>
         </motion.div>
       </motion.div>
 
