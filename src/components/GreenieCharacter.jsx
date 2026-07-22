@@ -176,18 +176,38 @@ export default function GreenieCharacter({
           animate={mood === 'bored' ? { x: [-4, 4, -4] } : { x: 0 }}
           transition={{ duration: 2.4, repeat: mood === 'bored' ? Infinity : 0, ease: 'easeInOut' }}
         >
-          {/* 팔 */}
-          <ellipse cx="31" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1" />
-          <ellipse cx="169" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1" />
-          {/* 발 */}
-          <ellipse cx="78" cy="204" rx="15" ry="8" fill="#DCE6A8" />
-          <ellipse cx="122" cy="204" rx="15" ry="8" fill="#DCE6A8" />
-
           <motion.g
             animate={bodyControls}
             initial={{ scale: 1 }}
             style={{ originX: 0.5, originY: 0.5 }}
           >
+            {/* 팔 */}
+            <motion.ellipse
+              cx="31" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1"
+              animate={{ rotate: expression === 'happy' ? [0, -18, 10, 0] : 0 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              style={{ originX: 0.5, originY: 0 }}
+            />
+            <motion.ellipse
+              cx="169" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1"
+              animate={{ rotate: expression === 'happy' ? [0, 18, -10, 0] : 0 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              style={{ originX: 0.5, originY: 0 }}
+            />
+            {/* 발 */}
+            <motion.ellipse
+              cx="78" cy="204" rx="15" ry="8" fill="#DCE6A8"
+              animate={{ rotate: expression === 'happy' ? [0, -10, 6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              style={{ originX: 0.5, originY: 0 }}
+            />
+            <motion.ellipse
+              cx="122" cy="204" rx="15" ry="8" fill="#DCE6A8"
+              animate={{ rotate: expression === 'happy' ? [0, 10, -6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              style={{ originX: 0.5, originY: 0 }}
+            />
+
             <motion.g
               animate={{ scaleY: [1, 1.02, 1] }}
               transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
