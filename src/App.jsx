@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import MobileTabBar from './components/MobileTabBar'
 import ProtectedRoute from './components/ProtectedRoute'
 import Feed from './pages/Feed'
+import Community from './pages/Community'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import PostDetail from './pages/PostDetail'
@@ -26,6 +27,7 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Feed />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<ResetPassword />} />

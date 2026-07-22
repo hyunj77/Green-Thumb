@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 const LEFT_TABS = [
   { to: '/', label: '홈', Icon: House, match: (p) => p === '/' },
-  { to: '/magazine', label: '피드', Icon: Newspaper, match: (p) => p.startsWith('/magazine') },
+  { to: '/community', label: '피드', Icon: Newspaper, match: (p) => p.startsWith('/community') || p.startsWith('/posts') },
 ]
 
 const RIGHT_TABS = [
