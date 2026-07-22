@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { MapPin } from 'lucide-react'
+import { MapPin, MessageSquare } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import { fetchPostsByAuthor, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
@@ -8,6 +9,7 @@ import { computeGardenScore, getGrade } from '../lib/grade'
 
 export default function UserProfile() {
   const { id } = useParams()
+  const { user } = useAuth()
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
   const [plants, setPlants] = useState([])
@@ -49,6 +51,14 @@ export default function UserProfile() {
           </div>
         </div>
         {profile.bio && <p style={{ marginTop: 14 }}>{profile.bio}</p>}
+
+        {user && user.id !== profile.id && (
+          <Link to={`/messages?with=${profile.id}`}>
+            <button className="secondary" style={{ marginTop: 14 }}>
+              <MessageSquare size={14} /> 쪽지 보내기
+            </button>
+          </Link>
+        )}
 
         <div className="profile-stat-row">
           <div className="profile-stat">

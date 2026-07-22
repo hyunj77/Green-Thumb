@@ -235,23 +235,31 @@ input:focus, textarea:focus, select:focus {
   flex-shrink: 0;
 }
 
+.auth-social-caption {
+  text-align: center;
+  color: var(--text);
+  font-size: 13px;
+  margin: 26px 0 14px;
+}
+
 .auth-social-row {
   display: flex;
   justify-content: center;
   gap: 14px;
-  margin-top: 26px;
 }
 
 .auth-social-btn {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
   box-shadow: none;
+}
+
+.auth-social-btn-border {
+  border: 1px solid var(--border);
 }
 
 .navbar {
@@ -862,4 +870,97 @@ input:focus, textarea:focus, select:focus {
   font-size: 20px;
   font-weight: 800;
   color: var(--text-h);
+}
+
+/* Messages */
+.messages-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+  margin-top: 20px;
+  min-height: 480px;
+}
+
+.messages-conv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-right: 1px solid var(--border);
+  padding-right: 12px;
+}
+
+.messages-conv-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  box-shadow: none;
+  color: var(--text);
+  padding: 10px 8px;
+  border-radius: 12px;
+  font-weight: 400;
+}
+
+.messages-conv-item-active {
+  background: var(--green-light);
+}
+
+.messages-thread {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.messages-thread-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.messages-thread-body {
+  flex: 1;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.message-bubble {
+  align-self: flex-start;
+  max-width: 70%;
+  background: var(--oat);
+  padding: 10px 14px;
+  border-radius: 14px 14px 14px 4px;
+}
+
+.message-bubble-mine {
+  align-self: flex-end;
+  background: var(--green-light);
+  border-radius: 14px 14px 4px 14px;
+}
+
+.messages-thread-form {
+  display: flex;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .messages-layout {
+    grid-template-columns: 1fr;
+  }
+  .messages-conv-list {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding-right: 0;
+    padding-bottom: 12px;
+    flex-direction: row;
+    overflow-x: auto;
+  }
 }

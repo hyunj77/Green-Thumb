@@ -15,6 +15,8 @@ import Magazine from './pages/Magazine'
 import UserProfile from './pages/UserProfile'
 import ResetPassword from './pages/ResetPassword'
 import GradeGuide from './pages/GradeGuide'
+import Notifications from './pages/Notifications'
+import Messages from './pages/Messages'
 
 export default function App() {
   return (
@@ -38,6 +40,8 @@ export default function App() {
           <Route path="/users/:id" element={<UserProfile />} />
           <Route path="/grades" element={<GradeGuide />} />
           <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+          <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
         </Routes>
       </HashRouter>
     </AuthProvider>
