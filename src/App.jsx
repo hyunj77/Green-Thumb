@@ -19,6 +19,8 @@ import ResetPassword from './pages/ResetPassword'
 import GradeGuide from './pages/GradeGuide'
 import Notifications from './pages/Notifications'
 import Messages from './pages/Messages'
+import GreenieHome from './pages/GreenieHome'
+import GreenieVisit from './pages/GreenieVisit'
 
 export default function App() {
   return (
@@ -45,6 +47,8 @@ export default function App() {
           <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+          <Route path="/greenie" element={<ProtectedRoute><GreenieHome /></ProtectedRoute>} />
+          <Route path="/greenie/:userId" element={<GreenieVisit />} />
         </Routes>
         <MobileTabBar />
       </HashRouter>
