@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Bell, Leaf, User } from 'lucide-react'
+import { Bell, Leaf, MessageSquare, Plus, User } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchUnreadCount } from '../lib/notifications'
 
@@ -31,6 +31,8 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="nav-links">
+        {user && <Link to="/garden" className="chip nav-link-desktop-only"><Plus size={14} /> 식물 등록</Link>}
+        <Link to={user ? '/messages' : '/login'} className="chip nav-link-desktop-only"><MessageSquare size={14} /> 채팅</Link>
         <Link to={user ? '/notifications' : '/login'} className="icon-btn" aria-label="알림">
           <Bell size={18} />
           {unread > 0 && <span className="icon-btn-dot" />}

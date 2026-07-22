@@ -4,6 +4,7 @@ import { Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, deletePlant, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
 import { findSpeciesInfo } from '../lib/encyclopedia'
+import { addGreenieExpFromWatering } from '../lib/greenie'
 import GrowthDiary from '../components/GrowthDiary'
 import AiFeaturePreview from '../components/AiFeaturePreview'
 
@@ -20,6 +21,7 @@ export default function MyGarden() {
   const [intervalTouched, setIntervalTouched] = useState(false)
   const [expandedId, setExpandedId] = useState(null)
   const [tipId, setTipId] = useState(null)
+  const [greenieToast, setGreenieToast] = useState('')
 
   const speciesInfo = findSpeciesInfo(species)
 
@@ -52,6 +54,9 @@ export default function MyGarden() {
   const handleWater = async (id) => {
     const { data } = await waterPlant(id)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
+    const greenie = await addGreenieExpFromWatering(user.id)
+    setGreenieToast(`🌱 그린이가 쑥쑥 자랐어요! (Lv.${greenie.level})`)
+    setTimeout(() => setGreenieToast(''), 2500)
   }
 
   const handleDelete = async (id) => {
@@ -66,6 +71,12 @@ export default function MyGarden() {
         <h2 style={{ margin: 0 }}>🌿 마이 그린 도감</h2>
         {!isGuest && <button onClick={() => setShowForm((v) => !v)}><Plus size={16} /> 식물 등록</button>}
       </div>
+
+      {greenieToast && (
+        <div className="card" style={{ padding: '10px 16px', marginBottom: 16, background: 'var(--green-light)', border: 'none', textAlign: 'center', fontWeight: 700, color: 'var(--accent)' }}>
+          {greenieToast}
+        </div>
+      )}
 
       {isGuest && (
         <div className="contact-card" style={{ marginBottom: 20 }}>

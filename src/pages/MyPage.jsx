@@ -32,10 +32,10 @@ export default function MyPage() {
   const grade = getGrade(computeGardenScore(plants))
 
   const statItems = [
-    { label: '게시물', value: stats?.postCount, Icon: FileText },
-    { label: '등록 식물', value: stats?.plantCount, Icon: Sprout },
-    { label: '받은 반응', value: stats?.reactionCount, Icon: ThumbsUp },
-    { label: '받은 댓글', value: stats?.commentCount, Icon: MessageCircle },
+    { label: '게시물', value: stats?.postCount, Icon: FileText, bg: '#DFFBF1', fg: '#00966F' },
+    { label: '등록 식물', value: stats?.plantCount, Icon: Sprout, bg: '#EEE9FC', fg: '#7C5CD1' },
+    { label: '받은 반응', value: stats?.reactionCount, Icon: ThumbsUp, bg: '#FFF3D6', fg: '#b8860b' },
+    { label: '받은 댓글', value: stats?.commentCount, Icon: MessageCircle, bg: '#E7EBFC', fg: '#4a5bc2' },
   ]
 
   return (
@@ -56,9 +56,11 @@ export default function MyPage() {
       </div>
 
       <div className="stat-grid">
-        {statItems.map(({ label, value, Icon }) => (
+        {statItems.map(({ label, value, Icon, bg, fg }) => (
           <div key={label} className="stat-tile">
-            <Icon size={16} />
+            <span className="stat-icon-badge" style={{ background: bg, color: fg }}>
+              <Icon size={16} />
+            </span>
             <div className="stat-tile-value">{value ?? '-'}</div>
             <div className="muted">{label}</div>
           </div>
