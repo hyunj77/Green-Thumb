@@ -14,6 +14,7 @@ import Encyclopedia from './pages/Encyclopedia'
 import Magazine from './pages/Magazine'
 import UserProfile from './pages/UserProfile'
 import ResetPassword from './pages/ResetPassword'
+import GradeGuide from './pages/GradeGuide'
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/encyclopedia" element={<Encyclopedia />} />
           <Route path="/magazine" element={<Magazine />} />
           <Route path="/users/:id" element={<UserProfile />} />
+          <Route path="/grades" element={<GradeGuide />} />
           <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         </Routes>
       </HashRouter>

@@ -463,6 +463,18 @@ input:focus, textarea:focus, select:focus {
   font-size: 18px;
 }
 
+.hero-cta {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+}
+
 .hero-dots {
   display: flex;
   gap: 6px;

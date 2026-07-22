@@ -44,6 +44,7 @@ export default function MyPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <h2 style={{ margin: 0 }}>{profile?.username || '...'}</h2>
           <span className="badge grade-badge">{grade.emoji} {grade.name}</span>
+          <Link to="/grades" style={{ fontSize: 12 }}>등급 안내 →</Link>
         </div>
         <p className="muted">{user.email}</p>
         {grade.next && (

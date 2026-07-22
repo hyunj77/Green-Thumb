@@ -41,6 +41,7 @@ export default function UserProfile() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <h2 style={{ margin: 0 }}>{profile.username}</h2>
               <span className="badge grade-badge">{grade.emoji} {grade.name}</span>
+              <Link to="/grades" style={{ fontSize: 12 }}>등급 안내 →</Link>
             </div>
             {profile.location && (
               <div className="muted"><MapPin size={13} style={{ verticalAlign: -1 }} /> {profile.location}</div>

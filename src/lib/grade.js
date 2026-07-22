@@ -1,7 +1,7 @@
 import { PLANT_SPECIES } from './encyclopedia'
 
 // 식물 난이도별 가중치 — 어려운 식물을 키울수록, 많이 키울수록 점수가 높아짐
-const DIFFICULTY_WEIGHT = {
+export const DIFFICULTY_WEIGHT = {
   '매우 쉬움': 1,
   '쉬움': 2,
   '중간': 4,
