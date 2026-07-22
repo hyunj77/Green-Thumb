@@ -149,16 +149,16 @@ export default function GreenieCharacter({
     <div
       ref={wrapRef}
       className="greenie-character"
-      style={{ width: size, height: size * 1.31, cursor: interactive ? 'pointer' : 'default' }}
+      style={{ width: size, height: size * 1.1, cursor: interactive ? 'pointer' : 'default' }}
       onPointerDown={handlePointerDown}
       role={interactive ? 'button' : undefined}
       aria-label={interactive ? '그린이에게 물주기' : undefined}
     >
-      <motion.svg viewBox="0 -32 200 262" width="100%" height="100%">
+      <motion.svg viewBox="0 -18 200 248" width="100%" height="100%">
         <defs>
           <radialGradient id="greenie-body-grad" cx="38%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#E3F5C4" />
-            <stop offset="100%" stopColor="#93CE6A" />
+            <stop offset="0%" stopColor="#F6F8E2" />
+            <stop offset="100%" stopColor="#DCE6A8" />
           </radialGradient>
           <linearGradient id="greenie-leaf-grad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#9AD154" />
@@ -167,10 +167,6 @@ export default function GreenieCharacter({
           <linearGradient id="greenie-leaf-side-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#8AC24A" />
             <stop offset="100%" stopColor="#5F9A34" />
-          </linearGradient>
-          <linearGradient id="greenie-stem-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#7CBD4E" />
-            <stop offset="100%" stopColor="#5A9636" />
           </linearGradient>
         </defs>
 
@@ -185,28 +181,28 @@ export default function GreenieCharacter({
             initial={{ scale: 1 }}
             style={{ originX: 0.5, originY: 0.5 }}
           >
-            {/* 팔 (몸통에 바짝 붙은 작은 팔) */}
+            {/* 팔 */}
             <motion.ellipse
-              cx="36" cy="150" rx="8" ry="13" fill="url(#greenie-body-grad)" stroke="#a9d488" strokeWidth="1"
+              cx="31" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1"
               animate={{ rotate: expression === 'happy' ? [0, -18, 10, 0] : 0 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
             <motion.ellipse
-              cx="164" cy="150" rx="8" ry="13" fill="url(#greenie-body-grad)" stroke="#a9d488" strokeWidth="1"
+              cx="169" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1"
               animate={{ rotate: expression === 'happy' ? [0, 18, -10, 0] : 0 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
-            {/* 발 (작고 가까이 붙은 발) */}
+            {/* 발 */}
             <motion.ellipse
-              cx="83" cy="202" rx="13" ry="7" fill="#BFE89C"
+              cx="78" cy="204" rx="15" ry="8" fill="#DCE6A8"
               animate={{ rotate: expression === 'happy' ? [0, -10, 6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
             <motion.ellipse
-              cx="117" cy="202" rx="13" ry="7" fill="#BFE89C"
+              cx="122" cy="204" rx="15" ry="8" fill="#DCE6A8"
               animate={{ rotate: expression === 'happy' ? [0, 10, -6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
@@ -217,72 +213,65 @@ export default function GreenieCharacter({
               transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
               style={{ originX: 0.5, originY: 1 }}
             >
-              {/* 옆 잎 (작은 떡잎) */}
+              {/* 옆 잎 (귀 잎) */}
               <motion.g
                 animate={{ rotate: leafRotate.map((r) => r * 0.6) }}
                 transition={{ duration: leafDuration, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ originX: 0.25, originY: 0.85 }}
+                style={{ originX: 0.3, originY: 0.9 }}
               >
                 <path
-                  d="M144,80 C162,72 172,56 168,40 C152,44 138,58 134,74 C134,80 139,83 144,80 Z"
+                  d="M150,78 C168,66 176,50 174,36 C158,42 144,56 140,74 C140,80 145,82 150,78 Z"
                   fill="url(#greenie-leaf-side-grad)"
                 />
               </motion.g>
 
-              {/* 몸통 (깔끔한 동글동글 타원) */}
-              <ellipse cx="100" cy="126" rx="70" ry="82" fill="url(#greenie-body-grad)" stroke="#a9d488" strokeWidth="1.5" />
+              {/* 몸통 */}
+              <ellipse cx="100" cy="130" rx="74" ry="72" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1.5" />
 
-              {/* 줄기 */}
-              <path d="M93,28 C93,42 93,50 93,50 L107,50 C107,50 107,42 107,28 Z" fill="url(#greenie-stem-grad)" />
-
-              {/* 새싹 (두 갈래, 넉넉한 크기) */}
+              {/* 새싹 (두 갈래) */}
               <motion.g
                 animate={{ rotate: leafRotate }}
                 transition={{ duration: leafDuration, repeat: Infinity, ease: 'easeInOut' }}
                 style={{ originX: 0.5, originY: 1 }}
               >
                 <path
-                  d="M100,24 C80,2 60,-12 40,-24 C38,4 52,26 100,24 Z"
+                  d="M100,62 C78,30 62,10 48,-6 C48,26 62,50 100,62 Z"
                   fill="url(#greenie-leaf-grad)"
                 />
                 <path
-                  d="M100,24 C120,2 140,-12 160,-24 C162,4 148,26 100,24 Z"
+                  d="M100,62 C122,26 140,4 156,-10 C158,24 140,50 100,62 Z"
                   fill="url(#greenie-leaf-grad)"
                 />
               </motion.g>
 
               {/* 볼 */}
               <motion.ellipse
-                cx="66" cy="142" rx="15" ry="9" fill="#FF9B85"
-                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.82 }}
+                cx="63" cy="140" rx="13" ry="8" fill="#FFA36B"
+                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.68 }}
               />
               <motion.ellipse
-                cx="134" cy="142" rx="15" ry="9" fill="#FF9B85"
-                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.82 }}
+                cx="137" cy="140" rx="13" ry="8" fill="#FFA36B"
+                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.68 }}
               />
 
-              {/* 눈 (동글동글, 반짝이는 하이라이트 2개) */}
+              {/* 눈 */}
               <g>
                 {eyesClosed ? (
                   <>
-                    <path d="M63,116 Q75,126 87,116" stroke="#2b2b2b" strokeWidth="5" fill="none" strokeLinecap="round" />
-                    <path d="M113,116 Q125,126 137,116" stroke="#2b2b2b" strokeWidth="5" fill="none" strokeLinecap="round" />
+                    <path d="M62,116 Q73,125 84,116" stroke="#2b2b2b" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+                    <path d="M116,116 Q127,125 138,116" stroke="#2b2b2b" strokeWidth="4.5" fill="none" strokeLinecap="round" />
                   </>
                 ) : currentExpression === 'sad' ? (
                   <>
-                    <ellipse cx="75" cy="118" rx="10" ry="12" fill="#2b2b2b" />
-                    <circle cx="79" cy="113" r="3" fill="#fff" />
-                    <ellipse cx="125" cy="118" rx="10" ry="12" fill="#2b2b2b" />
-                    <circle cx="129" cy="113" r="3" fill="#fff" />
+                    <ellipse cx="73" cy="118" rx="9" ry="11" fill="#2b2b2b" />
+                    <ellipse cx="127" cy="118" rx="9" ry="11" fill="#2b2b2b" />
                   </>
                 ) : (
                   <>
-                    <circle cx="75" cy="113" r="12.5" fill="#2b2b2b" />
-                    <circle cx="79.5" cy="108" r="4" fill="#fff" />
-                    <circle cx="71.5" cy="118" r="1.8" fill="#fff" opacity="0.8" />
-                    <circle cx="125" cy="113" r="12.5" fill="#2b2b2b" />
-                    <circle cx="129.5" cy="108" r="4" fill="#fff" />
-                    <circle cx="121.5" cy="118" r="1.8" fill="#fff" opacity="0.8" />
+                    <circle cx="73" cy="114" r="11" fill="#2b2b2b" />
+                    <circle cx="77" cy="110" r="3.4" fill="#fff" />
+                    <circle cx="127" cy="114" r="11" fill="#2b2b2b" />
+                    <circle cx="131" cy="110" r="3.4" fill="#fff" />
                   </>
                 )}
               </g>
