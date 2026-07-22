@@ -1,34 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimation } from 'framer-motion'
-import bodyImg from '../assets/part-body-only.png'
-import leafImg from '../assets/part-leaf.png'
-import armLeftImg from '../assets/part-arm-left.png'
-import armRightImg from '../assets/part-arm-right.png'
-import eyeLeftImg from '../assets/part-eye-left.png'
-import eyeRightImg from '../assets/part-eye-right.png'
-import mouthImg from '../assets/part-mouth.png'
 
-// 380x426 원본 캔버스 기준 각 파츠의 위치 (퍼센트 배치를 위한 픽셀 좌표)
-const CANVAS = { w: 380, h: 426 }
-const PARTS = {
-  leaf: { left: 10, top: 0, width: 340, height: 230, originX: 0.5, originY: 0.94 },
-  armLeft: { left: 14, top: 260, width: 50, height: 96, originX: 0.5, originY: 0.08 },
-  armRight: { left: 316, top: 260, width: 50, height: 96, originX: 0.5, originY: 0.08 },
-  eyeLeft: { left: 104, top: 235, width: 54, height: 65, originX: 0.5, originY: 0.5 },
-  eyeRight: { left: 233, top: 233, width: 54, height: 64, originX: 0.5, originY: 0.5 },
-  mouth: { left: 168, top: 270, width: 54, height: 35, originX: 0.5, originY: 0.5 },
-}
-
-function partStyle(p) {
-  return {
-    position: 'absolute',
-    left: `${(p.left / CANVAS.w) * 100}%`,
-    top: `${(p.top / CANVAS.h) * 100}%`,
-    width: `${(p.width / CANVAS.w) * 100}%`,
-    height: `${(p.height / CANVAS.h) * 100}%`,
-    originX: p.originX,
-    originY: p.originY,
-  }
+const MOUTH_PATHS = {
+  idle: 'M78,148 Q100,164 122,148',
+  happy: 'M76,146 Q100,178 124,146 Q100,162 76,146 Z',
+  sad: 'M80,156 Q100,146 120,156',
+  sleepy: 'M88,152 L112,152',
 }
 
 let dropletSeq = 0
@@ -51,24 +28,9 @@ export default function GreenieCharacter({
   const comboTimerRef = useRef(null)
   const prevLevelUpRef = useRef(levelUpSignal)
 
+  const [blinking, setBlinking] = useState(false)
   const [mood, setMood] = useState('idle')
-  const [blink, setBlink] = useState(false)
-  const [reaction, setReaction] = useState(null) // 'happy' | 'surprised' | null
-  const [leafPop, setLeafPopRaw] = useState(false)
-  const [armWave, setArmWaveRaw] = useState(false)
-  const leafPopTimerRef = useRef(null)
-  const armWaveTimerRef = useRef(null)
-
-  const triggerLeafPop = (duration = 550) => {
-    clearTimeout(leafPopTimerRef.current)
-    setLeafPopRaw(true)
-    leafPopTimerRef.current = setTimeout(() => setLeafPopRaw(false), duration)
-  }
-  const triggerArmWave = (duration = 500) => {
-    clearTimeout(armWaveTimerRef.current)
-    setArmWaveRaw(true)
-    armWaveTimerRef.current = setTimeout(() => setArmWaveRaw(false), duration)
-  }
+  const [expression, setExpression] = useState('idle')
   const [droplets, setDroplets] = useState([])
   const [sparkles, setSparkles] = useState([])
   const [hearts, setHearts] = useState([])
@@ -80,8 +42,8 @@ export default function GreenieCharacter({
       const delay = 3000 + Math.random() * 3000
       setTimeout(() => {
         if (cancelled) return
-        setBlink(true)
-        setTimeout(() => setBlink(false), 140)
+        setBlinking(true)
+        setTimeout(() => setBlinking(false), 150)
         schedule()
       }, delay)
     }
@@ -102,34 +64,15 @@ export default function GreenieCharacter({
     return () => clearInterval(timer)
   }, [interactive])
 
-  // 가끔 새싹이 쫑긋 (혼자서도 살아있는 느낌)
-  useEffect(() => {
-    let cancelled = false
-    const schedule = () => {
-      const delay = 4000 + Math.random() * 4000
-      setTimeout(() => {
-        if (cancelled) return
-        triggerLeafPop()
-        schedule()
-      }, delay)
-    }
-    schedule()
-    return () => { cancelled = true }
-  }, [])
-
   // 레벨업 이펙트
   useEffect(() => {
     if (levelUpSignal === prevLevelUpRef.current) return
     prevLevelUpRef.current = levelUpSignal
-    glowControls.start({ scale: [0, 2.3], opacity: [0.55, 0], transition: { duration: 0.9, ease: 'easeOut' } })
-    bodyControls.start({ scale: [1, 1.28, 0.92, 1.05, 1], transition: { duration: 0.7, ease: 'easeInOut' } })
-    setReaction('surprised')
-    triggerLeafPop(700)
-    triggerArmWave(700)
-    setTimeout(() => setReaction(null), 750)
+    glowControls.start({ scale: [0, 2.2], opacity: [0.55, 0], transition: { duration: 0.9, ease: 'easeOut' } })
+    bodyControls.start({ scale: [1, 1.3, 0.9, 1.05, 1], transition: { duration: 0.7, ease: 'easeInOut' } })
     const newHearts = Array.from({ length: 5 }).map((_, i) => ({
       id: `heart-${Date.now()}-${i}`,
-      x: 26 + Math.random() * 48,
+      x: 30 + Math.random() * 40,
       emoji: i % 2 === 0 ? '💚' : '✨',
       delay: i * 0.08,
     }))
@@ -177,131 +120,175 @@ export default function GreenieCharacter({
 
     setTimeout(() => {
       const intensity = 1 + Math.min(next, 10) * 0.03
+      setExpression('happy')
       spawnSparkles()
-      setReaction('happy')
-      triggerLeafPop()
-      triggerArmWave()
       bodyControls.start({
         scaleY: [1, 0.82 * intensity, 1.08, 1],
         scaleX: [1, 1.12 * intensity, 0.96, 1],
-        rotate: [0, next % 2 === 0 ? -6 : 6, 0],
         transition: { duration: 0.28, ease: 'easeOut' },
       })
-      setTimeout(() => setReaction(null), 400)
+      setTimeout(() => setExpression('idle'), 420)
+
       if (next % 10 === 0) {
         bodyControls.start({
           rotate: [0, 360],
           transition: { duration: 0.6, ease: 'easeInOut' },
         }).then(() => bodyControls.set({ rotate: 0 }))
       }
-    }, 60)
+    }, 180)
 
     onTap?.()
   }
 
-  const swayAnim = mood === 'bored'
-    ? { rotate: [-5, 5, -5], x: [-3, 3, -3] }
-    : mood === 'sad'
-      ? { rotate: [-2, 2, -2], y: [0, 4, 0] }
-      : mood === 'sleepy'
-        ? { rotate: [-2, 2, -2] }
-        : { rotate: [-2.5, 2.5, -2.5], y: [0, -6, 0] }
-  const swayDuration = mood === 'bored' ? 1.8 : mood === 'sad' ? 3 : mood === 'sleepy' ? 4.2 : 2.4
-
-  // 눈: 깜빡임/기분/리액션에 따라 실제로 눌리고 커지는 변형
-  const eyeScaleY = blink || mood === 'sleepy' ? 0.12 : reaction === 'surprised' ? 1.35 : reaction === 'happy' ? 0.72 : mood === 'sad' ? 0.8 : 1
-  const eyeScaleX = reaction === 'surprised' ? 1.15 : 1
-
-  // 입: 표정에 따라 실제로 늘어나고 휘어지는 변형
-  const mouthScaleY = reaction === 'surprised' ? 2.4 : reaction === 'happy' ? 1.8 : mood === 'sad' ? 0.6 : mood === 'sleepy' ? 0.5 : 1
-  const mouthScaleX = reaction === 'happy' ? 1.15 : mood === 'sad' ? 0.85 : 1
-  const mouthY = mood === 'sad' ? 4 : 0
-
-  const leafAnim = leafPop
-    ? { rotate: [0, -16, 10, -5, 0], scale: [1, 1.16, 0.96, 1.04, 1] }
-    : mood === 'sleepy'
-      ? { rotate: [10, 16, 10], scale: 1 }
-      : { rotate: [-4, 4, -4], scale: [1, 1.03, 1] }
-  const leafTransition = leafPop
-    ? { duration: 0.55, ease: 'easeOut' }
-    : { duration: mood === 'sleepy' ? 4.5 : 2.8, repeat: Infinity, ease: 'easeInOut' }
-
-  const armLeftAnim = armWave
-    ? { rotate: [0, -22, 8, 0] }
-    : { rotate: mood === 'bored' ? [-3, 10, -3] : [-4, 4, -4] }
-  const armRightAnim = armWave
-    ? { rotate: [0, 22, -8, 0] }
-    : { rotate: mood === 'bored' ? [3, -10, 3] : [4, -4, 4] }
-  const armTransition = armWave
-    ? { duration: 0.5, ease: 'easeOut' }
-    : { duration: mood === 'bored' ? 1.6 : 2.2, repeat: Infinity, ease: 'easeInOut' }
+  const currentExpression = mood === 'sleepy' ? 'sleepy' : mood === 'sad' ? 'sad' : expression
+  const eyesClosed = blinking || currentExpression === 'sleepy'
+  const leafRotate = mood === 'sleepy' ? [8, 14, 8] : mood === 'sad' ? [-1, 1, -1] : [-4, 4, -4]
+  const leafDuration = mood === 'sleepy' ? 4.5 : 2.6
 
   return (
     <div
       ref={wrapRef}
       className="greenie-character"
-      style={{ width: size, height: size * (CANVAS.h / CANVAS.w), cursor: interactive ? 'pointer' : 'default' }}
+      style={{ width: size, height: size * 1.1, cursor: interactive ? 'pointer' : 'default' }}
       onPointerDown={handlePointerDown}
       role={interactive ? 'button' : undefined}
       aria-label={interactive ? '그린이에게 물주기' : undefined}
     >
-      <motion.div className="greenie-glow" initial={{ scale: 0, opacity: 0 }} animate={glowControls} />
+      <motion.svg viewBox="0 -18 200 248" width="100%" height="100%">
+        <defs>
+          <radialGradient id="greenie-body-grad" cx="38%" cy="30%" r="75%">
+            <stop offset="0%" stopColor="#F6F8E2" />
+            <stop offset="100%" stopColor="#DCE6A8" />
+          </radialGradient>
+          <linearGradient id="greenie-leaf-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#9AD154" />
+            <stop offset="100%" stopColor="#6FA83A" />
+          </linearGradient>
+          <linearGradient id="greenie-leaf-side-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8AC24A" />
+            <stop offset="100%" stopColor="#5F9A34" />
+          </linearGradient>
+        </defs>
 
-      <motion.div
-        animate={bodyControls}
-        initial={{ scale: 1 }}
-        style={{ originX: 0.5, originY: 0.85, width: '100%', height: '100%' }}
-      >
-        <motion.div
-          animate={{ scale: [1, 1.03, 1], ...swayAnim }}
-          transition={{ duration: swayDuration, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ originX: 0.5, originY: 1, width: '100%', height: '100%', position: 'relative', filter: mood === 'sleepy' ? 'brightness(0.95)' : 'none' }}
+        <ellipse cx="100" cy="212" rx="48" ry="8" fill="rgba(0,0,0,0.08)" />
+
+        <motion.g
+          animate={mood === 'bored' ? { x: [-4, 4, -4] } : { x: 0 }}
+          transition={{ duration: 2.4, repeat: mood === 'bored' ? Infinity : 0, ease: 'easeInOut' }}
         >
-          <img src={bodyImg} alt="그린이" className="greenie-character-img" draggable={false} />
+          {/* 팔 */}
+          <ellipse cx="31" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1" />
+          <ellipse cx="169" cy="148" rx="10" ry="16" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1" />
+          {/* 발 */}
+          <ellipse cx="78" cy="204" rx="15" ry="8" fill="#DCE6A8" />
+          <ellipse cx="122" cy="204" rx="15" ry="8" fill="#DCE6A8" />
 
-          <motion.div style={partStyle(PARTS.leaf)} animate={leafAnim} transition={leafTransition}>
-            <img src={leafImg} alt="" draggable={false} style={{ width: '100%', height: '100%' }} />
-          </motion.div>
-
-          <motion.div style={partStyle(PARTS.armLeft)} animate={armLeftAnim} transition={armTransition}>
-            <img src={armLeftImg} alt="" draggable={false} style={{ width: '100%', height: '100%' }} />
-          </motion.div>
-          <motion.div style={partStyle(PARTS.armRight)} animate={armRightAnim} transition={armTransition}>
-            <img src={armRightImg} alt="" draggable={false} style={{ width: '100%', height: '100%' }} />
-          </motion.div>
-
-          <motion.div
-            style={partStyle(PARTS.eyeLeft)}
-            animate={{ scaleY: eyeScaleY, scaleX: eyeScaleX }}
-            transition={{ duration: 0.14 }}
+          <motion.g
+            animate={bodyControls}
+            initial={{ scale: 1 }}
+            style={{ originX: 0.5, originY: 0.5 }}
           >
-            <img src={eyeLeftImg} alt="" draggable={false} style={{ width: '100%', height: '100%' }} />
-          </motion.div>
-          <motion.div
-            style={partStyle(PARTS.eyeRight)}
-            animate={{ scaleY: eyeScaleY, scaleX: eyeScaleX }}
-            transition={{ duration: 0.14 }}
-          >
-            <img src={eyeRightImg} alt="" draggable={false} style={{ width: '100%', height: '100%' }} />
-          </motion.div>
+            <motion.g
+              animate={{ scaleY: [1, 1.02, 1] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ originX: 0.5, originY: 1 }}
+            >
+              {/* 옆 잎 (귀 잎) */}
+              <motion.g
+                animate={{ rotate: leafRotate.map((r) => r * 0.6) }}
+                transition={{ duration: leafDuration, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ originX: 0.3, originY: 0.9 }}
+              >
+                <path
+                  d="M150,78 C168,66 176,50 174,36 C158,42 144,56 140,74 C140,80 145,82 150,78 Z"
+                  fill="url(#greenie-leaf-side-grad)"
+                />
+              </motion.g>
 
-          <motion.div
-            style={partStyle(PARTS.mouth)}
-            animate={{ scaleY: mouthScaleY, scaleX: mouthScaleX, y: mouthY }}
-            transition={{ duration: 0.16 }}
-          >
-            <img src={mouthImg} alt="" draggable={false} style={{ width: '100%', height: '100%' }} />
-          </motion.div>
-        </motion.div>
-      </motion.div>
+              {/* 몸통 */}
+              <ellipse cx="100" cy="130" rx="74" ry="72" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1.5" />
 
-      {mood === 'sleepy' && (
-        <motion.span
-          className="greenie-zzz"
-          animate={{ y: [0, -14, 0], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2.2, repeat: Infinity }}
-        >Zzz</motion.span>
-      )}
+              {/* 새싹 (두 갈래) */}
+              <motion.g
+                animate={{ rotate: leafRotate }}
+                transition={{ duration: leafDuration, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ originX: 0.5, originY: 1 }}
+              >
+                <path
+                  d="M100,62 C78,30 62,10 48,-6 C48,26 62,50 100,62 Z"
+                  fill="url(#greenie-leaf-grad)"
+                />
+                <path
+                  d="M100,62 C122,26 140,4 156,-10 C158,24 140,50 100,62 Z"
+                  fill="url(#greenie-leaf-grad)"
+                />
+              </motion.g>
+
+              {/* 볼 */}
+              <motion.ellipse
+                cx="63" cy="140" rx="13" ry="8" fill="#FFA36B"
+                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.68 }}
+              />
+              <motion.ellipse
+                cx="137" cy="140" rx="13" ry="8" fill="#FFA36B"
+                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.68 }}
+              />
+
+              {/* 눈 */}
+              <g>
+                {eyesClosed ? (
+                  <>
+                    <path d="M62,116 Q73,125 84,116" stroke="#2b2b2b" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+                    <path d="M116,116 Q127,125 138,116" stroke="#2b2b2b" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+                  </>
+                ) : currentExpression === 'sad' ? (
+                  <>
+                    <ellipse cx="73" cy="118" rx="9" ry="11" fill="#2b2b2b" />
+                    <ellipse cx="127" cy="118" rx="9" ry="11" fill="#2b2b2b" />
+                  </>
+                ) : (
+                  <>
+                    <circle cx="73" cy="114" r="11" fill="#2b2b2b" />
+                    <circle cx="77" cy="110" r="3.4" fill="#fff" />
+                    <circle cx="127" cy="114" r="11" fill="#2b2b2b" />
+                    <circle cx="131" cy="110" r="3.4" fill="#fff" />
+                  </>
+                )}
+              </g>
+
+              {/* 입 */}
+              <AnimatePresence mode="wait">
+                <motion.path
+                  key={currentExpression}
+                  d={MOUTH_PATHS[currentExpression] || MOUTH_PATHS.idle}
+                  stroke="#2b2b2b"
+                  strokeWidth="3.5"
+                  fill={currentExpression === 'happy' ? '#c0453f' : 'none'}
+                  strokeLinecap="round"
+                  initial={{ opacity: 0, scale: 0.7 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                />
+              </AnimatePresence>
+
+              {mood === 'sleepy' && (
+                <motion.text
+                  x="155" y="65" fontSize="20" fill="#93a190"
+                  animate={{ y: [65, 48, 65], opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 2.2, repeat: Infinity }}
+                >Zzz</motion.text>
+              )}
+            </motion.g>
+          </motion.g>
+        </motion.g>
+
+        <motion.circle
+          cx="100" cy="128" r="40" fill="var(--green)"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={glowControls}
+        />
+      </motion.svg>
 
       {hat && <span className="greenie-character-hat" style={{ fontSize: size * 0.3 }}>{hat}</span>}
       {accessory && <span className="greenie-character-accessory" style={{ fontSize: size * 0.24 }}>{accessory}</span>}
