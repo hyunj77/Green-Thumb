@@ -157,8 +157,8 @@ export default function GreenieCharacter({
       <motion.svg viewBox="0 -18 200 248" width="100%" height="100%">
         <defs>
           <radialGradient id="greenie-body-grad" cx="38%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#F6F8E2" />
-            <stop offset="100%" stopColor="#DCE6A8" />
+            <stop offset="0%" stopColor="#F1FAE6" />
+            <stop offset="100%" stopColor="#B9E89A" />
           </radialGradient>
           <linearGradient id="greenie-leaf-grad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#9AD154" />
@@ -167,6 +167,10 @@ export default function GreenieCharacter({
           <linearGradient id="greenie-leaf-side-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#8AC24A" />
             <stop offset="100%" stopColor="#5F9A34" />
+          </linearGradient>
+          <linearGradient id="greenie-stem-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#7CBD4E" />
+            <stop offset="100%" stopColor="#5A9636" />
           </linearGradient>
         </defs>
 
@@ -196,13 +200,13 @@ export default function GreenieCharacter({
             />
             {/* 발 */}
             <motion.ellipse
-              cx="78" cy="204" rx="15" ry="8" fill="#DCE6A8"
+              cx="78" cy="204" rx="15" ry="8" fill="#BFE89C"
               animate={{ rotate: expression === 'happy' ? [0, -10, 6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
             />
             <motion.ellipse
-              cx="122" cy="204" rx="15" ry="8" fill="#DCE6A8"
+              cx="122" cy="204" rx="15" ry="8" fill="#BFE89C"
               animate={{ rotate: expression === 'happy' ? [0, 10, -6, 0] : 0, y: expression === 'happy' ? [0, -4, 0] : 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ originX: 0.5, originY: 0 }}
@@ -213,20 +217,32 @@ export default function GreenieCharacter({
               transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
               style={{ originX: 0.5, originY: 1 }}
             >
-              {/* 옆 잎 (귀 잎) */}
+              {/* 옆 잎 (작은 떡잎) */}
               <motion.g
                 animate={{ rotate: leafRotate.map((r) => r * 0.6) }}
                 transition={{ duration: leafDuration, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ originX: 0.3, originY: 0.9 }}
+                style={{ originX: 0.25, originY: 0.85 }}
               >
                 <path
-                  d="M150,78 C168,66 176,50 174,36 C158,42 144,56 140,74 C140,80 145,82 150,78 Z"
+                  d="M146,84 C162,76 170,62 166,48 C152,52 140,64 138,78 C138,83 142,86 146,84 Z"
                   fill="url(#greenie-leaf-side-grad)"
                 />
               </motion.g>
 
-              {/* 몸통 */}
-              <ellipse cx="100" cy="130" rx="74" ry="72" fill="url(#greenie-body-grad)" stroke="#cdd9a0" strokeWidth="1.5" />
+              {/* 몸통 (통통한 새싹 모양) */}
+              <path
+                d="M100,44
+                   C144,44 172,80 172,132
+                   C172,180 140,208 100,208
+                   C60,208 28,180 28,132
+                   C28,80 56,44 100,44 Z"
+                fill="url(#greenie-body-grad)"
+                stroke="#a9d488"
+                strokeWidth="1.5"
+              />
+
+              {/* 줄기 */}
+              <path d="M93,30 C93,44 93,52 93,58 L107,58 C107,52 107,44 107,30 Z" fill="url(#greenie-stem-grad)" />
 
               {/* 새싹 (두 갈래) */}
               <motion.g
@@ -235,11 +251,11 @@ export default function GreenieCharacter({
                 style={{ originX: 0.5, originY: 1 }}
               >
                 <path
-                  d="M100,62 C78,30 62,10 48,-6 C48,26 62,50 100,62 Z"
+                  d="M100,32 C84,14 68,2 52,-8 C50,16 62,34 100,32 Z"
                   fill="url(#greenie-leaf-grad)"
                 />
                 <path
-                  d="M100,62 C122,26 140,4 156,-10 C158,24 140,50 100,62 Z"
+                  d="M100,32 C116,14 132,2 148,-8 C150,16 138,34 100,32 Z"
                   fill="url(#greenie-leaf-grad)"
                 />
               </motion.g>
