@@ -29,3 +29,14 @@ export async function deleteGrowthLog(id) {
   const { error } = await supabase.from('growth_logs').delete().eq('id', id)
   return { error }
 }
+
+// 매거진 피드: 마이 그린 도감에 올라온 성장 사진들을 모아 보여준다
+export async function fetchPublicGrowthFeed(limit = 12) {
+  const { data, error } = await supabase
+    .from('growth_logs')
+    .select('id, log_date, note, photo_url, created_at, plant:plants(id, name, owner:profiles(id, username))')
+    .not('photo_url', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  return { data: data || [], error }
+}

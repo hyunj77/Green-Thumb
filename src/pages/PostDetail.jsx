@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Bookmark, Droplets, Sun, Trash2 } from 'lucide-react'
+import { Bookmark, Heart, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchPostById, deletePost, CATEGORY_LABEL } from '../lib/posts'
 import { fetchComments, createComment, deleteComment } from '../lib/comments'
@@ -99,11 +99,8 @@ export default function PostDetail() {
         <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{post.content}</p>
 
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-          <button className={myReaction('watering') ? '' : 'secondary'} onClick={() => toggleReaction('watering')}>
-            <Droplets size={16} /> 물주기 {countOf('watering')}
-          </button>
-          <button className={myReaction('sunlight') ? '' : 'secondary'} onClick={() => toggleReaction('sunlight')}>
-            <Sun size={16} /> 햇빛 쬐어주기 {countOf('sunlight')}
+          <button className={myReaction('like') ? '' : 'secondary'} onClick={() => toggleReaction('like')}>
+            <Heart size={16} fill={myReaction('like') ? 'currentColor' : 'none'} /> 좋아요 {countOf('like')}
           </button>
           <button className={bookmarked ? '' : 'secondary'} onClick={toggleBookmark}>
             <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} /> {bookmarked ? '저장됨' : '저장하기'}

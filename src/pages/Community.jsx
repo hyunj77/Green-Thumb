@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { LayoutGrid, List, MessageCircle, Plus, Search, Sprout } from 'lucide-react'
+import { Heart, LayoutGrid, List, MessageCircle, Plus, Search } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchPosts, fetchChallengeStories, CATEGORY_GROUPS, CATEGORY_LABEL, PAGE_SIZE } from '../lib/posts'
 import { timeAgo } from '../lib/time'
@@ -12,30 +12,44 @@ export default function Community() {
   const category = searchParams.get('category') || ''
   const page = Number(searchParams.get('page') || '1')
 
+  const groupParam = searchParams.get('group') || ''
+  const activeGroup = CATEGORY_GROUPS.find((g) => g.title === groupParam) || null
+
   const [posts, setPosts] = useState([])
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState('list')
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
+  const [sort, setSort] = useState('recent')
   const [challengeStories, setChallengeStories] = useState([])
+
+  const HOT_THRESHOLD = 3
+  const isHot = (post) => post.reaction_count + post.comment_count >= HOT_THRESHOLD
 
   useEffect(() => {
     setLoading(true)
-    fetchPosts({ category: category || undefined, search: search || undefined, page }).then(({ data, count }) => {
+    fetchPosts({
+      category: category || undefined,
+      categories: !category && activeGroup ? activeGroup.categories : undefined,
+      search: search || undefined,
+      sort,
+      page,
+    }).then(({ data, count }) => {
       setPosts(data || [])
       setCount(count || 0)
       setLoading(false)
     })
-  }, [category, search, page])
+  }, [category, groupParam, activeGroup, search, sort, page])
 
   useEffect(() => {
     fetchChallengeStories().then(({ data }) => setChallengeStories(data))
   }, [])
 
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE))
-  const goCategory = (cat) => setSearchParams(cat ? { category: cat } : {})
-  const goPage = (p) => setSearchParams({ ...(category && { category }), page: String(p) })
+  const goGroup = (title) => setSearchParams(title ? { group: title } : {})
+  const goCategory = (cat) => setSearchParams(cat ? { ...(groupParam && { group: groupParam }), category: cat } : (groupParam ? { group: groupParam } : {}))
+  const goPage = (p) => setSearchParams({ ...(groupParam && { group: groupParam }), ...(category && { category }), page: String(p) })
   const handleSearch = (e) => {
     e.preventDefault()
     setSearch(searchInput.trim())
@@ -57,24 +71,28 @@ export default function Community() {
         />
       </form>
 
-      <div className="board-menu">
-        <div className="chip-row" style={{ marginTop: 0 }}>
-          <button className={`chip ${category === '' ? 'chip-active' : ''}`} onClick={() => goCategory('')}>전체</button>
-        </div>
-
+      <div className="community-tab-row">
+        <button className={`community-tab ${!groupParam ? 'community-tab-active' : ''}`} onClick={() => goGroup('')}>전체</button>
         {CATEGORY_GROUPS.map((group) => (
-          <div key={group.title} className="board-group">
-            <div className="board-group-title">{group.title}</div>
-            <div className="chip-row" style={{ marginTop: 0 }}>
-              {group.categories.map((cat) => (
-                <button key={cat} className={`chip ${category === cat ? 'chip-active' : ''}`} onClick={() => goCategory(cat)}>
-                  {CATEGORY_LABEL[cat]}
-                </button>
-              ))}
-            </div>
-          </div>
+          <button
+            key={group.title}
+            className={`community-tab ${groupParam === group.title ? 'community-tab-active' : ''}`}
+            onClick={() => goGroup(group.title)}
+          >
+            {group.title}
+          </button>
         ))}
       </div>
+
+      {activeGroup && (
+        <div className="chip-row" style={{ marginTop: 12 }}>
+          {activeGroup.categories.map((cat) => (
+            <button key={cat} className={`chip ${category === cat ? 'chip-active' : ''}`} onClick={() => goCategory(cat)}>
+              {CATEGORY_LABEL[cat]}
+            </button>
+          ))}
+        </div>
+      )}
 
       {recentWithPhoto.length > 0 && (
         <div style={{ marginTop: 28 }}>
@@ -103,13 +121,19 @@ export default function Community() {
       )}
 
       <div style={{ marginTop: 28 }}>
-        <div className="view-toggle">
-          <button className={viewMode === 'list' ? 'view-toggle-active' : ''} onClick={() => setViewMode('list')}>
-            <List size={14} /> 리스트로 보기
-          </button>
-          <button className={viewMode === 'grid' ? 'view-toggle-active' : ''} onClick={() => setViewMode('grid')}>
-            <LayoutGrid size={14} /> 이미지만 보기
-          </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+          <div className="view-toggle" style={{ marginBottom: 0 }}>
+            <button className={sort === 'recent' ? 'view-toggle-active' : ''} onClick={() => setSort('recent')}>최신순</button>
+            <button className={sort === 'popular' ? 'view-toggle-active' : ''} onClick={() => setSort('popular')}>🔥 인기순</button>
+          </div>
+          <div className="view-toggle" style={{ marginBottom: 0 }}>
+            <button className={viewMode === 'list' ? 'view-toggle-active' : ''} onClick={() => setViewMode('list')}>
+              <List size={14} /> 리스트로 보기
+            </button>
+            <button className={viewMode === 'grid' ? 'view-toggle-active' : ''} onClick={() => setViewMode('grid')}>
+              <LayoutGrid size={14} /> 이미지만 보기
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -144,8 +168,9 @@ export default function Community() {
                     {post.plant?.name && <span className="muted" style={{ marginLeft: 6, fontWeight: 400 }}>🌿 {post.plant.name}</span>}
                   </div>
                   <div className="community-item-foot">
+                    {isHot(post) && <span className="badge badge-hot">🔥 인기</span>}
                     <span className="badge">{CATEGORY_LABEL[post.category] || post.category}</span>
-                    <span className="muted community-stat"><Sprout size={13} /> {post.reaction_count}</span>
+                    <span className="muted community-stat"><Heart size={13} /> {post.reaction_count}</span>
                     <span className="muted community-stat"><MessageCircle size={13} /> {post.comment_count}</span>
                   </div>
                 </div>
@@ -169,6 +194,7 @@ export default function Community() {
                   )}
                 </div>
                 <div className="magazine-card-body">
+                  {isHot(post) && <span className="badge badge-hot" style={{ marginRight: 6 }}>🔥 인기</span>}
                   <span className="badge">{CATEGORY_LABEL[post.category] || post.category}</span>
                   <div className="magazine-card-title">
                     {post.title}

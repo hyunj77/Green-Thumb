@@ -56,9 +56,16 @@ export default function Marketplace() {
 
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <h2 style={{ marginTop: 20 }}>🪴 로컬 장터</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2 style={{ margin: 0 }}>🪴 로컬 장터</h2>
+        {user && (
+          <button onClick={() => setShowForm((v) => !v)}>
+            <Plus size={14} /> 매물 등록
+          </button>
+        )}
+      </div>
 
-      <div className="board-menu" style={{ marginTop: 0 }}>
+      <div className="card market-filter-card">
         <div className="board-group">
           <div className="board-group-title">거래 유형</div>
           <div className="chip-row" style={{ marginTop: 0 }}>
@@ -92,11 +99,6 @@ export default function Marketplace() {
                 {MARKET_CATEGORY_LABEL[cat]}
               </button>
             ))}
-            {user && (
-              <button className="chip chip-write" onClick={() => setShowForm((v) => !v)}>
-                <Plus size={14} /> 매물 등록
-              </button>
-            )}
           </div>
         </div>
       </div>

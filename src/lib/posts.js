@@ -29,7 +29,7 @@ export const CATEGORY_LABEL = {
 export const CATEGORIES = CATEGORY_GROUPS.flatMap((g) => g.categories)
 export const PAGE_SIZE = 10
 
-export async function fetchPosts({ category, search, page = 1 } = {}) {
+export async function fetchPosts({ category, categories, search, page = 1, sort = 'recent' } = {}) {
   const from = (page - 1) * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
 
@@ -40,17 +40,29 @@ export async function fetchPosts({ category, search, page = 1 } = {}) {
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })
-    .range(from, to)
 
   if (category) query = query.eq('category', category)
+  else if (categories?.length) query = query.in('category', categories)
   if (search) query = query.ilike('title', `%${search}%`)
 
+  // 인기순: 반응+댓글 합산 정렬은 DB 집계 정렬이 어려워, 넉넉히 가져와 클라이언트에서 정렬 후 페이지를 잘라낸다
+  if (sort === 'popular') query = query.limit(100)
+  else query = query.range(from, to)
+
   const { data, error, count } = await query
-  const normalized = (data || []).map((post) => ({
+  let normalized = (data || []).map((post) => ({
     ...post,
     comment_count: post.comments?.[0]?.count ?? 0,
     reaction_count: post.post_reactions?.[0]?.count ?? 0,
   }))
+
+  if (sort === 'popular') {
+    normalized.sort((a, b) => (b.reaction_count + b.comment_count) - (a.reaction_count + a.comment_count))
+    const total = normalized.length
+    normalized = normalized.slice(from, to + 1)
+    return { data: normalized, error, count: total }
+  }
+
   return { data: normalized, error, count }
 }
 
