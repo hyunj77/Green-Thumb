@@ -157,8 +157,8 @@ export default function GreenieCharacter({
       <motion.svg viewBox="0 -18 200 248" width="100%" height="100%">
         <defs>
           <radialGradient id="greenie-body-grad" cx="38%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#F1FAE6" />
-            <stop offset="100%" stopColor="#B9E89A" />
+            <stop offset="0%" stopColor="#E3F5C4" />
+            <stop offset="100%" stopColor="#93CE6A" />
           </radialGradient>
           <linearGradient id="greenie-leaf-grad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#9AD154" />
@@ -262,32 +262,36 @@ export default function GreenieCharacter({
 
               {/* 볼 */}
               <motion.ellipse
-                cx="63" cy="140" rx="13" ry="8" fill="#FFA36B"
-                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.68 }}
+                cx="66" cy="142" rx="15" ry="9" fill="#FF9B85"
+                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.82 }}
               />
               <motion.ellipse
-                cx="137" cy="140" rx="13" ry="8" fill="#FFA36B"
-                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.68 }}
+                cx="134" cy="142" rx="15" ry="9" fill="#FF9B85"
+                animate={{ opacity: currentExpression === 'happy' ? 1 : 0.82 }}
               />
 
-              {/* 눈 */}
+              {/* 눈 (동글동글, 반짝이는 하이라이트 2개) */}
               <g>
                 {eyesClosed ? (
                   <>
-                    <path d="M62,116 Q73,125 84,116" stroke="#2b2b2b" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-                    <path d="M116,116 Q127,125 138,116" stroke="#2b2b2b" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+                    <path d="M63,116 Q75,126 87,116" stroke="#2b2b2b" strokeWidth="5" fill="none" strokeLinecap="round" />
+                    <path d="M113,116 Q125,126 137,116" stroke="#2b2b2b" strokeWidth="5" fill="none" strokeLinecap="round" />
                   </>
                 ) : currentExpression === 'sad' ? (
                   <>
-                    <ellipse cx="73" cy="118" rx="9" ry="11" fill="#2b2b2b" />
-                    <ellipse cx="127" cy="118" rx="9" ry="11" fill="#2b2b2b" />
+                    <ellipse cx="75" cy="118" rx="10" ry="12" fill="#2b2b2b" />
+                    <circle cx="79" cy="113" r="3" fill="#fff" />
+                    <ellipse cx="125" cy="118" rx="10" ry="12" fill="#2b2b2b" />
+                    <circle cx="129" cy="113" r="3" fill="#fff" />
                   </>
                 ) : (
                   <>
-                    <circle cx="73" cy="114" r="11" fill="#2b2b2b" />
-                    <circle cx="77" cy="110" r="3.4" fill="#fff" />
-                    <circle cx="127" cy="114" r="11" fill="#2b2b2b" />
-                    <circle cx="131" cy="110" r="3.4" fill="#fff" />
+                    <circle cx="75" cy="113" r="12.5" fill="#2b2b2b" />
+                    <circle cx="79.5" cy="108" r="4" fill="#fff" />
+                    <circle cx="71.5" cy="118" r="1.8" fill="#fff" opacity="0.8" />
+                    <circle cx="125" cy="113" r="12.5" fill="#2b2b2b" />
+                    <circle cx="129.5" cy="108" r="4" fill="#fff" />
+                    <circle cx="121.5" cy="118" r="1.8" fill="#fff" opacity="0.8" />
                   </>
                 )}
               </g>
