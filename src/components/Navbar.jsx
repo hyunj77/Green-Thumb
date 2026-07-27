@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Bell, MessageSquare, Plus, User } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Bell, MessageSquare, Plus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchUnreadCount } from '../lib/notifications'
 import BrandLogo from './BrandLogo'
@@ -8,7 +8,6 @@ import BrandLogo from './BrandLogo'
 export default function Navbar() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
   const [unread, setUnread] = useState(0)
 
   useEffect(() => {
@@ -24,10 +23,8 @@ export default function Navbar() {
     navigate('/')
   }
 
-  // 홈 화면은 자체 상단바(프로필/검색/알림)를 쓰므로, 모바일 폭에서 홈에 있을 때만
-  // CSS로 이 네브바를 숨긴다(데스크톱은 계속 보임 — home-navbar-hide 클래스는 index.css 참고).
   return (
-    <nav className={`navbar ${location.pathname === '/' ? 'navbar-home' : ''}`}>
+    <nav className="navbar">
       <div className="navbar-left">
         <Link to="/" style={{ color: 'inherit' }}>
           <BrandLogo />
@@ -41,10 +38,7 @@ export default function Navbar() {
           {unread > 0 && <span className="icon-btn-dot" />}
         </Link>
         {user ? (
-          <>
-            <Link to="/mypage" className="chip"><User size={14} /> 마이페이지</Link>
-            <button className="secondary" onClick={handleSignOut}>로그아웃</button>
-          </>
+          <button className="secondary" onClick={handleSignOut}>로그아웃</button>
         ) : (
           <Link to="/login"><button>로그인</button></Link>
         )}

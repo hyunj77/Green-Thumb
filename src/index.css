@@ -1021,10 +1021,6 @@ input:focus, textarea:focus, select:focus {
   bottom: 104px;
 }
 
-.navbar-home {
-  display: none;
-}
-
 /* Community top tabs */
 .community-tab-row {
   display: flex;

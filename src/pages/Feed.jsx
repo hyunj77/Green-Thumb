@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Bell, Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check } from 'lucide-react'
-import BrandLogo from '../components/BrandLogo'
+import { Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import GreenieGame from '../components/GreenieGame'
 import { fetchFeaturedPosts } from '../lib/posts'
 import { fetchMyPlants, waterPlant, nextWateringDate } from '../lib/plants'
-import { fetchUnreadCount } from '../lib/notifications'
 import { PLANT_SPECIES, PLANT_TYPES } from '../lib/encyclopedia'
 import { fetchSuggestedGardeners, fetchFollowingIds, toggleFollow } from '../lib/follows'
 import { timeAgo } from '../lib/time'
@@ -27,7 +25,6 @@ export default function Feed() {
   const navigate = useNavigate()
 
   const [profile, setProfile] = useState(null)
-  const [unread, setUnread] = useState(0)
   const [searchInput, setSearchInput] = useState('')
 
   const [myPlants, setMyPlants] = useState([])
@@ -49,13 +46,11 @@ export default function Feed() {
   useEffect(() => {
     if (!user) {
       setProfile(null)
-      setUnread(0)
       setMyPlants([])
       setFollowingIds([])
       return
     }
     supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data))
-    fetchUnreadCount(user.id).then(({ count }) => setUnread(count || 0))
     fetchMyPlants(user.id).then(({ data }) => setMyPlants(data || []))
     fetchFollowingIds(user.id).then(({ data }) => setFollowingIds(data || []))
   }, [user])
@@ -97,10 +92,7 @@ export default function Feed() {
 
   return (
     <div className="glass-home">
-      <div style={{ padding: '18px 0' }}>
-        <BrandLogo />
-      </div>
-      <div className="gt-topbar" style={{ paddingTop: 0 }}>
+      <div className="gt-topbar">
         <Link to={user ? '/mypage' : '/login'} className="gt-avatar">
           {profile?.avatar_url ? <img src={profile.avatar_url} alt="" /> : (profile?.username?.[0] || user?.email?.[0] || '🌱').toUpperCase()}
         </Link>
@@ -113,10 +105,6 @@ export default function Feed() {
             onChange={(e) => setSearchInput(e.target.value)}
           />
         </form>
-        <Link to={user ? '/notifications' : '/login'} className="gt-icon-btn" aria-label="알림">
-          <Bell size={17} />
-          {unread > 0 && <span className="gt-icon-btn-dot" />}
-        </Link>
       </div>
 
       <GreenieGame />
