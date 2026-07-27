@@ -5,6 +5,7 @@ import MobileTabBar from './components/MobileTabBar'
 import ProtectedRoute from './components/ProtectedRoute'
 import Feed from './pages/Feed'
 import Community from './pages/Community'
+import CommunityBoard from './pages/CommunityBoard'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import PostDetail from './pages/PostDetail'
@@ -21,6 +22,7 @@ import Notifications from './pages/Notifications'
 import Messages from './pages/Messages'
 import GreenieHome from './pages/GreenieHome'
 import GreenieVisit from './pages/GreenieVisit'
+import GreenieStagesGuide from './pages/GreenieStagesGuide'
 
 export default function App() {
   return (
@@ -30,6 +32,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Feed />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/community/board/:boardKey" element={<CommunityBoard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -49,6 +52,7 @@ export default function App() {
           <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
           <Route path="/greenie" element={<ProtectedRoute><GreenieHome /></ProtectedRoute>} />
           <Route path="/greenie/:userId" element={<GreenieVisit />} />
+          <Route path="/greenie-stages" element={<GreenieStagesGuide />} />
         </Routes>
         <MobileTabBar />
       </HashRouter>

@@ -9,6 +9,20 @@
   --accent: #00C896;
   --shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.08);
 
+  /* Glass Home 디자인 시스템 토큰 — 기존 브랜드 색(민트 그린 #00C896)에 맞춘다 */
+  --gt-sage: #00c896;
+  --gt-sage-deep: #00966f;
+  --gt-olive: #00966f;
+  --gt-lime: #4decc4;
+  --gt-bg-1: #eefaf6;
+  --gt-bg-2: #dcf5ec;
+  --gt-text: #1c2b26;
+  --gt-text-soft: #5c6e57;
+  --gt-glass: rgba(255, 255, 255, 0.32);
+  --gt-glass-strong: rgba(255, 255, 255, 0.52);
+  --gt-glass-border: rgba(0, 150, 111, 0.28);
+  --gt-glass-shadow: 0 12px 36px -16px rgba(0, 60, 45, 0.24);
+
   font: 17px/1.6 'Segoe UI', system-ui, Roboto, sans-serif;
   color: var(--text);
   background: var(--bg);
@@ -21,14 +35,19 @@
 
 body {
   margin: 0;
+  background: var(--oat);
 }
 
+/* 웹사이트가 아니라 '앱'처럼 보이도록 폭을 모바일~태블릿 범위로 고정한다.
+   더 넓은 데스크톱 브라우저에서는 가운데 정렬된 앱 패널처럼 보인다. */
 #root {
-  max-width: 1120px;
+  max-width: 760px;
   margin: 0 auto;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  background: var(--bg);
+  box-shadow: 0 0 60px rgba(28, 43, 38, 0.06);
 }
 
 a {
@@ -117,8 +136,8 @@ input:focus, textarea:focus, select:focus {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
-  background: var(--green-light);
-  color: var(--accent);
+  background: color-mix(in srgb, var(--gt-sage) 16%, white);
+  color: var(--gt-sage-deep);
 }
 
 .auth-card input,
@@ -429,12 +448,12 @@ input:focus, textarea:focus, select:focus {
 /* Hero banner */
 .hero-banner {
   position: relative;
-  margin-top: 20px;
-  border-radius: 28px;
-  padding: 64px 56px;
+  margin-top: 4px;
+  border-radius: 24px;
+  padding: 28px 24px;
   background: var(--green);
   color: #fff;
-  min-height: 680px;
+  min-height: 260px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -461,40 +480,41 @@ input:focus, textarea:focus, select:focus {
   align-self: flex-start;
   background: rgba(255, 255, 255, 0.18);
   color: #fff;
-  margin-bottom: 18px;
-  font-size: 13px;
-  padding: 6px 14px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  padding: 4px 11px;
 }
 
 .hero-title {
   color: #fff;
-  font-size: 46px;
-  margin: 0 0 14px;
-  line-height: 1.3;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  line-height: 1.32;
 }
 
 .hero-subtitle {
   margin: 0;
   color: rgba(255, 255, 255, 0.85);
-  font-size: 18px;
+  font-size: 13px;
 }
 
 .hero-cta {
   display: inline-flex;
   align-self: flex-start;
-  margin-top: 14px;
-  padding: 8px 16px;
+  margin-top: 10px;
+  padding: 7px 14px;
   border-radius: 999px;
   background: #fff;
   color: var(--accent);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .hero-dots {
   display: flex;
   gap: 6px;
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 .hero-dot {
@@ -643,15 +663,15 @@ input:focus, textarea:focus, select:focus {
 }
 
 .view-toggle button {
-  background: var(--green-light);
-  color: var(--accent);
+  background: color-mix(in srgb, var(--gt-sage) 16%, white);
+  color: var(--gt-sage-deep);
   box-shadow: none;
   font-size: 12px;
   padding: 7px 14px;
 }
 
 .view-toggle-active {
-  background: var(--accent) !important;
+  background: linear-gradient(135deg, var(--gt-sage), var(--gt-sage-deep)) !important;
   color: #fff !important;
 }
 
@@ -740,7 +760,8 @@ input:focus, textarea:focus, select:focus {
 /* Floating write button */
 .fab-write {
   position: fixed;
-  right: 24px;
+  /* #root가 760px로 고정된 앱 패널이라, 넓은 화면에서도 패널 오른쪽 안쪽에 붙도록 계산한다 */
+  right: max(24px, calc(50% - 380px + 24px));
   bottom: 24px;
   display: inline-flex;
   align-items: center;
@@ -990,80 +1011,29 @@ input:focus, textarea:focus, select:focus {
   border-top: 1px solid var(--border);
 }
 
-@media (max-width: 640px) {
-  .messages-layout {
-    grid-template-columns: 1fr;
-  }
-  .messages-conv-list {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    padding-right: 0;
-    padding-bottom: 12px;
-    flex-direction: row;
-    overflow-x: auto;
-  }
+/* 항상 앱처럼 보이도록 폭 조건 없이 모바일/태블릿 레이아웃을 고정 적용한다 */
+.messages-layout {
+  grid-template-columns: 1fr;
+}
+.messages-conv-list {
+  border-right: none;
+  border-bottom: 1px solid var(--border);
+  padding-right: 0;
+  padding-bottom: 12px;
+  flex-direction: row;
+  overflow-x: auto;
 }
 
-/* Mobile bottom tab bar */
-.mobile-tab-bar {
+.nav-link-desktop-only {
   display: none;
 }
 
-@media (max-width: 640px) {
-  .nav-link-desktop-only {
-    display: none;
-  }
-
-  .mobile-tab-bar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 30;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    background: #fff;
-    border-top: 1px solid var(--border);
-    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
-  }
-
-  body {
-    padding-bottom: 68px;
-  }
-
-  .fab-write {
-    bottom: 84px;
-  }
+.fab-write {
+  bottom: 104px;
 }
 
-.mobile-tab {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  color: #9aa79b;
-  font-size: 11px;
-  font-weight: 600;
-  flex: 1;
-}
-
-.mobile-tab-active {
-  color: var(--accent);
-}
-
-.mobile-tab-fab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-top: -26px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 6px 16px -4px rgba(0, 150, 111, 0.5);
-  flex-shrink: 0;
+.navbar-home {
+  display: none;
 }
 
 /* Community top tabs */
@@ -1295,3 +1265,562 @@ input:focus, textarea:focus, select:focus {
   background: var(--green-light);
   outline: 2px solid var(--accent);
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Glass Home — sage green / glassmorphism 홈 화면 전용 디자인 시스템
+   (다른 화면에는 영향 없이 .glass-home 안에서만 적용됨)
+   ══════════════════════════════════════════════════════════════════════ */
+
+.glass-home {
+  position: relative;
+  padding: 0 22px 44px;
+  color: var(--gt-text);
+  font-family: 'Pretendard', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+}
+
+.glass-home::before {
+  content: '';
+  position: absolute;
+  inset: -40px 0 auto 0;
+  height: 620px;
+  background:
+    radial-gradient(480px 320px at 12% 0%, rgba(77, 236, 196, 0.45), transparent 60%),
+    radial-gradient(420px 300px at 88% 10%, rgba(0, 200, 150, 0.4), transparent 65%),
+    linear-gradient(180deg, var(--gt-bg-1), var(--gt-bg-2) 70%, transparent);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.gt-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0 16px;
+}
+
+.gt-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gt-glass-strong);
+  border: 1px solid var(--gt-glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--gt-sage-deep);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.gt-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gt-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 999px;
+  padding: 10px 16px;
+  color: var(--gt-text-soft);
+}
+
+.gt-search input {
+  border: none;
+  background: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  color: var(--gt-text);
+}
+
+.gt-icon-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gt-sage-deep);
+  flex-shrink: 0;
+}
+
+.gt-icon-btn-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6b57;
+  border: 1.5px solid var(--gt-bg-1);
+}
+
+.gt-card {
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+  border-radius: 26px;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow: var(--gt-glass-shadow);
+}
+
+.gt-section {
+  margin-top: 26px;
+}
+
+.gt-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.gt-section-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--gt-text);
+  letter-spacing: -0.01em;
+}
+
+.gt-section-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gt-sage-deep);
+}
+
+/* 그린이 카드 */
+.gt-greenie-card {
+  padding: 22px 22px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.gt-greenie-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.gt-greenie-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gt-sage-deep);
+  margin-bottom: 4px;
+}
+
+.gt-greenie-level {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gt-text);
+}
+
+.gt-greenie-track {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+}
+
+.gt-greenie-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gt-sage), var(--gt-lime));
+}
+
+.gt-greenie-sub {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--gt-text-soft);
+}
+
+.gt-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gt-sage), var(--gt-sage-deep));
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  border: none;
+  box-shadow: 0 10px 22px -10px rgba(0, 150, 111, 0.65);
+  transition: transform 0.15s ease;
+}
+
+.gt-pill-btn:active {
+  transform: scale(0.96);
+}
+
+.gt-pill-btn-ghost {
+  background: var(--gt-glass-strong);
+  color: var(--gt-sage-deep);
+  border: 1px solid var(--gt-glass-border);
+  box-shadow: none;
+}
+
+/* 오늘의 미션 */
+.gt-mission-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.gt-mission-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border-radius: 20px;
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+}
+
+.gt-mission-check {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--gt-sage-deep);
+}
+
+.gt-mission-item[data-done='true'] .gt-mission-check {
+  background: var(--gt-sage);
+  color: #fff;
+}
+
+.gt-mission-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--gt-text-soft);
+  text-align: center;
+}
+
+.gt-mission-item[data-done='true'] .gt-mission-label {
+  color: var(--gt-sage-deep);
+}
+
+/* 인기 게시글 */
+.gt-post-scroll {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x mandatory;
+}
+
+.gt-post-card {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: 240px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+  box-shadow: var(--gt-glass-shadow);
+}
+
+.gt-post-photo {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+  background: var(--gt-bg-2);
+}
+
+.gt-post-body {
+  padding: 14px 16px 16px;
+}
+
+.gt-post-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gt-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gt-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--gt-text-soft);
+}
+
+.gt-post-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 카테고리 칩 */
+.gt-chip-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.gt-chip {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gt-text-soft);
+  min-width: 78px;
+}
+
+.gt-chip-emoji {
+  font-size: 22px;
+}
+
+/* AI 진단 CTA */
+.gt-ai-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 24px 22px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(0, 200, 150, 0.9), rgba(0, 150, 111, 0.92));
+  color: #fff;
+  overflow: hidden;
+  box-shadow: var(--gt-glass-shadow);
+}
+
+.gt-ai-card::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(77, 236, 196, 0.35);
+  filter: blur(2px);
+}
+
+.gt-ai-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.gt-ai-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 6px;
+  max-width: 78%;
+}
+
+.gt-ai-desc {
+  font-size: 12.5px;
+  opacity: 0.9;
+  margin-top: 6px;
+  max-width: 80%;
+}
+
+.gt-ai-btn {
+  margin-top: 16px;
+  background: #fff;
+  color: var(--gt-sage-deep);
+}
+
+/* 오늘의 식물 */
+.gt-today-plant {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 20px;
+}
+
+.gt-today-plant-emoji {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: var(--gt-glass-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.gt-today-plant-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.gt-today-plant-tags span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gt-sage-deep);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* 추천 식집사 */
+.gt-gardener-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.gt-gardener-card {
+  flex: 0 0 auto;
+  width: 108px;
+  padding: 16px 10px;
+  border-radius: 22px;
+  background: var(--gt-glass);
+  border: 1px solid var(--gt-glass-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.gt-gardener-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gt-glass-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--gt-sage-deep);
+  overflow: hidden;
+}
+
+.gt-gardener-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gt-gardener-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gt-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.gt-gardener-count {
+  font-size: 11px;
+  color: var(--gt-text-soft);
+}
+
+.gt-follow-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 6px 0;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--gt-sage);
+  color: #fff;
+  border: none;
+}
+
+.gt-follow-btn[data-following='true'] {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--gt-sage-deep);
+  border: 1px solid var(--gt-glass-border);
+}
+
+/* 글래스 하단 네비게이션 — 항상 앱처럼 보이도록 화면 폭과 무관하게 표시한다 */
+.gt-tab-bar {
+  position: fixed;
+  /* #root가 760px 앱 패널로 고정돼 있어, 넓은 화면에서도 패널 폭에 맞춰 중앙 정렬한다 */
+  left: max(16px, calc(50% - 380px + 16px));
+  right: max(16px, calc(50% - 380px + 16px));
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 16px 40px -14px rgba(48, 66, 40, 0.35);
+}
+
+body {
+  padding-bottom: 84px;
+}
+
+.gt-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #7c8a76;
+  font-size: 10.5px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.gt-tab-active {
+  color: #00966f;
+}
+
+.gt-tab-greenie {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00c896, #00966f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -26px;
+  box-shadow: 0 12px 24px -8px rgba(0, 150, 111, 0.65);
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import BackHeader from '../components/BackHeader'
 import { fetchPublicGrowthFeed } from '../lib/growthLogs'
 
 export default function Magazine() {
@@ -15,7 +16,7 @@ export default function Magazine() {
 
   return (
     <div style={{ padding: '0 20px 60px' }}>
-      <h2 style={{ marginTop: 20 }}>📷 매거진</h2>
+      <BackHeader title="📷 매거진" />
       <p className="muted" style={{ marginBottom: 20 }}>마이 그린 도감에 올라온 이웃 집사들의 성장 기록 사진을 모았어요</p>
 
       {loading ? (

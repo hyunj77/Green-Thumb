@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { MapPin, Plus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import BackHeader from '../components/BackHeader'
 import {
   fetchListings, createListing,
   MARKET_CATEGORIES, MARKET_CATEGORY_LABEL,
@@ -56,14 +57,14 @@ export default function Marketplace() {
 
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ margin: 0 }}>🪴 로컬 장터</h2>
-        {user && (
+      <BackHeader
+        title="🪴 로컬 장터"
+        right={user && (
           <button onClick={() => setShowForm((v) => !v)}>
             <Plus size={14} /> 매물 등록
           </button>
         )}
-      </div>
+      />
 
       <div className="card market-filter-card">
         <div className="board-group">

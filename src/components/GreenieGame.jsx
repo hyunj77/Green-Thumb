@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import { Shirt, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from './GreenieCharacter'
 import { fetchMyGreenie, saveGreenie, applyExp, requiredExp, TAP_EXP, MAX_LEVEL } from '../lib/greenie'
+import { stageForLevel, moodFromLastActive } from '../lib/greenieStages'
 
 export default function GreenieGame() {
   const { user } = useAuth()
@@ -44,42 +45,46 @@ export default function GreenieGame() {
 
   if (loading) return null
 
-  const { level, exp, equipped_hat: hat, equipped_accessory: accessory } = greenie
+  const { level, exp, equipped_hat: hat, equipped_accessory: accessory, updated_at: updatedAt } = greenie
   const maxed = level >= MAX_LEVEL
   const progress = maxed ? 100 : Math.min(100, (exp / requiredExp(level)) * 100)
+  const stage = stageForLevel(level)
+  const mood = moodFromLastActive(updatedAt)
 
   return (
-    <div className="greenie-card">
-      <div className="greenie-info">
-        <div className="greenie-level">Lv. {level} {maxed && '(MAX)'}</div>
-        <div className="greenie-progress-track">
-          <div className="greenie-progress-fill" style={{ width: `${progress}%` }} />
-        </div>
-        <div className="muted" style={{ fontSize: 12 }}>
-          {maxed ? '그린이가 최고 레벨에 도달했어요!' : `${exp.toLocaleString()} / ${requiredExp(level).toLocaleString()}`}
-        </div>
-      </div>
-
+    <div className="gt-card gt-greenie-card">
       <GreenieCharacter
         level={level}
+        mood={mood.key}
         hat={hat}
         accessory={accessory}
-        size={110}
+        size={92}
         interactive={!!user}
         onTap={handleTap}
         levelUpSignal={levelUpSignal}
       />
 
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontWeight: 700, color: 'var(--text-h)' }}>그린이 키우기 🌱</div>
-        <div className="muted" style={{ fontSize: 12 }}>
-          {user ? '터치해서 물을 줘보세요! 물주기 체크하면 왕창 성장해요' : '로그인하면 그린이를 키울 수 있어요'}
+      <div className="gt-greenie-info">
+        <div className="gt-greenie-eyebrow">오늘의 그린이 · {stage.label} 단계 · {mood.label}</div>
+        <div className="gt-greenie-level">Lv. {level} {maxed && '(MAX)'}</div>
+        <div className="gt-greenie-track">
+          <div className="gt-greenie-fill" style={{ width: `${progress}%` }} />
+        </div>
+        <div className="gt-greenie-sub">
+          {maxed ? '최고 레벨에 도달했어요!' : `${exp.toLocaleString()} / ${requiredExp(level).toLocaleString()} exp`}
         </div>
         {levelUpMsg && <div className="greenie-levelup">{levelUpMsg}</div>}
-        {user && (
-          <Link to="/greenie" style={{ display: 'inline-flex', alignItems: 'center', fontSize: 13, marginTop: 8 }}>
-            자세히 보기 (옷장 · 방문하기) <ChevronRight size={14} />
-          </Link>
+        {user ? (
+          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <Link to="/greenie#closet" className="gt-pill-btn gt-pill-btn-ghost" style={{ fontSize: 12, padding: '8px 14px' }}>
+              <Shirt size={13} /> 옷장
+            </Link>
+            <Link to="/greenie#visit" className="gt-pill-btn gt-pill-btn-ghost" style={{ fontSize: 12, padding: '8px 14px' }}>
+              <Users size={13} /> 방문하기
+            </Link>
+          </div>
+        ) : (
+          <div className="gt-greenie-sub">로그인하면 그린이를 키울 수 있어요</div>
         )}
       </div>
     </div>

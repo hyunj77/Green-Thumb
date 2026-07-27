@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from '../components/GreenieCharacter'
+import BackHeader from '../components/BackHeader'
 import { fetchGreenieByUserId, growthStage, MAX_LEVEL, requiredExp } from '../lib/greenie'
 
 export default function GreenieVisit() {
@@ -18,8 +19,22 @@ export default function GreenieVisit() {
     })
   }, [userId])
 
-  if (loading) return <p className="muted" style={{ padding: 20 }}>불러오는 중...</p>
-  if (!greenie) return <p className="muted" style={{ padding: 20 }}>아직 그린이가 없는 집사예요.</p>
+  if (loading) {
+    return (
+      <div style={{ padding: '0 20px 60px', maxWidth: 640, margin: '0 auto' }}>
+        <BackHeader title="그린이 방문" />
+        <p className="muted">불러오는 중...</p>
+      </div>
+    )
+  }
+  if (!greenie) {
+    return (
+      <div style={{ padding: '0 20px 60px', maxWidth: 640, margin: '0 auto' }}>
+        <BackHeader title="그린이 방문" />
+        <p className="muted">아직 그린이가 없는 집사예요.</p>
+      </div>
+    )
+  }
 
   const { level, exp, equipped_hat: hat, equipped_accessory: accessory, profile } = greenie
   const maxed = level >= MAX_LEVEL
@@ -29,7 +44,8 @@ export default function GreenieVisit() {
 
   return (
     <div style={{ padding: '0 20px 60px', maxWidth: 640, margin: '0 auto' }}>
-      <div className="greenie-card" style={{ marginTop: 20 }}>
+      <BackHeader title="그린이 방문" />
+      <div className="greenie-card" style={{ marginTop: 4 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="badge">{stage.emoji} {stage.name}</span>
           <Link to={`/users/${userId}`} style={{ fontSize: 13, fontWeight: 700 }}>

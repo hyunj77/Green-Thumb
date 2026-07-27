@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import BackHeader from '../components/BackHeader'
 import { createPost, updatePost, fetchPostById, CATEGORIES, CATEGORY_GROUPS, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
 
@@ -54,8 +55,9 @@ export default function PostForm({ mode }) {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 640, margin: '32px auto', padding: '32px 36px' }}>
-      <h2>{mode === 'edit' ? '게시물 수정' : '새 글쓰기'}</h2>
+    <div style={{ maxWidth: 640, margin: '0 auto', padding: '0 20px 40px' }}>
+      <BackHeader title={mode === 'edit' ? '게시물 수정' : '새 글쓰기'} />
+      <div className="card" style={{ padding: '32px 36px' }}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           {CATEGORY_GROUPS.map((group) => (
@@ -79,6 +81,7 @@ export default function PostForm({ mode }) {
         {error && <p className="error-text">{error}</p>}
         <button type="submit" disabled={submitting}>{submitting ? '저장 중...' : '등록하기'}</button>
       </form>
+      </div>
     </div>
   )
 }

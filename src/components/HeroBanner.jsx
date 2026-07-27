@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom'
 import heroPhoto from '../assets/1.png'
 
 const SLIDES = [
+  {
+    badge: 'NEW',
+    title: '그린이가 화분 캐릭터로 새 단장했어요 🌱',
+    subtitle: '씨앗부터 개화까지, 5단계 성장 모습을 미리 구경해보세요',
+    to: '/greenie-stages',
+    cta: '단계별 모습 보기',
+  },
   { badge: '공지', title: '우리 일상의 식물 이야기, Green Thumb', subtitle: '매일 조금씩 자라나는 초록빛 순간들, 이웃 집사들과 함께 나눠보세요' },
   { badge: 'NEW', title: '오늘의 물주기, 잊지 않으셨나요?', subtitle: '마이 그린 도감에서 우리 집 식물 상태를 확인해보세요' },
   { badge: 'PICK', title: '이웃 집사들의 방명록을 구경해보세요', subtitle: '초록 엄지 응원 도장도 눌러줄 수 있어요' },

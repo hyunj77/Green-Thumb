@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Bookmark, Heart, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import BackHeader from '../components/BackHeader'
 import { fetchPostById, deletePost, CATEGORY_LABEL } from '../lib/posts'
 import { fetchComments, createComment, deleteComment } from '../lib/comments'
 import { fetchReactionCounts, addReaction, removeReaction } from '../lib/reactions'
@@ -80,13 +81,28 @@ export default function PostDetail() {
     setComments((prev) => prev.filter((c) => c.id !== commentId))
   }
 
-  if (loading) return <p className="muted" style={{ padding: 20 }}>불러오는 중...</p>
-  if (!post) return <p className="muted" style={{ padding: 20 }}>게시물을 찾을 수 없어요.</p>
+  if (loading) {
+    return (
+      <div style={{ padding: '0 20px 40px', maxWidth: 720, margin: '0 auto' }}>
+        <BackHeader title="게시글" />
+        <p className="muted">불러오는 중...</p>
+      </div>
+    )
+  }
+  if (!post) {
+    return (
+      <div style={{ padding: '0 20px 40px', maxWidth: 720, margin: '0 auto' }}>
+        <BackHeader title="게시글" />
+        <p className="muted">게시물을 찾을 수 없어요.</p>
+      </div>
+    )
+  }
 
   const isOwner = user && user.id === post.author_id
 
   return (
     <div style={{ padding: '0 20px 40px', maxWidth: 720, margin: '0 auto' }}>
+      <BackHeader title={CATEGORY_LABEL[post.category] || post.category} />
       <div className="card" style={{ padding: '28px 32px' }}>
         <span className="badge">{CATEGORY_LABEL[post.category] || post.category}</span>
         <h2 style={{ marginTop: 12 }}>{post.title}</h2>

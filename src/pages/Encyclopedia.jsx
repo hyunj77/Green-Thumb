@@ -1,22 +1,40 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { PawPrint, Search, Sun, Droplet } from 'lucide-react'
-import { PLANT_SPECIES, DIFFICULTY_ORDER } from '../lib/encyclopedia'
+import BackHeader from '../components/BackHeader'
+import { PLANT_SPECIES, DIFFICULTY_ORDER, PLANT_TYPES } from '../lib/encyclopedia'
 
 export default function Encyclopedia() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState('')
   const [difficulty, setDifficulty] = useState('')
+  const type = searchParams.get('type') || ''
+
+  const setType = (next) => {
+    if (next) setSearchParams({ type: next })
+    else setSearchParams({})
+  }
+
   const filtered = PLANT_SPECIES
     .filter((p) => p.name.includes(query.trim()))
     .filter((p) => !difficulty || p.difficulty === difficulty)
+    .filter((p) => !type || p.type === type)
 
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <h2>📖 식물 도감</h2>
+      <BackHeader title="📖 식물 도감" />
       <p className="muted" style={{ marginBottom: 16 }}>기본 관리법을 참고해서 나에게 맞는 식물을 찾아보세요</p>
 
       <div style={{ position: 'relative', marginBottom: 14, maxWidth: 320 }}>
         <Search size={16} style={{ position: 'absolute', left: 14, top: 13, color: 'var(--accent)' }} />
         <input type="text" placeholder="식물 이름 검색" value={query} onChange={(e) => setQuery(e.target.value)} style={{ paddingLeft: 38 }} />
+      </div>
+
+      <div className="chip-row" style={{ marginTop: 0, marginBottom: 10 }}>
+        <button className={`chip ${type === '' ? 'chip-active' : ''}`} onClick={() => setType('')}>전체 종류</button>
+        {PLANT_TYPES.map((t) => (
+          <button key={t} className={`chip ${type === t ? 'chip-active' : ''}`} onClick={() => setType(t)}>{t}</button>
+        ))}
       </div>
 
       <div className="chip-row" style={{ marginTop: 0, marginBottom: 20 }}>

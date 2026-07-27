@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Droplets, MessageCircle, MessageSquare, Sprout } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import BackHeader from '../components/BackHeader'
 import { fetchMyNotifications, markNotificationRead, markAllNotificationsRead } from '../lib/notifications'
 import { timeAgo } from '../lib/time'
 
@@ -45,16 +46,23 @@ export default function Notifications() {
     setItems((prev) => prev.map((i) => ({ ...i, is_read: true })))
   }
 
-  if (!user) return <p className="muted" style={{ padding: 20 }}>알림을 보려면 <Link to="/login">로그인</Link>이 필요해요.</p>
+  if (!user) {
+    return (
+      <div style={{ padding: '0 20px 60px', maxWidth: 560, margin: '0 auto' }}>
+        <BackHeader title="🔔 내 소식" />
+        <p className="muted">알림을 보려면 <Link to="/login">로그인</Link>이 필요해요.</p>
+      </div>
+    )
+  }
 
   return (
     <div style={{ padding: '0 20px 60px', maxWidth: 560, margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, marginBottom: 16 }}>
-        <h2 style={{ margin: 0 }}>🔔 내 소식</h2>
-        {items.some((i) => !i.is_read) && (
+      <BackHeader
+        title="🔔 내 소식"
+        right={items.some((i) => !i.is_read) && (
           <button className="secondary" onClick={handleMarkAll}>모두 읽음</button>
         )}
-      </div>
+      />
 
       {loading ? (
         <p className="muted">불러오는 중...</p>

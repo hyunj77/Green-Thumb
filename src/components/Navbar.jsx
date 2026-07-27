@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Bell, Leaf, MessageSquare, Plus, User } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchUnreadCount } from '../lib/notifications'
@@ -7,6 +7,7 @@ import { fetchUnreadCount } from '../lib/notifications'
 export default function Navbar() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [unread, setUnread] = useState(0)
 
   useEffect(() => {
@@ -22,8 +23,10 @@ export default function Navbar() {
     navigate('/')
   }
 
+  // 홈 화면은 자체 상단바(프로필/검색/알림)를 쓰므로, 모바일 폭에서 홈에 있을 때만
+  // CSS로 이 네브바를 숨긴다(데스크톱은 계속 보임 — home-navbar-hide 클래스는 index.css 참고).
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${location.pathname === '/' ? 'navbar-home' : ''}`}>
       <div className="navbar-left">
         <Link to="/" className="brand">
           <Leaf size={22} />

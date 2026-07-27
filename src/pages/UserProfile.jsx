@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { MapPin, MessageSquare } from 'lucide-react'
+import { Camera, MapPin, MessageSquare } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import BackHeader from '../components/BackHeader'
 import { fetchPostsByAuthor, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
 import { computeGardenScore, getGrade } from '../lib/grade'
@@ -14,6 +15,9 @@ export default function UserProfile() {
   const [posts, setPosts] = useState([])
   const [plants, setPlants] = useState([])
   const [loading, setLoading] = useState(true)
+  const [editingAvatar, setEditingAvatar] = useState(false)
+  const [avatarInput, setAvatarInput] = useState('')
+  const [savingAvatar, setSavingAvatar] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -29,16 +33,67 @@ export default function UserProfile() {
     })
   }, [id])
 
-  if (loading) return <p className="muted" style={{ padding: 20 }}>불러오는 중...</p>
-  if (!profile) return <p className="muted" style={{ padding: 20 }}>존재하지 않는 사용자예요.</p>
+  const isOwner = user && profile && user.id === profile.id
+
+  const handleSaveAvatar = async () => {
+    setSavingAvatar(true)
+    const { error } = await supabase.from('profiles').update({ avatar_url: avatarInput.trim() || null }).eq('id', user.id)
+    setSavingAvatar(false)
+    if (!error) {
+      setProfile((prev) => ({ ...prev, avatar_url: avatarInput.trim() || null }))
+      setEditingAvatar(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div style={{ padding: '0 20px 60px' }}>
+        <BackHeader title="프로필" />
+        <p className="muted">불러오는 중...</p>
+      </div>
+    )
+  }
+  if (!profile) {
+    return (
+      <div style={{ padding: '0 20px 60px' }}>
+        <BackHeader title="프로필" />
+        <p className="muted">존재하지 않는 사용자예요.</p>
+      </div>
+    )
+  }
 
   const grade = getGrade(computeGardenScore(plants))
 
   return (
     <div style={{ padding: '0 20px 60px' }}>
-      <div className="card" style={{ padding: '28px 32px', marginTop: 20, marginBottom: 24 }}>
+      <BackHeader title="프로필" />
+      <div className="card" style={{ padding: '28px 32px', marginTop: 4, marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span className="avatar-circle" style={{ width: 56, height: 56, fontSize: 20 }}>{profile.username?.[0] || '?'}</span>
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            {profile.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt=""
+                style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span className="avatar-circle" style={{ width: 56, height: 56, fontSize: 20 }}>{profile.username?.[0] || '?'}</span>
+            )}
+            {isOwner && (
+              <button
+                type="button"
+                onClick={() => { setAvatarInput(profile.avatar_url || ''); setEditingAvatar(true) }}
+                aria-label="프로필 사진 변경"
+                style={{
+                  position: 'absolute', bottom: -2, right: -2, width: 24, height: 24, borderRadius: '50%',
+                  background: 'var(--accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '2px solid #fff', padding: 0,
+                }}
+              >
+                <Camera size={12} />
+              </button>
+            )}
+          </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <h2 style={{ margin: 0 }}>{profile.username}</h2>
@@ -118,6 +173,31 @@ export default function UserProfile() {
               </div>
             </Link>
           ))}
+        </div>
+      )}
+
+      {editingAvatar && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, zIndex: 50 }}
+          onClick={() => setEditingAvatar(false)}
+        >
+          <div className="card" style={{ width: '100%', maxWidth: 360, padding: 24 }} onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ marginTop: 0 }}>프로필 사진 변경</h3>
+            <p className="muted" style={{ marginTop: -8, marginBottom: 14 }}>이미지 URL을 입력해주세요.</p>
+            <input
+              type="url"
+              placeholder="https://..."
+              value={avatarInput}
+              onChange={(e) => setAvatarInput(e.target.value)}
+              autoFocus
+            />
+            <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+              <button className="secondary" style={{ flex: 1 }} onClick={() => setEditingAvatar(false)}>취소</button>
+              <button style={{ flex: 1 }} onClick={handleSaveAvatar} disabled={savingAvatar}>
+                {savingAvatar ? '저장 중...' : '저장'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
