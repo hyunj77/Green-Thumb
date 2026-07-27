@@ -95,7 +95,7 @@ export default function MyGarden() {
   return (
     <div style={{ padding: '0 20px 40px' }}>
       <div id="new-plant" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, scrollMarginTop: 20 }}>
-        <h2 style={{ margin: 0 }}>🌿 마이 그린 도감</h2>
+        <h2 style={{ margin: 0 }}>마이 그린 도감</h2>
         {!isGuest && <button onClick={() => setShowForm((v) => !v)}><Plus size={16} /> 식물 등록</button>}
       </div>
 

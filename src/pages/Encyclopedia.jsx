@@ -48,18 +48,28 @@ export default function Encyclopedia() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
         {filtered.map((plant) => (
-          <div key={plant.name} className="card" style={{ padding: 18 }}>
-            <div style={{ fontSize: 34 }}>{plant.emoji}</div>
-            <div style={{ fontWeight: 700, color: 'var(--text-h)', margin: '8px 0 4px' }}>{plant.name}</div>
-            <span className="badge">난이도 {plant.difficulty}</span>
-            <div className="muted" style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Droplet size={13} /> {plant.watering}
-            </div>
-            <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Sun size={13} /> {plant.light}
-            </div>
-            <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <PawPrint size={13} /> {plant.petSafe ? '반려동물 안전' : '반려동물 주의'}
+          <div key={plant.name} className="card" style={{ padding: 0, overflow: 'hidden' }}>
+            {plant.photo ? (
+              <img
+                src={plant.photo}
+                alt={plant.name}
+                style={{ width: '100%', height: 130, objectFit: 'cover', display: 'block' }}
+              />
+            ) : (
+              <div style={{ fontSize: 34, padding: '18px 18px 0' }}>{plant.emoji}</div>
+            )}
+            <div style={{ padding: 18 }}>
+              <div style={{ fontWeight: 700, color: 'var(--text-h)', marginBottom: 4 }}>{plant.name}</div>
+              <span className="badge">난이도 {plant.difficulty}</span>
+              <div className="muted" style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Droplet size={13} /> {plant.watering}
+              </div>
+              <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Sun size={13} /> {plant.light}
+              </div>
+              <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <PawPrint size={13} /> {plant.petSafe ? '반려동물 안전' : '반려동물 주의'}
+              </div>
             </div>
           </div>
         ))}

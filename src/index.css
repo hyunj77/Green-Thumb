@@ -23,7 +23,7 @@
   --gt-glass-border: rgba(0, 150, 111, 0.28);
   --gt-glass-shadow: 0 12px 36px -16px rgba(0, 60, 45, 0.24);
 
-  font: 17px/1.6 'Segoe UI', system-ui, Roboto, sans-serif;
+  font: 17px/1.6 'Pretendard', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text);
   background: var(--bg);
   min-height: 100svh;
