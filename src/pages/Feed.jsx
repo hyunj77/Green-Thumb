@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check } from 'lucide-react'
+import BrandLogo from '../components/BrandLogo'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import GreenieGame from '../components/GreenieGame'
@@ -11,7 +12,8 @@ import { PLANT_SPECIES, PLANT_TYPES } from '../lib/encyclopedia'
 import { fetchSuggestedGardeners, fetchFollowingIds, toggleFollow } from '../lib/follows'
 import { timeAgo } from '../lib/time'
 
-const TYPE_EMOJI = { 관엽식물: '🌿', 다육식물: '🌵', 나무: '🌳', 공기정화: '🍃' }
+const TYPE_EMOJI = { 관엽식물: '🌿', '다육·선인장': '🌵', '꽃·개화식물': '🌸', '허브·식용': '🌱', 행잉식물: '🪴', 공기정화: '🍃', 수경재배: '💧', 초보자용: '🔰' }
+const HOME_CATEGORY_PREVIEW = PLANT_TYPES.slice(0, 5)
 
 function todaySpecies() {
   const key = new Date().toISOString().slice(0, 10)
@@ -41,18 +43,20 @@ export default function Feed() {
   }, [])
 
   useEffect(() => {
+    fetchSuggestedGardeners(user?.id).then(({ data }) => setGardeners(data || []))
+  }, [user])
+
+  useEffect(() => {
     if (!user) {
       setProfile(null)
       setUnread(0)
       setMyPlants([])
-      setGardeners([])
       setFollowingIds([])
       return
     }
     supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data))
     fetchUnreadCount(user.id).then(({ count }) => setUnread(count || 0))
     fetchMyPlants(user.id).then(({ data }) => setMyPlants(data || []))
-    fetchSuggestedGardeners(user.id).then(({ data }) => setGardeners(data || []))
     fetchFollowingIds(user.id).then(({ data }) => setFollowingIds(data || []))
   }, [user])
 
@@ -93,6 +97,9 @@ export default function Feed() {
 
   return (
     <div className="glass-home">
+      <div style={{ paddingTop: 18 }}>
+        <BrandLogo />
+      </div>
       <div className="gt-topbar">
         <Link to={user ? '/mypage' : '/login'} className="gt-avatar">
           {profile?.avatar_url ? <img src={profile.avatar_url} alt="" /> : (profile?.username?.[0] || user?.email?.[0] || '🌱').toUpperCase()}
@@ -177,13 +184,17 @@ export default function Feed() {
         <div className="gt-section-head">
           <span className="gt-section-title">식물 카테고리</span>
         </div>
-        <div className="gt-chip-row">
-          {PLANT_TYPES.map((type) => (
+        <div className="gt-chip-row gt-category-row">
+          {HOME_CATEGORY_PREVIEW.map((type) => (
             <Link key={type} to={`/encyclopedia?type=${encodeURIComponent(type)}`} className="gt-chip">
               <span className="gt-chip-emoji">{TYPE_EMOJI[type]}</span>
               {type}
             </Link>
           ))}
+          <Link to="/encyclopedia" className="gt-chip gt-chip-more">
+            <span className="gt-chip-emoji">＋</span>
+            더보기
+          </Link>
         </div>
       </div>
 

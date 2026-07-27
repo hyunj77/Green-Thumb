@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Bell, Leaf, MessageSquare, Plus, User } from 'lucide-react'
+import { Bell, MessageSquare, Plus, User } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchUnreadCount } from '../lib/notifications'
+import BrandLogo from './BrandLogo'
 
 export default function Navbar() {
   const { user, signOut } = useAuth()
@@ -28,9 +29,8 @@ export default function Navbar() {
   return (
     <nav className={`navbar ${location.pathname === '/' ? 'navbar-home' : ''}`}>
       <div className="navbar-left">
-        <Link to="/" className="brand">
-          <Leaf size={22} />
-          Green Thumb
+        <Link to="/" style={{ color: 'inherit' }}>
+          <BrandLogo />
         </Link>
       </div>
       <div className="nav-links">

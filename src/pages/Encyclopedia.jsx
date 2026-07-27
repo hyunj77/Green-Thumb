@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { PawPrint, Search, Sun, Droplet } from 'lucide-react'
 import BackHeader from '../components/BackHeader'
-import { PLANT_SPECIES, DIFFICULTY_ORDER, PLANT_TYPES } from '../lib/encyclopedia'
+import { PLANT_SPECIES, DIFFICULTY_ORDER, PLANT_TYPES, matchesType } from '../lib/encyclopedia'
 
 export default function Encyclopedia() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -18,7 +18,7 @@ export default function Encyclopedia() {
   const filtered = PLANT_SPECIES
     .filter((p) => p.name.includes(query.trim()))
     .filter((p) => !difficulty || p.difficulty === difficulty)
-    .filter((p) => !type || p.type === type)
+    .filter((p) => matchesType(p, type))
 
   return (
     <div style={{ padding: '0 20px 40px' }}>

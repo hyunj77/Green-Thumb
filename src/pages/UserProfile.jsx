@@ -4,6 +4,7 @@ import { Camera, MapPin, MessageSquare } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import BackHeader from '../components/BackHeader'
+import AvatarEditModal from '../components/AvatarEditModal'
 import { fetchPostsByAuthor, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
 import { computeGardenScore, getGrade } from '../lib/grade'
@@ -16,8 +17,6 @@ export default function UserProfile() {
   const [plants, setPlants] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingAvatar, setEditingAvatar] = useState(false)
-  const [avatarInput, setAvatarInput] = useState('')
-  const [savingAvatar, setSavingAvatar] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -34,16 +33,6 @@ export default function UserProfile() {
   }, [id])
 
   const isOwner = user && profile && user.id === profile.id
-
-  const handleSaveAvatar = async () => {
-    setSavingAvatar(true)
-    const { error } = await supabase.from('profiles').update({ avatar_url: avatarInput.trim() || null }).eq('id', user.id)
-    setSavingAvatar(false)
-    if (!error) {
-      setProfile((prev) => ({ ...prev, avatar_url: avatarInput.trim() || null }))
-      setEditingAvatar(false)
-    }
-  }
 
   if (loading) {
     return (
@@ -82,7 +71,7 @@ export default function UserProfile() {
             {isOwner && (
               <button
                 type="button"
-                onClick={() => { setAvatarInput(profile.avatar_url || ''); setEditingAvatar(true) }}
+                onClick={() => setEditingAvatar(true)}
                 aria-label="프로필 사진 변경"
                 style={{
                   position: 'absolute', bottom: -2, right: -2, width: 24, height: 24, borderRadius: '50%',
@@ -177,28 +166,15 @@ export default function UserProfile() {
       )}
 
       {editingAvatar && (
-        <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, zIndex: 50 }}
-          onClick={() => setEditingAvatar(false)}
-        >
-          <div className="card" style={{ width: '100%', maxWidth: 360, padding: 24 }} onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ marginTop: 0 }}>프로필 사진 변경</h3>
-            <p className="muted" style={{ marginTop: -8, marginBottom: 14 }}>이미지 URL을 입력해주세요.</p>
-            <input
-              type="url"
-              placeholder="https://..."
-              value={avatarInput}
-              onChange={(e) => setAvatarInput(e.target.value)}
-              autoFocus
-            />
-            <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-              <button className="secondary" style={{ flex: 1 }} onClick={() => setEditingAvatar(false)}>취소</button>
-              <button style={{ flex: 1 }} onClick={handleSaveAvatar} disabled={savingAvatar}>
-                {savingAvatar ? '저장 중...' : '저장'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <AvatarEditModal
+          userId={user.id}
+          currentUrl={profile.avatar_url}
+          onClose={() => setEditingAvatar(false)}
+          onSaved={(nextUrl) => {
+            setProfile((prev) => ({ ...prev, avatar_url: nextUrl }))
+            setEditingAvatar(false)
+          }}
+        />
       )}
     </div>
   )

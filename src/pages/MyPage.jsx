@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MessageCircle, Sprout, FileText, ThumbsUp } from 'lucide-react'
+import { Camera, MessageCircle, Sprout, FileText, ThumbsUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPosts, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyStats } from '../lib/stats'
@@ -9,6 +9,7 @@ import { fetchMyPlants } from '../lib/plants'
 import { computeGardenScore, getGrade } from '../lib/grade'
 import { supabase } from '../lib/supabase'
 import ActivityChart from '../components/ActivityChart'
+import AvatarEditModal from '../components/AvatarEditModal'
 
 export default function MyPage() {
   const { user } = useAuth()
@@ -17,6 +18,7 @@ export default function MyPage() {
   const [stats, setStats] = useState(null)
   const [bookmarks, setBookmarks] = useState([])
   const [plants, setPlants] = useState([])
+  const [editingAvatar, setEditingAvatar] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -41,19 +43,58 @@ export default function MyPage() {
   return (
     <div style={{ padding: '0 20px 40px', maxWidth: 640, margin: '0 auto' }}>
       <div className="card" style={{ padding: '28px 32px', marginBottom: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <h2 style={{ margin: 0 }}>{profile?.username || '...'}</h2>
-          <span className="badge grade-badge">{grade.emoji} {grade.name}</span>
-          <Link to="/grades" style={{ fontSize: 12 }}>등급 안내 →</Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            {profile?.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt=""
+                style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span className="avatar-circle" style={{ width: 56, height: 56, fontSize: 20 }}>{profile?.username?.[0] || '?'}</span>
+            )}
+            <button
+              type="button"
+              onClick={() => setEditingAvatar(true)}
+              aria-label="프로필 사진 변경"
+              style={{
+                position: 'absolute', bottom: -2, right: -2, width: 24, height: 24, borderRadius: '50%',
+                background: 'var(--accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid #fff', padding: 0,
+              }}
+            >
+              <Camera size={12} />
+            </button>
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <h2 style={{ margin: 0 }}>{profile?.username || '...'}</h2>
+              <span className="badge grade-badge">{grade.emoji} {grade.name}</span>
+              <Link to="/grades" style={{ fontSize: 12 }}>등급 안내 →</Link>
+            </div>
+            <p className="muted" style={{ margin: '4px 0 0' }}>{user.email}</p>
+          </div>
         </div>
-        <p className="muted">{user.email}</p>
         {grade.next && (
-          <p className="muted" style={{ margin: '8px 0 0' }}>
+          <p className="muted" style={{ margin: '12px 0 0' }}>
             다음 등급 {grade.next.emoji} {grade.next.name}까지 {grade.next.pointsToNext}점 남았어요 (그린 포인트 {grade.score})
           </p>
         )}
         <Link to={`/users/${user.id}`} style={{ display: 'inline-block', marginTop: 10, fontSize: 14 }}>공개 프로필 보기 →</Link>
       </div>
+
+      {editingAvatar && (
+        <AvatarEditModal
+          userId={user.id}
+          currentUrl={profile?.avatar_url}
+          onClose={() => setEditingAvatar(false)}
+          onSaved={(nextUrl) => {
+            setProfile((prev) => ({ ...prev, avatar_url: nextUrl }))
+            setEditingAvatar(false)
+          }}
+        />
+      )}
 
       <div className="stat-grid">
         {statItems.map(({ label, value, Icon, bg, fg }) => (
