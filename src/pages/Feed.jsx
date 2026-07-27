@@ -97,10 +97,10 @@ export default function Feed() {
 
   return (
     <div className="glass-home">
-      <div style={{ paddingTop: 18 }}>
+      <div style={{ padding: '18px 0' }}>
         <BrandLogo />
       </div>
-      <div className="gt-topbar">
+      <div className="gt-topbar" style={{ paddingTop: 0 }}>
         <Link to={user ? '/mypage' : '/login'} className="gt-avatar">
           {profile?.avatar_url ? <img src={profile.avatar_url} alt="" /> : (profile?.username?.[0] || user?.email?.[0] || '🌱').toUpperCase()}
         </Link>
