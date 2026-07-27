@@ -21,7 +21,7 @@ export default function MobileTabBar() {
   const path = location.pathname
   const [open, setOpen] = useState(false)
 
-  const rightTab = { to: '/garden', label: 'Plant', Icon: Sprout, match: (p) => p.startsWith('/garden') }
+  const rightTab = { to: '/garden', label: '그린하우스', Icon: Sprout, match: (p) => p.startsWith('/garden') }
   const myTab = { to: user ? '/mypage' : '/login', label: 'MY', Icon: User, match: (p) => p.startsWith('/mypage') || p.startsWith('/login') }
 
   const renderTab = ({ to, label, Icon, match }) => (
