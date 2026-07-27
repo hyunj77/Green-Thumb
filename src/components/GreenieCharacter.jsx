@@ -2,45 +2,127 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimation } from 'framer-motion'
 import { stageForLevel } from '../lib/greenieStages'
 
-// 화분 성장 단계별 형태 정의 (레퍼런스 일러스트 좌표 기준, viewBox 0 0 200 260)
+// 화분 성장 단계별 형태 정의 (8단계, viewBox 0 0 200 445 기준)
 const STAGE_GEOMETRY = {
-  seed: { headR: 0, leafTiers: [], flower: null },
+  seed: { headR: 0, leafTiers: [], flower: null, viewTop: 305 },
   sprout: {
+    // 떡잎 2장 · 눈만 생김
     stemPath: 'M100,380 Q102,368 100,352', stemWidth: 5,
-    headCx: 100, headCy: 325, headR: 28, leafTiers: [], flower: null,
-  },
-  leaves: {
-    stemPath: 'M100,380 Q103,345 100,318', stemWidth: 5.5,
-    headCx: 100, headCy: 296, headR: 34,
+    headCx: 100, headCy: 325, headR: 26,
     leafTiers: [
-      { cx: 70, cy: 345, rx: 22, ry: 11, rotate: -30, fill: '#3F9142' },
-      { cx: 130, cy: 345, rx: 22, ry: 11, rotate: 30, fill: '#3F9142' },
+      { cx: 82, cy: 340, rx: 12, ry: 7, rotate: -20, fill: '#5FAE55' },
+      { cx: 118, cy: 340, rx: 12, ry: 7, rotate: 20, fill: '#5FAE55' },
     ],
     flower: null,
+    viewTop: 255,
+  },
+  'sprout-leaf': {
+    // 어린잎 · 잎 4장 · 웃는 표정
+    stemPath: 'M100,380 Q103,350 100,322', stemWidth: 5.5,
+    headCx: 100, headCy: 298, headR: 32,
+    leafTiers: [
+      { cx: 68, cy: 345, rx: 23, ry: 12, rotate: -30, fill: '#3F9142' },
+      { cx: 132, cy: 345, rx: 23, ry: 12, rotate: 30, fill: '#3F9142' },
+      { cx: 74, cy: 315, rx: 19, ry: 10, rotate: -38, fill: '#4CA246' },
+      { cx: 126, cy: 315, rx: 19, ry: 10, rotate: 38, fill: '#4CA246' },
+    ],
+    flower: null,
+    viewTop: 220,
   },
   growth: {
-    stemPath: 'M100,380 Q105,335 100,290', stemWidth: 6,
-    headCx: 100, headCy: 252, headR: 42,
+    // 성장기 · 키가 커짐 · 잎 증가 · 볼터치(Face에서 상시 표시)
+    stemPath: 'M100,380 Q106,340 100,296', stemWidth: 6.5,
+    headCx: 100, headCy: 270, headR: 38,
     leafTiers: [
-      { cx: 68, cy: 345, rx: 25, ry: 13, rotate: -32, fill: '#3F9142' },
-      { cx: 132, cy: 345, rx: 25, ry: 13, rotate: 32, fill: '#3F9142' },
-      { cx: 74, cy: 308, rx: 21, ry: 11, rotate: -40, fill: '#4CA246' },
-      { cx: 126, cy: 308, rx: 21, ry: 11, rotate: 40, fill: '#4CA246' },
+      { cx: 62, cy: 345, rx: 27, ry: 14, rotate: -34, fill: '#3F9142' },
+      { cx: 138, cy: 345, rx: 27, ry: 14, rotate: 34, fill: '#3F9142' },
+      { cx: 68, cy: 308, rx: 23, ry: 12, rotate: -40, fill: '#4CA246' },
+      { cx: 132, cy: 308, rx: 23, ry: 12, rotate: 40, fill: '#4CA246' },
+      { cx: 76, cy: 278, rx: 18, ry: 9, rotate: -46, fill: '#58AE49' },
+      { cx: 124, cy: 278, rx: 18, ry: 9, rotate: 46, fill: '#58AE49' },
+    ],
+    flower: null,
+    viewTop: 185,
+  },
+  bud: {
+    // 꽃봉오리 생성 · 반짝임 효과
+    stemPath: 'M100,380 Q108,332 100,270', stemWidth: 7,
+    headCx: 100, headCy: 245, headR: 40,
+    leafTiers: [
+      { cx: 58, cy: 342, rx: 28, ry: 15, rotate: -36, fill: '#3F9142' },
+      { cx: 142, cy: 342, rx: 28, ry: 15, rotate: 36, fill: '#3F9142' },
+      { cx: 64, cy: 302, rx: 24, ry: 13, rotate: -42, fill: '#4CA246' },
+      { cx: 136, cy: 302, rx: 24, ry: 13, rotate: 42, fill: '#4CA246' },
+      { cx: 72, cy: 266, rx: 19, ry: 10, rotate: -48, fill: '#58AE49' },
+      { cx: 128, cy: 266, rx: 19, ry: 10, rotate: 48, fill: '#58AE49' },
     ],
     flower: 'bud',
+    flowerCy: 190,
+    decor: 'sparkle',
+    viewTop: 130,
   },
   bloom: {
-    stemPath: 'M100,380 Q105,335 100,290', stemWidth: 6,
-    headCx: 100, headCy: 252, headR: 42,
+    // 개화 · 활짝 핀 꽃
+    stemPath: 'M100,380 Q108,330 100,266', stemWidth: 7.5,
+    headCx: 100, headCy: 225, headR: 43,
     leafTiers: [
-      { cx: 68, cy: 345, rx: 25, ry: 13, rotate: -32, fill: '#3F9142' },
-      { cx: 132, cy: 345, rx: 25, ry: 13, rotate: 32, fill: '#3F9142' },
-      { cx: 74, cy: 308, rx: 21, ry: 11, rotate: -40, fill: '#4CA246' },
-      { cx: 126, cy: 308, rx: 21, ry: 11, rotate: 40, fill: '#4CA246' },
-      { cx: 80, cy: 275, rx: 17, ry: 9, rotate: -46, fill: '#58AE49' },
-      { cx: 120, cy: 275, rx: 17, ry: 9, rotate: 46, fill: '#58AE49' },
+      { cx: 55, cy: 340, rx: 29, ry: 16, rotate: -36, fill: '#3F9142' },
+      { cx: 145, cy: 340, rx: 29, ry: 16, rotate: 36, fill: '#3F9142' },
+      { cx: 60, cy: 298, rx: 25, ry: 13, rotate: -42, fill: '#4CA246' },
+      { cx: 140, cy: 298, rx: 25, ry: 13, rotate: 42, fill: '#4CA246' },
+      { cx: 68, cy: 258, rx: 20, ry: 11, rotate: -48, fill: '#58AE49' },
+      { cx: 132, cy: 258, rx: 20, ry: 11, rotate: 48, fill: '#58AE49' },
     ],
     flower: 'full',
+    flowerCy: 165,
+    viewTop: 100,
+  },
+  fruit: {
+    // 꽃이 지고 열매가 열림 · 나비 등장 · 은은한 배경 효과
+    stemPath: 'M100,380 Q110,325 100,250', stemWidth: 8,
+    headCx: 100, headCy: 205, headR: 46,
+    leafTiers: [
+      { cx: 52, cy: 338, rx: 30, ry: 16, rotate: -36, fill: '#3F9142' },
+      { cx: 148, cy: 338, rx: 30, ry: 16, rotate: 36, fill: '#3F9142' },
+      { cx: 56, cy: 296, rx: 26, ry: 14, rotate: -42, fill: '#4CA246' },
+      { cx: 144, cy: 296, rx: 26, ry: 14, rotate: 42, fill: '#4CA246' },
+      { cx: 64, cy: 254, rx: 21, ry: 11, rotate: -48, fill: '#58AE49' },
+      { cx: 136, cy: 254, rx: 21, ry: 11, rotate: 48, fill: '#58AE49' },
+      { cx: 78, cy: 218, rx: 15, ry: 8, rotate: -52, fill: '#6EBE58' },
+      { cx: 122, cy: 218, rx: 15, ry: 8, rotate: 52, fill: '#6EBE58' },
+    ],
+    fruits: [
+      { cx: 52, cy: 338 }, { cx: 148, cy: 338 },
+      { cx: 64, cy: 254 }, { cx: 136, cy: 254 },
+    ],
+    flower: null,
+    decor: 'butterfly',
+    bgGlow: true,
+    viewTop: 90,
+  },
+  tree: {
+    // 그린 트리 · 완전한 모습 · 잎 풍성 · 꽃 + 열매 · 반짝이는 이펙트
+    stemPath: 'M100,380 Q112,320 100,230', stemWidth: 10, stemColor: '#8B6B3D',
+    headCx: 100, headCy: 185, headR: 52,
+    leafTiers: [
+      { cx: 46, cy: 330, rx: 32, ry: 17, rotate: -34, fill: '#3F9142' },
+      { cx: 154, cy: 330, rx: 32, ry: 17, rotate: 34, fill: '#3F9142' },
+      { cx: 50, cy: 284, rx: 28, ry: 15, rotate: -40, fill: '#4CA246' },
+      { cx: 150, cy: 284, rx: 28, ry: 15, rotate: 40, fill: '#4CA246' },
+      { cx: 58, cy: 238, rx: 24, ry: 13, rotate: -46, fill: '#58AE49' },
+      { cx: 142, cy: 238, rx: 24, ry: 13, rotate: 46, fill: '#58AE49' },
+      { cx: 70, cy: 196, rx: 19, ry: 10, rotate: -50, fill: '#6EBE58' },
+      { cx: 130, cy: 196, rx: 19, ry: 10, rotate: 50, fill: '#6EBE58' },
+    ],
+    fruits: [
+      { cx: 46, cy: 330 }, { cx: 154, cy: 330 },
+      { cx: 58, cy: 238 }, { cx: 142, cy: 238 },
+    ],
+    flower: 'full',
+    flowerCy: 120,
+    decor: 'sparkle',
+    bgGlow: true,
+    viewTop: 60,
   },
 }
 
@@ -93,6 +175,38 @@ function Face({ cx, cy, r, eyesClosed, expression }) {
   )
 }
 
+function Fruit({ cx, cy }) {
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={6} fill="#E0533D" />
+      <circle cx={cx - 2} cy={cy - 2} r={1.8} fill="#F5A98F" />
+      <path d={`M${cx},${cy - 6} q2,-3 4,-3`} stroke="#4CA246" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+    </g>
+  )
+}
+
+function Butterfly({ cx, cy }) {
+  return (
+    <motion.g
+      animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
+      transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+      style={{ originX: `${cx}px`, originY: `${cy}px` }}
+    >
+      <motion.g
+        animate={{ scaleX: [1, 0.55, 1] }}
+        transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ originX: `${cx}px`, originY: `${cy}px` }}
+      >
+        <ellipse cx={cx - 4} cy={cy - 2} rx={5} ry={4} fill="#F4B942" />
+        <ellipse cx={cx + 4} cy={cy - 2} rx={5} ry={4} fill="#F4B942" />
+        <ellipse cx={cx - 4} cy={cy + 3} rx={3.5} ry={3} fill="#F2A6C4" />
+        <ellipse cx={cx + 4} cy={cy + 3} rx={3.5} ry={3} fill="#F2A6C4" />
+      </motion.g>
+      <ellipse cx={cx} cy={cy} rx={1.3} ry={4} fill="#5A4632" />
+    </motion.g>
+  )
+}
+
 function Flower({ type, cx, cy }) {
   if (!type) return null
   if (type === 'bud') {
@@ -131,6 +245,7 @@ export default function GreenieCharacter({
   const glowControls = useAnimation()
   const comboRef = useRef(0)
   const comboTimerRef = useRef(null)
+  const lastTapAtRef = useRef(0)
   const prevLevelUpRef = useRef(levelUpSignal)
 
   const [blinking, setBlinking] = useState(false)
@@ -143,6 +258,12 @@ export default function GreenieCharacter({
   const geo = STAGE_GEOMETRY[stage]
   const thirsty = mood === 'thirsty'
   const vibrant = mood === 'vibrant'
+
+  // 단계별로 실제 그려지는 높이만큼만 프레임을 잘라서, 성장 초반 단계에서도
+  // 여백이 크게 남지 않고 카드가 내용에 맞게 컴팩트해지도록 한다
+  const viewTop = geo.viewTop ?? 90
+  const viewBoxHeight = 445 - viewTop
+  const wrapHeight = size * (viewBoxHeight / 200)
 
   // 3~6초마다 눈 깜빡임 (목마름 상태에서는 이미 눈이 감겨있으니 생략)
   useEffect(() => {
@@ -206,24 +327,26 @@ export default function GreenieCharacter({
     }, 260)
 
     const now = Date.now()
-    const chained = now - (comboTimerRef.current?.lastTap || 0) < 900
+    const chained = now - lastTapAtRef.current < 900
+    lastTapAtRef.current = now
     const next = chained ? comboRef.current + 1 : 1
     comboRef.current = next
     clearTimeout(comboTimerRef.current)
     comboTimerRef.current = setTimeout(() => { comboRef.current = 0 }, 900)
-    if (comboTimerRef.current) comboTimerRef.current.lastTap = now
 
-    setTimeout(() => {
-      const intensity = 1 + Math.min(next, 10) * 0.03
-      setExpression('happy')
-      spawnSparkles()
-      bodyControls.start({
-        scaleY: [1, 0.86 * intensity, 1.06, 1],
-        scaleX: [1, 1.1 * intensity, 0.97, 1],
-        transition: { duration: 0.28, ease: 'easeOut' },
-      })
-      setTimeout(() => setExpression('idle'), 420)
-    }, 120)
+    // 탭할 때마다 눈에 띄게 통통 튀도록 즉시 반응한다 (지연 없음)
+    const intensity = 1 + Math.min(next, 10) * 0.04
+    setExpression('happy')
+    spawnSparkles()
+    bodyControls.stop()
+    bodyControls.start({
+      y: [0, -14 * intensity, 4, 0],
+      scaleY: [1, 0.78, 1.12, 0.97, 1],
+      scaleX: [1, 1.18 * intensity, 0.92, 1.02, 1],
+      rotate: [0, chained ? (comboRef.current % 2 === 0 ? -6 : 6) : 0, 0],
+      transition: { duration: 0.45, ease: 'easeOut' },
+    })
+    setTimeout(() => setExpression('idle'), 420)
 
     onTap?.()
   }
@@ -236,12 +359,12 @@ export default function GreenieCharacter({
     <div
       ref={wrapRef}
       className="greenie-character"
-      style={{ width: size, height: size * 1.2, cursor: interactive ? 'pointer' : 'default' }}
+      style={{ width: size, height: wrapHeight, cursor: interactive ? 'pointer' : 'default' }}
       onPointerDown={handlePointerDown}
       role={interactive ? 'button' : undefined}
       aria-label={interactive ? '그린이에게 물주기' : undefined}
     >
-      <motion.svg viewBox="0 0 200 445" width="100%" height="100%">
+      <motion.svg viewBox={`0 ${viewTop} 200 ${viewBoxHeight}`} width="100%" height="100%">
         <ellipse cx="100" cy="438" rx="46" ry="7" fill="rgba(0,0,0,0.08)" />
 
         {/* 화분 */}
@@ -249,7 +372,13 @@ export default function GreenieCharacter({
         <ellipse cx="100" cy="380" rx="46" ry="9" fill="#6B4226" />
 
         {stage === 'seed' ? (
-          <ellipse cx="100" cy="367" rx="22" ry="26" fill="#E8D5A8" stroke="#C9AD75" strokeWidth="2" />
+          <motion.g
+            animate={bodyControls}
+            initial={{ scale: 1 }}
+            style={{ originX: '100px', originY: '380px' }}
+          >
+            <ellipse cx="100" cy="367" rx="22" ry="26" fill="#E8D5A8" stroke="#C9AD75" strokeWidth="2" />
+          </motion.g>
         ) : (
           <motion.g
             animate={bodyControls}
@@ -261,7 +390,11 @@ export default function GreenieCharacter({
               transition={{ duration: 0.6, ease: 'easeInOut' }}
               style={{ originX: '100px', originY: '380px' }}
             >
-              <path d={geo.stemPath} fill="none" stroke="#6B8E4E" strokeWidth={geo.stemWidth} strokeLinecap="round" />
+              {geo.bgGlow && (
+                <circle cx={geo.headCx} cy={geo.headCy} r={geo.headR * 1.7} fill="#BFE7A8" opacity={0.16} />
+              )}
+
+              <path d={geo.stemPath} fill="none" stroke={geo.stemColor || '#6B8E4E'} strokeWidth={geo.stemWidth} strokeLinecap="round" />
 
               {geo.leafTiers.map((leaf, i) => (
                 <motion.ellipse
@@ -275,10 +408,21 @@ export default function GreenieCharacter({
                 />
               ))}
 
-              <Flower type={geo.flower} cx={geo.headCx} cy={geo.headCy - 57} />
+              {geo.fruits?.map((f, i) => <Fruit key={i} cx={f.cx} cy={f.cy} />)}
+
+              <Flower type={geo.flower} cx={geo.headCx} cy={geo.flowerCy ?? geo.headCy - 57} />
 
               <circle cx={geo.headCx} cy={geo.headCy} r={geo.headR} fill="#4CA246" />
               <Face cx={geo.headCx} cy={geo.headCy} r={geo.headR} eyesClosed={eyesClosed} expression={currentExpression} />
+
+              {geo.decor === 'sparkle' && (
+                <>
+                  <motion.text x={geo.headCx - geo.headR - 10} y={geo.headCy - geo.headR + 4} fontSize="13" fill="#F4B942" animate={{ opacity: [0.35, 1, 0.35] }} transition={{ duration: 1.8, repeat: Infinity }}>✦</motion.text>
+                  <motion.text x={geo.headCx + geo.headR - 2} y={geo.headCy - geo.headR - 8} fontSize="9" fill="#9ED686" animate={{ opacity: [1, 0.35, 1] }} transition={{ duration: 1.8, repeat: Infinity, delay: 0.5 }}>✦</motion.text>
+                </>
+              )}
+
+              {geo.decor === 'butterfly' && <Butterfly cx={geo.headCx + geo.headR + 6} cy={geo.headCy - geo.headR + 2} />}
 
               {thirsty && (
                 <motion.path
@@ -291,8 +435,8 @@ export default function GreenieCharacter({
 
               {vibrant && (
                 <>
-                  <motion.text x={geo.headCx - geo.headR - 14} y={geo.headCy - geo.headR} fontSize="14" fill="#F4B942" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.6, repeat: Infinity }}>✦</motion.text>
-                  <motion.text x={geo.headCx + geo.headR + 4} y={geo.headCy - geo.headR - 6} fontSize="10" fill="#9ED686" animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.6, repeat: Infinity, delay: 0.4 }}>✦</motion.text>
+                  <motion.text x={geo.headCx - geo.headR - 16} y={geo.headCy + 8} fontSize="14" fill="#F4B942" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.6, repeat: Infinity }}>✦</motion.text>
+                  <motion.text x={geo.headCx + geo.headR + 6} y={geo.headCy + 14} fontSize="10" fill="#9ED686" animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.6, repeat: Infinity, delay: 0.4 }}>✦</motion.text>
                 </>
               )}
             </motion.g>

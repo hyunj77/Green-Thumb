@@ -13,12 +13,12 @@ export default function BackHeader({ title, onBack, right, fallback = '/' }) {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '18px 0 12px' }}>
-      <button className="gt-icon-btn" onClick={handleBack} aria-label="뒤로가기" style={{ flexShrink: 0 }}>
-        <ChevronLeft size={22} />
+    <div className="gt-back-header">
+      <button className="gt-back-btn" onClick={handleBack} aria-label="뒤로가기">
+        <ChevronLeft size={60} strokeWidth={2.75} color="var(--accent)" />
       </button>
-      {title && <h2 style={{ margin: 0, fontSize: 18, flex: 1, minWidth: 0 }}>{title}</h2>}
-      {right}
+      {title && <h2 style={{ margin: 0, fontSize: 20, flex: 1, minWidth: 0 }}>{title}</h2>}
+      {right && <div style={{ paddingRight: 16 }}>{right}</div>}
     </div>
   )
 }

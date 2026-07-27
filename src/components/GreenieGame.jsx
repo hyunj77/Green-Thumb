@@ -58,14 +58,16 @@ export default function GreenieGame() {
         mood={mood.key}
         hat={hat}
         accessory={accessory}
-        size={92}
+        size={220}
         interactive={!!user}
         onTap={handleTap}
         levelUpSignal={levelUpSignal}
       />
 
       <div className="gt-greenie-info">
-        <div className="gt-greenie-eyebrow">오늘의 그린이 · {stage.label} 단계 · {mood.label}</div>
+        <Link to="/greenie-stages" className="gt-greenie-eyebrow gt-greenie-eyebrow-link">
+          오늘의 그린이 · {stage.label} 단계 · {mood.label} →
+        </Link>
         <div className="gt-greenie-level">Lv. {level} {maxed && '(MAX)'}</div>
         <div className="gt-greenie-track">
           <div className="gt-greenie-fill" style={{ width: `${progress}%` }} />
@@ -75,7 +77,7 @@ export default function GreenieGame() {
         </div>
         {levelUpMsg && <div className="greenie-levelup">{levelUpMsg}</div>}
         {user ? (
-          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8, justifyContent: 'center' }}>
             <Link to="/greenie#closet" className="gt-pill-btn gt-pill-btn-ghost" style={{ fontSize: 12, padding: '8px 14px' }}>
               <Shirt size={13} /> 옷장
             </Link>

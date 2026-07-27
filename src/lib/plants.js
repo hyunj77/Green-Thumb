@@ -50,6 +50,16 @@ export async function waterPlant(id) {
   return { data, error }
 }
 
+export async function updateWateringInterval(id, days) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ watering_interval_days: days })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
 export async function deletePlant(id) {
   const { error } = await supabase.from('plants').delete().eq('id', id)
   return { error }

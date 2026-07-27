@@ -173,12 +173,10 @@ input:focus, textarea:focus, select:focus {
   padding: 40px 32px 32px;
 }
 
-.auth-modal-close {
+.auth-modal-back {
   position: absolute;
   top: 18px;
-  right: 18px;
-  color: var(--text);
-  display: inline-flex;
+  left: 18px;
 }
 
 .auth-modal-brand {
@@ -1359,6 +1357,35 @@ input:focus, textarea:focus, select:focus {
   flex-shrink: 0;
 }
 
+/* 뒤로가기 헤더 — 흰 배경, 56px 높이, blur/glass/shadow 없음 */
+.gt-back-header {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 80px;
+  padding-left: 16px;
+  background: #fff;
+}
+
+/* 뒤로가기 버튼 전용 — 화면에는 브랜드 그린 컬러의 Chevron Left 아이콘만 보이고,
+   44x44px 터치 영역은 배경/원/테두리/그림자 없이 "보이지 않게" 유지한다.
+   원형/글래스/아웃라인/플로팅 버튼 절대 금지. */
+.gt-back-btn {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin-left: -20px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
 .gt-icon-btn-dot {
   position: absolute;
   top: 8px;
@@ -1405,15 +1432,18 @@ input:focus, textarea:focus, select:focus {
 
 /* 그린이 카드 */
 .gt-greenie-card {
-  padding: 22px 22px 18px;
+  padding: 14px 20px 14px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 2px;
 }
 
 .gt-greenie-info {
   flex: 1;
   min-width: 0;
+  width: 100%;
+  text-align: center;
 }
 
 .gt-greenie-eyebrow {
@@ -1425,6 +1455,15 @@ input:focus, textarea:focus, select:focus {
   margin-bottom: 4px;
 }
 
+.gt-greenie-eyebrow-link {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.gt-greenie-eyebrow-link:hover {
+  text-decoration: underline;
+}
+
 .gt-greenie-level {
   font-size: 20px;
   font-weight: 800;
@@ -1432,7 +1471,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .gt-greenie-track {
-  margin-top: 10px;
+  margin-top: 6px;
   height: 8px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.55);
@@ -1446,7 +1485,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .gt-greenie-sub {
-  margin-top: 8px;
+  margin-top: 4px;
   font-size: 12.5px;
   color: var(--gt-text-soft);
 }
@@ -1480,8 +1519,8 @@ input:focus, textarea:focus, select:focus {
 /* 오늘의 미션 */
 .gt-mission-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
 }
 
 .gt-mission-item {
@@ -1489,7 +1528,7 @@ input:focus, textarea:focus, select:focus {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 14px 8px;
+  padding: 14px 4px;
   border-radius: 20px;
   background: var(--gt-glass);
   border: 1px solid var(--gt-glass-border);
@@ -1804,6 +1843,133 @@ body {
   font-size: 10.5px;
   font-weight: 700;
   flex: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* '+' 빠른 실행 시트 */
+.gt-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 30, 24, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.gt-sheet {
+  width: 100%;
+  max-width: 760px;
+  background: var(--bg, #fff);
+  border-radius: 24px 24px 0 0;
+  padding: 10px 20px calc(28px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 -16px 40px -14px rgba(48, 66, 40, 0.35);
+  animation: gt-sheet-up 0.22s ease-out;
+}
+
+@keyframes gt-sheet-up {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.gt-sheet-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border, #e2e2e2);
+  margin: 0 auto 12px;
+}
+
+.gt-sheet-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 12px;
+  border-radius: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.gt-sheet-action:hover {
+  background: color-mix(in srgb, var(--gt-sage) 10%, transparent);
+}
+
+/* 물주기 캘린더 */
+.watering-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.watering-calendar-weekday {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted, #8a978a);
+  padding-bottom: 6px;
+}
+
+.watering-calendar-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.watering-calendar-cell:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.watering-calendar-cell.is-today {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.watering-calendar-cell.is-selected {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.watering-calendar-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff8a5c;
+}
+
+.watering-calendar-cell.is-selected .watering-calendar-dot {
+  background: #fff;
+}
+
+.gt-sheet-action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gt-sage), var(--gt-sage-deep));
+  color: #fff;
 }
 
 .gt-tab-active {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from '../components/GreenieCharacter'
+import BackHeader from '../components/BackHeader'
 import {
   applyExp,
   equipItem,
@@ -100,7 +101,14 @@ export default function GreenieHome() {
   }
 
   if (!user) return null
-  if (loading || !greenie) return <p className="muted" style={{ padding: 20 }}>불러오는 중...</p>
+  if (loading || !greenie) {
+    return (
+      <div style={{ padding: '0 20px 60px', maxWidth: 640, margin: '0 auto' }}>
+        <BackHeader title="그린이" />
+        <p className="muted">불러오는 중...</p>
+      </div>
+    )
+  }
 
   const { level, exp, equipped_hat: hat, equipped_accessory: accessory } = greenie
   const maxed = level >= MAX_LEVEL
@@ -109,7 +117,8 @@ export default function GreenieHome() {
 
   return (
     <div style={{ padding: '0 20px 60px', maxWidth: 640, margin: '0 auto' }}>
-      <div className="greenie-card" style={{ marginTop: 20 }}>
+      <BackHeader title="그린이" />
+      <div className="greenie-card" style={{ marginTop: 4 }}>
         <span className="badge">{stage.emoji} {stage.name}</span>
         <GreenieCharacter
           level={level}

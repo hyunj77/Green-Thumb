@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Bell, Search, Droplet, Sun, SprayCan, FlaskConical, Camera, Heart, MessageCircle, Check } from 'lucide-react'
+import { Bell, Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import GreenieGame from '../components/GreenieGame'
@@ -30,7 +30,7 @@ export default function Feed() {
 
   const [myPlants, setMyPlants] = useState([])
   const [wateringAll, setWateringAll] = useState(false)
-  const [localMissions, setLocalMissions] = useState({ sun: false, spray: false, fertilize: false })
+  const [localMissions, setLocalMissions] = useState({ photo: false, growthLog: false, like: false, visitGreenie: false })
 
   const [featuredPosts, setFeaturedPosts] = useState([])
   const [gardeners, setGardeners] = useState([])
@@ -77,9 +77,10 @@ export default function Feed() {
     setWateringAll(false)
   }
 
-  const toggleLocalMission = (key) => {
+  const handleMissionGo = (key, to) => {
     if (!user) return navigate('/login')
-    setLocalMissions((m) => ({ ...m, [key]: !m[key] }))
+    setLocalMissions((m) => ({ ...m, [key]: true }))
+    navigate(to)
   }
 
   const handleFollow = async (gardenerId, isFollowing) => {
@@ -122,17 +123,21 @@ export default function Feed() {
             <span className="gt-mission-check">{waterMissionDone ? <Check size={16} /> : <Droplet size={16} />}</span>
             <span className="gt-mission-label">물주기</span>
           </button>
-          <button className="gt-mission-item" data-done={localMissions.sun} onClick={() => toggleLocalMission('sun')}>
-            <span className="gt-mission-check">{localMissions.sun ? <Check size={16} /> : <Sun size={16} />}</span>
-            <span className="gt-mission-label">햇빛</span>
+          <button className="gt-mission-item" data-done={localMissions.photo} onClick={() => handleMissionGo('photo', '/garden')}>
+            <span className="gt-mission-check">{localMissions.photo ? <Check size={16} /> : <Camera size={16} />}</span>
+            <span className="gt-mission-label">사진</span>
           </button>
-          <button className="gt-mission-item" data-done={localMissions.spray} onClick={() => toggleLocalMission('spray')}>
-            <span className="gt-mission-check">{localMissions.spray ? <Check size={16} /> : <SprayCan size={16} />}</span>
-            <span className="gt-mission-label">분무</span>
+          <button className="gt-mission-item" data-done={localMissions.growthLog} onClick={() => handleMissionGo('growthLog', '/garden')}>
+            <span className="gt-mission-check">{localMissions.growthLog ? <Check size={16} /> : <NotebookPen size={16} />}</span>
+            <span className="gt-mission-label">기록</span>
           </button>
-          <button className="gt-mission-item" data-done={localMissions.fertilize} onClick={() => toggleLocalMission('fertilize')}>
-            <span className="gt-mission-check">{localMissions.fertilize ? <Check size={16} /> : <FlaskConical size={16} />}</span>
-            <span className="gt-mission-label">비료</span>
+          <button className="gt-mission-item" data-done={localMissions.like} onClick={() => handleMissionGo('like', '/community')}>
+            <span className="gt-mission-check">{localMissions.like ? <Check size={16} /> : <Heart size={16} />}</span>
+            <span className="gt-mission-label">좋아요</span>
+          </button>
+          <button className="gt-mission-item" data-done={localMissions.visitGreenie} onClick={() => handleMissionGo('visitGreenie', '/greenie#visit')}>
+            <span className="gt-mission-check">{localMissions.visitGreenie ? <Check size={16} /> : <Sprout size={16} />}</span>
+            <span className="gt-mission-label">방문</span>
           </button>
         </div>
       </div>

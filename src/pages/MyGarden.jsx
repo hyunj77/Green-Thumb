@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
+import { Bell, Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, deletePlant, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, deletePlant, updateWateringInterval, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
 import GrowthDiary from '../components/GrowthDiary'
 import AiFeaturePreview from '../components/AiFeaturePreview'
+import WateringCalendar from '../components/WateringCalendar'
 
 export default function MyGarden() {
   const { user } = useAuth()
+  const location = useLocation()
   const isGuest = !user
   const [plants, setPlants] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,6 +23,9 @@ export default function MyGarden() {
   const [intervalTouched, setIntervalTouched] = useState(false)
   const [expandedId, setExpandedId] = useState(null)
   const [tipId, setTipId] = useState(null)
+  const [reminderId, setReminderId] = useState(null)
+  const [reminderDraft, setReminderDraft] = useState(7)
+  const [savingReminder, setSavingReminder] = useState(false)
   const [greenieToast, setGreenieToast] = useState('')
 
   const speciesInfo = findSpeciesInfo(species)
@@ -39,6 +44,15 @@ export default function MyGarden() {
   }
 
   useEffect(load, [user])
+
+  // '+' 버튼 등 다른 화면에서 해시로 들어오면 등록 폼을 열거나 AI 미리보기로 스크롤한다
+  useEffect(() => {
+    if (location.hash === '#new-plant' && !isGuest) setShowForm(true)
+    if (location.hash) {
+      const el = document.querySelector(location.hash)
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [location.hash, isGuest])
 
   useEffect(() => {
     if (speciesInfo && !intervalTouched) setInterval_(speciesInfo.wateringDays)
@@ -65,9 +79,22 @@ export default function MyGarden() {
     setPlants((prev) => prev.filter((p) => p.id !== id))
   }
 
+  const openReminder = (plant) => {
+    setReminderId(reminderId === plant.id ? null : plant.id)
+    setReminderDraft(plant.watering_interval_days || 7)
+  }
+
+  const handleSaveReminder = async (id) => {
+    setSavingReminder(true)
+    const { data } = await updateWateringInterval(id, Number(reminderDraft))
+    if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
+    setSavingReminder(false)
+    setReminderId(null)
+  }
+
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div id="new-plant" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, scrollMarginTop: 20 }}>
         <h2 style={{ margin: 0 }}>🌿 마이 그린 도감</h2>
         {!isGuest && <button onClick={() => setShowForm((v) => !v)}><Plus size={16} /> 식물 등록</button>}
       </div>
@@ -152,6 +179,9 @@ export default function MyGarden() {
                     )}
                     {!isGuest && (
                       <>
+                        <button className="secondary" onClick={() => openReminder(plant)}>
+                          <Bell size={14} />
+                        </button>
                         <button className="secondary" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
                           <NotebookPen size={14} />
                         </button>
@@ -159,6 +189,28 @@ export default function MyGarden() {
                       </>
                     )}
                   </div>
+
+                  {reminderId === plant.id && (
+                    <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+                      <div className="contact-row-label" style={{ marginBottom: 8 }}>🔔 물주기 알림 설정</div>
+                      <p className="muted" style={{ marginTop: 0, marginBottom: 10 }}>
+                        마지막 물주기로부터 며칠마다 알려드릴지 정해주세요.
+                      </p>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <input
+                          type="number"
+                          min={1}
+                          value={reminderDraft}
+                          onChange={(e) => setReminderDraft(e.target.value)}
+                          style={{ maxWidth: 90 }}
+                        />
+                        <span className="muted">일마다</span>
+                        <button onClick={() => handleSaveReminder(plant.id)} disabled={savingReminder} style={{ marginLeft: 'auto' }}>
+                          저장
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {tipId === plant.id && info && (
                     <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
@@ -181,6 +233,8 @@ export default function MyGarden() {
           })}
         </div>
       )}
+
+      {!loading && plants.length > 0 && <WateringCalendar plants={plants} />}
 
       <AiFeaturePreview />
     </div>

@@ -2,14 +2,26 @@ import BackHeader from '../components/BackHeader'
 import GreenieCharacter from '../components/GreenieCharacter'
 import { STAGES } from '../lib/greenieStages'
 
-const SAMPLE_LEVELS = { seed: 1, sprout: 25, leaves: 120, growth: 350, bloom: 750 }
+const SAMPLE_LEVELS = {
+  seed: 5,
+  sprout: 30,
+  'sprout-leaf': 100,
+  growth: 220,
+  bud: 400,
+  bloom: 600,
+  fruit: 800,
+  tree: 950,
+}
 
 const STAGE_DESC = {
-  seed: '아직 흙 속에 잠들어 있어요. 첫 물주기를 시작하면 곧 싹이 터요.',
-  sprout: '작은 새싹이 얼굴을 내밀었어요. 표정이 생기기 시작해요.',
-  leaves: '잎이 한 쌍 자라나요. 그린이가 조금씩 자리를 잡아가요.',
-  growth: '잎이 풍성해지고 꽃봉오리가 맺혀요. 곧 개화를 앞두고 있어요.',
-  bloom: '활짝 피었어요! 그린이의 가장 화려한 완성 모습이에요.',
+  seed: '아직 흙 속에서 잠들어 있어요. 첫 물주기를 시작하면 깨어나요.',
+  sprout: '작은 새싹이 얼굴을 내밀었어요. 세상을 처음 만났어요!',
+  'sprout-leaf': '첫 잎이 자라났어요. 그린이가 웃기 시작했어요.',
+  growth: '몸집이 커지고 잎이 풍성해졌어요. 건강하게 자라고 있어요.',
+  bud: '작은 꽃봉오리가 올라왔어요. 곧 아름답게 피어날 거예요.',
+  bloom: '활짝 꽃을 피웠어요! 그린이의 가장 아름다운 순간이에요.',
+  fruit: '꽃이 지고 작은 열매가 열렸어요. 그린이가 더욱 성숙해졌어요.',
+  tree: '드디어 완전한 모습이 되었어요! 모두가 부러워하는 최고의 그린이예요.',
 }
 
 const MOOD_SAMPLES = [
