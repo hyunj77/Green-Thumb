@@ -1418,9 +1418,9 @@ input:focus, textarea:focus, select:focus {
    원형/글래스/아웃라인/플로팅 버튼 절대 금지. */
 .gt-back-btn {
   position: relative;
-  width: 44px;
-  height: 44px;
-  margin-left: -10px;
+  width: 48px;
+  height: 48px;
+  margin-left: -12px;
   background: none;
   border: none;
   border-radius: 0;
