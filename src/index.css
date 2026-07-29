@@ -1432,7 +1432,7 @@ input:focus, textarea:focus, select:focus {
   position: relative;
   width: 80px;
   height: 80px;
-  margin-left: 0;
+  margin-left: -16px;
   background: none;
   border: none;
   border-radius: 0;
