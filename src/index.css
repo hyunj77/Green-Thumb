@@ -1775,17 +1775,19 @@ input:focus, textarea:focus, select:focus {
 }
 
 .gt-ai-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
   margin-top: 6px;
-  max-width: 94%;
+  max-width: 100%;
+  word-break: keep-all;
 }
 
 .gt-ai-desc {
-  font-size: 12.5px;
+  font-size: 12px;
   opacity: 0.9;
   margin-top: 6px;
-  max-width: 94%;
+  max-width: 100%;
+  word-break: keep-all;
 }
 
 .gt-ai-btn {

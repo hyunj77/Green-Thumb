@@ -10,7 +10,7 @@ import { fetchSuggestedGardeners, fetchFollowingIds, toggleFollow } from '../lib
 import { timeAgo } from '../lib/time'
 
 const TYPE_EMOJI = { 관엽식물: '🌿', '다육·선인장': '🌵', '꽃·개화식물': '🌸', '허브·식용': '🌱', 행잉식물: '🪴', 공기정화: '🍃', 수경재배: '💧', 초보자용: '🔰' }
-const HOME_CATEGORY_PREVIEW = PLANT_TYPES.slice(0, 5)
+const HOME_CATEGORY_PREVIEW = PLANT_TYPES.slice(0, 4)
 
 function todaySpecies() {
   const key = new Date().toISOString().slice(0, 10)
