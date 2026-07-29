@@ -30,6 +30,17 @@ export async function deleteGrowthLog(id) {
   return { error }
 }
 
+// 오늘의 미션(사진/기록) 실서버 체크용 — 오늘 이 유저가 작성한 성장일기 전체
+export async function fetchTodayGrowthLogsByAuthor(authorId) {
+  const today = new Date().toISOString().slice(0, 10)
+  const { data, error } = await supabase
+    .from('growth_logs')
+    .select('id, photo_url')
+    .eq('author_id', authorId)
+    .eq('log_date', today)
+  return { data: data || [], error }
+}
+
 // 매거진 피드: 마이 그린 도감에 올라온 성장 사진들을 모아 보여준다
 export async function fetchPublicGrowthFeed(limit = 12) {
   const { data, error } = await supabase

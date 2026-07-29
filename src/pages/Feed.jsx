@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import GreenieGame from '../components/GreenieGame'
 import { fetchFeaturedPosts } from '../lib/posts'
 import { fetchMyPlants, waterPlant, nextWateringDate } from '../lib/plants'
+import { fetchTodayGrowthLogsByAuthor } from '../lib/growthLogs'
 import { PLANT_SPECIES, PLANT_TYPES } from '../lib/encyclopedia'
 import { fetchSuggestedGardeners, fetchFollowingIds, toggleFollow } from '../lib/follows'
 import { timeAgo } from '../lib/time'
@@ -27,7 +28,8 @@ export default function Feed() {
 
   const [myPlants, setMyPlants] = useState([])
   const [wateringAll, setWateringAll] = useState(false)
-  const [localMissions, setLocalMissions] = useState({ photo: false, growthLog: false, like: false, visitGreenie: false })
+  const [todayGrowthLogs, setTodayGrowthLogs] = useState([])
+  const [localMissions, setLocalMissions] = useState({ like: false, visitGreenie: false })
 
   const [featuredPosts, setFeaturedPosts] = useState([])
   const [gardeners, setGardeners] = useState([])
@@ -45,10 +47,12 @@ export default function Feed() {
     if (!user) {
       setMyPlants([])
       setFollowingIds([])
+      setTodayGrowthLogs([])
       return
     }
     fetchMyPlants(user.id).then(({ data }) => setMyPlants(data || []))
     fetchFollowingIds(user.id).then(({ data }) => setFollowingIds(data || []))
+    fetchTodayGrowthLogsByAuthor(user.id).then(({ data }) => setTodayGrowthLogs(data))
   }, [user])
 
   const handleSearch = (e) => {
@@ -61,6 +65,8 @@ export default function Feed() {
     return next && next <= new Date()
   })
   const waterMissionDone = myPlants.length > 0 && plantsDueToday.length === 0
+  const growthLogMissionDone = todayGrowthLogs.length > 0
+  const photoMissionDone = todayGrowthLogs.some((log) => log.photo_url)
 
   const handleWaterMission = async () => {
     if (!user) return navigate('/login')
@@ -111,12 +117,12 @@ export default function Feed() {
             <span className="gt-mission-check">{waterMissionDone ? <Check size={16} /> : <Droplet size={16} />}</span>
             <span className="gt-mission-label">물주기</span>
           </button>
-          <button className="gt-mission-item" data-done={localMissions.photo} onClick={() => handleMissionGo('photo', '/garden')}>
-            <span className="gt-mission-check">{localMissions.photo ? <Check size={16} /> : <Camera size={16} />}</span>
+          <button className="gt-mission-item" data-done={photoMissionDone} onClick={() => (user ? navigate('/garden') : navigate('/login'))}>
+            <span className="gt-mission-check">{photoMissionDone ? <Check size={16} /> : <Camera size={16} />}</span>
             <span className="gt-mission-label">사진</span>
           </button>
-          <button className="gt-mission-item" data-done={localMissions.growthLog} onClick={() => handleMissionGo('growthLog', '/garden')}>
-            <span className="gt-mission-check">{localMissions.growthLog ? <Check size={16} /> : <NotebookPen size={16} />}</span>
+          <button className="gt-mission-item" data-done={growthLogMissionDone} onClick={() => (user ? navigate('/garden') : navigate('/login'))}>
+            <span className="gt-mission-check">{growthLogMissionDone ? <Check size={16} /> : <NotebookPen size={16} />}</span>
             <span className="gt-mission-label">기록</span>
           </button>
           <button className="gt-mission-item" data-done={localMissions.like} onClick={() => handleMissionGo('like', '/community')}>
