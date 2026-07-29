@@ -81,7 +81,7 @@ export default function GreenieGame() {
             <Link to="/greenie" className="gt-pill-btn gt-pill-btn-ghost" style={{ fontSize: 12, padding: '8px 14px' }}>
               <Shirt size={13} /> 옷장
             </Link>
-            <Link to="/greenie" className="gt-pill-btn gt-pill-btn-ghost" style={{ fontSize: 12, padding: '8px 14px' }}>
+            <Link to="/greenie?tab=visit" className="gt-pill-btn gt-pill-btn-ghost" style={{ fontSize: 12, padding: '8px 14px' }}>
               <Users size={13} /> 방문하기
             </Link>
           </div>
