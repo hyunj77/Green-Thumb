@@ -112,7 +112,7 @@ export default function Community() {
       {growthSpotlight.length > 0 && (
         <div className="gt-section">
           <div className="gt-section-head">
-            <span className="gt-section-title">초록빛 일상을 가꾸는 이웃들의 식물 이야기</span>
+            <span className="gt-section-title">이웃들의 초록빛 식물 이야기</span>
             <Link to="/community/board/growth" className="gt-section-link">더보기</Link>
           </div>
           <div className="gt-post-scroll">
