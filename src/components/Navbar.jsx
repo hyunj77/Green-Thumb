@@ -34,7 +34,7 @@ export default function Navbar() {
         {user && <Link to="/garden" className="chip nav-link-desktop-only"><Plus size={14} /> 식물 등록</Link>}
         <Link to={user ? '/messages' : '/login'} className="chip nav-link-desktop-only"><MessageSquare size={14} /> 채팅</Link>
         <Link to={user ? '/notifications' : '/login'} className="icon-btn" aria-label="알림">
-          <Bell size={18} />
+          <Bell size={16} />
           {unread > 0 && <span className="icon-btn-dot" />}
         </Link>
         {user ? (
