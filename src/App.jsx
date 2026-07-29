@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import MobileTabBar from './components/MobileTabBar'
+import ScrollToTop from './components/ScrollToTop'
 import ProtectedRoute from './components/ProtectedRoute'
 import Feed from './pages/Feed'
 import Community from './pages/Community'
@@ -28,6 +29,7 @@ export default function App() {
   return (
     <AuthProvider>
       <HashRouter>
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Feed />} />
