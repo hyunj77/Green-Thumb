@@ -96,7 +96,11 @@ export default function MyGarden() {
     <div style={{ padding: '0 20px 40px' }}>
       <div id="new-plant" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, scrollMarginTop: 20 }}>
         <h2 className="gt-page-title">마이 그린 도감</h2>
-        {!isGuest && <button onClick={() => setShowForm((v) => !v)}><Plus size={16} /> 식물 등록</button>}
+        {!isGuest && (
+          <button onClick={() => setShowForm((v) => !v)} style={{ padding: '8px 14px', fontSize: 13 }}>
+            <Plus size={14} /> 식물 등록
+          </button>
+        )}
       </div>
 
       {greenieToast && (

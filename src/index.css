@@ -66,7 +66,7 @@ h1, h2, h3 {
 /* 홈/커뮤니티/그린하우스/MY 등 탭 최상위 화면의 상단 타이틀을 통일한다 */
 .gt-page-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--text-h);
 }
@@ -1008,6 +1008,7 @@ input:focus, textarea:focus, select:focus {
 .messages-conv-item {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
   background: none;
   box-shadow: none;
@@ -1412,24 +1413,26 @@ input:focus, textarea:focus, select:focus {
   flex-shrink: 0;
 }
 
-/* 뒤로가기 헤더 — 흰 배경, 56px 높이, blur/glass/shadow 없음 */
+/* 뒤로가기 헤더 — 흰 배경, blur/glass/shadow 없음.
+   좌측 padding은 두지 않는다 — 페이지 자체 padding(예: .glass-home의 22px)에
+   맞춰서, 버튼 영역이 아래쪽 검색창 등과 같은 왼쪽 기준선에서 시작하도록 한다. */
 .gt-back-header {
   display: flex;
   align-items: center;
   gap: 2px;
-  height: 56px;
-  padding-left: 16px;
+  height: 88px;
+  padding-left: 0;
   background: #fff;
 }
 
 /* 뒤로가기 버튼 전용 — 화면에는 브랜드 그린 컬러의 Chevron Left 아이콘만 보이고,
-   44x44px 터치 영역은 배경/원/테두리/그림자 없이 "보이지 않게" 유지한다.
+   터치 영역은 배경/원/테두리/그림자 없이 "보이지 않게" 유지한다.
    원형/글래스/아웃라인/플로팅 버튼 절대 금지. */
 .gt-back-btn {
   position: relative;
-  width: 48px;
-  height: 48px;
-  margin-left: -12px;
+  width: 80px;
+  height: 80px;
+  margin-left: 0;
   background: none;
   border: none;
   border-radius: 0;
@@ -1987,6 +1990,7 @@ body {
 .gt-sheet-action {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 14px;
   padding: 14px 12px;
   border-radius: 16px;
