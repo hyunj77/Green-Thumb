@@ -446,7 +446,6 @@ input:focus, textarea:focus, select:focus {
   position: relative;
   margin-top: 4px;
   border-radius: 24px;
-  padding: 28px 24px;
   background: var(--green);
   color: #fff;
   min-height: 260px;
@@ -454,6 +453,14 @@ input:focus, textarea:focus, select:focus {
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
+}
+
+/* 좌우 이동 버튼이 차지하는 폭(44px 버튼 + 16px 여백)만큼 콘텐츠 영역에
+   안전 여백을 둬서, 제목이 길어져도 버튼과 절대 겹치지 않게 한다. */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 64px;
 }
 
 .hero-banner-photo {

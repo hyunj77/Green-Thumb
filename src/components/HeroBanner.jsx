@@ -35,22 +35,24 @@ export default function HeroBanner({ backgroundImage = heroPhoto }) {
       <button className="hero-nav hero-nav-next" onClick={goNext} aria-label="다음 공지">
         <ChevronRight size={20} />
       </button>
-      <span className="badge hero-badge">{slide.badge}</span>
-      <h2 className="hero-title">{slide.title}</h2>
-      <p className="hero-subtitle">{slide.subtitle}</p>
-      {slide.to && (
-        <Link to={slide.to} className="hero-cta">{slide.cta} →</Link>
-      )}
-      <div className="hero-dots">
-        {SLIDES.map((s, i) => (
-          <button
-            key={s.title}
-            className="hero-dot"
-            data-active={i === index}
-            aria-label={`슬라이드 ${i + 1}`}
-            onClick={() => setIndex(i)}
-          />
-        ))}
+      <div className="hero-content">
+        <span className="badge hero-badge">{slide.badge}</span>
+        <h2 className="hero-title">{slide.title}</h2>
+        <p className="hero-subtitle">{slide.subtitle}</p>
+        {slide.to && (
+          <Link to={slide.to} className="hero-cta">{slide.cta} →</Link>
+        )}
+        <div className="hero-dots">
+          {SLIDES.map((s, i) => (
+            <button
+              key={s.title}
+              className="hero-dot"
+              data-active={i === index}
+              aria-label={`슬라이드 ${i + 1}`}
+              onClick={() => setIndex(i)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
