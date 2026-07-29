@@ -189,7 +189,7 @@ export default function Feed() {
         >
           <div className="gt-ai-eyebrow">AI 식물 진단</div>
           <div className="gt-ai-title">사진 한 장으로 병충해·건강 상태 확인</div>
-          <p className="gt-ai-desc">마이 그린 도감에서 준비 중이에요. 조금만 기다려주세요.</p>
+          <p className="gt-ai-desc">마이 그린 도감에서 준비 중이에요.<br />조금만 기다려주세요.</p>
           <span className="gt-pill-btn gt-ai-btn"><Camera size={14} /> 사진 촬영하고 진단받기</span>
         </button>
       </div>

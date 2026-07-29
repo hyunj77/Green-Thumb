@@ -32,12 +32,12 @@ export default function CommunityFeedList({
         <input type="text" placeholder="게시물 · 성장일지 검색" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
       </form>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
-        <div className="view-toggle" style={{ marginBottom: 0 }}>
+      <div className="view-toggle-row">
+        <div className="view-toggle" style={{ marginBottom: 0, flexShrink: 0 }}>
           <button className={sort === 'recent' ? 'view-toggle-active' : ''} onClick={() => setSort('recent')}>최신순</button>
           <button className={sort === 'popular' ? 'view-toggle-active' : ''} onClick={() => setSort('popular')}>🔥 인기순</button>
         </div>
-        <div className="view-toggle" style={{ marginBottom: 0 }}>
+        <div className="view-toggle" style={{ marginBottom: 0, flexShrink: 0 }}>
           <button className={viewMode === 'list' ? 'view-toggle-active' : ''} onClick={() => setViewMode('list')}>
             <List size={14} /> 리스트
           </button>

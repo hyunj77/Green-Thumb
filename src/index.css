@@ -699,6 +699,21 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* View toggle */
+.view-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.view-toggle-row::-webkit-scrollbar {
+  display: none;
+}
+
 .view-toggle {
   display: flex;
   gap: 8px;
