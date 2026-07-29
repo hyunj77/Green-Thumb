@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from '../components/GreenieCharacter'
 import BackHeader from '../components/BackHeader'
@@ -50,7 +50,6 @@ function ClosetRow({ title, slot, level, equippedKey, onEquip }) {
 export default function GreenieHome() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
   const [greenie, setGreenie] = useState(null)
   const [loading, setLoading] = useState(true)
   const [levelUpMsg, setLevelUpMsg] = useState('')
@@ -69,13 +68,6 @@ export default function GreenieHome() {
     })
     fetchGreenieLeaderboard(user.id).then(({ data }) => setLeaderboard(data))
   }, [user, navigate])
-
-  // '옷장'/'방문하기'는 같은 페이지 안의 다른 섹션이라, 해시로 들어오면 해당 섹션으로 스크롤한다
-  useEffect(() => {
-    if (!location.hash || loading) return
-    const el = document.querySelector(location.hash)
-    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [location.hash, loading])
 
   const handleTap = () => {
     setGreenie((prev) => {
