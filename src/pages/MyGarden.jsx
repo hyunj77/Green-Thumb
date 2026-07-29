@@ -170,7 +170,7 @@ export default function MyGarden() {
                   )}
                   <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
                     {!isGuest && (
-                      <button onClick={() => handleWater(plant.id)} style={{ flex: 1, whiteSpace: 'nowrap', padding: '10px 8px' }}><Droplets size={14} /> 물 줬어요</button>
+                      <button onClick={() => handleWater(plant.id)} style={{ flex: 1, justifyContent: 'center', whiteSpace: 'nowrap', padding: '10px 8px' }}><Droplets size={14} /> 물 줬어요</button>
                     )}
                     {info && (
                       <button className="secondary" style={{ padding: '10px' }} onClick={() => setTipId(tipId === plant.id ? null : plant.id)}>
