@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Trash2 } from 'lucide-react'
+import { Clapperboard, Trash2 } from 'lucide-react'
 import { fetchGrowthLogs, createGrowthLog, deleteGrowthLog } from '../lib/growthLogs'
 import ImageUploadField from './ImageUploadField'
+import GrowthTimelapse from './GrowthTimelapse'
 
 export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
   const [logs, setLogs] = useState([])
@@ -10,8 +11,10 @@ export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
   const [heightCm, setHeightCm] = useState('')
   const [photoUrl, setPhotoUrl] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [showTimelapse, setShowTimelapse] = useState(false)
 
   const isOwner = currentUserId && currentUserId === ownerId
+  const photoCount = logs.filter((log) => log.photo_url).length
 
   const load = () => {
     setLoading(true)
@@ -52,6 +55,19 @@ export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
           <button type="submit" disabled={submitting} style={{ alignSelf: 'flex-start' }}>{submitting ? '기록 중...' : '기록 추가'}</button>
         </form>
       )}
+
+      {photoCount >= 2 && (
+        <button
+          type="button"
+          className="secondary"
+          style={{ marginBottom: 14, fontSize: 12.5 }}
+          onClick={() => setShowTimelapse(true)}
+        >
+          <Clapperboard size={13} /> 성장 타임랩스 보기 ({photoCount}장)
+        </button>
+      )}
+
+      {showTimelapse && <GrowthTimelapse logs={logs} onClose={() => setShowTimelapse(false)} />}
 
       {loading ? (
         <p className="muted">불러오는 중...</p>

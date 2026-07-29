@@ -1,4 +1,4 @@
-import { Clapperboard, Sparkles, Stethoscope } from 'lucide-react'
+import { Sparkles, Stethoscope } from 'lucide-react'
 
 const SAMPLES = [
   {
@@ -10,11 +10,6 @@ const SAMPLES = [
     Icon: Sparkles,
     title: 'AI 성장 예측',
     sample: '현재 몬스테라 상태 기준 3개월 후 예상 키 68cm · 새잎 4~5장 예상',
-  },
-  {
-    Icon: Clapperboard,
-    title: '성장 타임랩스',
-    sample: '지금까지 기록한 성장일기 사진을 이어붙여 자동으로 성장 영상을 만들어드려요',
   },
 ]
 
