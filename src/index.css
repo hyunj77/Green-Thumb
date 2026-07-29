@@ -595,6 +595,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Category chips */
+.filter-group-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin-bottom: 8px;
+}
+
 .chip-row {
   display: flex;
   flex-wrap: wrap;

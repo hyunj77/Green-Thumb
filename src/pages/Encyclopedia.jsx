@@ -30,13 +30,15 @@ export default function Encyclopedia() {
         <input type="text" className="search-input" placeholder="식물 이름 검색" value={query} onChange={(e) => setQuery(e.target.value)} style={{ paddingLeft: 38 }} />
       </div>
 
-      <div className="chip-row" style={{ marginTop: 0, marginBottom: 10 }}>
+      <div className="filter-group-label">종류</div>
+      <div className="chip-row" style={{ marginTop: 0, marginBottom: 16 }}>
         <button className={`chip ${type === '' ? 'chip-active' : ''}`} onClick={() => setType('')}>전체 종류</button>
         {PLANT_TYPES.map((t) => (
           <button key={t} className={`chip ${type === t ? 'chip-active' : ''}`} onClick={() => setType(t)}>{t}</button>
         ))}
       </div>
 
+      <div className="filter-group-label">난이도</div>
       <div className="chip-row" style={{ marginTop: 0, marginBottom: 20 }}>
         <button className={`chip ${difficulty === '' ? 'chip-active' : ''}`} onClick={() => setDifficulty('')}>전체 난이도</button>
         {DIFFICULTY_ORDER.map((level) => (
