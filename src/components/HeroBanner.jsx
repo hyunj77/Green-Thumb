@@ -1,24 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import heroPhoto from '../assets/1.png'
+import wateringPhoto from '../assets/화분에 물주기.jpg'
+import neighborPhoto from '../assets/식물3.jpg'
+import gradePhoto from '../assets/화분노트북.jpg'
 
 const SLIDES = [
-  { badge: '공지', title: '우리 일상의 식물 이야기, Green Thumb', subtitle: '매일 조금씩 자라나는 초록빛 순간들, 이웃 집사들과 함께 나눠보세요' },
-  { badge: 'NEW', title: '오늘의 물주기, 잊지 않으셨나요?', subtitle: '마이 그린 도감에서 우리 집 식물 상태를 확인해보세요' },
-  { badge: 'PICK', title: '이웃 집사들의 방명록을 구경해보세요', subtitle: '초록 엄지 응원 도장도 눌러줄 수 있어요' },
+  { badge: '공지', title: '우리 일상의 식물 이야기, Green Thumb', subtitle: '매일 조금씩 자라나는 초록빛 순간들, 이웃 집사들과 함께 나눠보세요', image: heroPhoto },
+  { badge: 'NEW', title: '오늘의 물주기, 잊지 않으셨나요?', subtitle: '마이 그린 도감에서 우리 집 식물 상태를 확인해보세요', image: wateringPhoto },
+  { badge: 'PICK', title: '이웃 집사들의 방명록을 구경해보세요', subtitle: '초록 엄지 응원 도장도 눌러줄 수 있어요', image: neighborPhoto },
   {
     badge: '공지',
     title: '🌰 씨앗 집사부터 👑 플랜트 마스터까지',
     subtitle: '식물을 키울수록 등급이 올라가요. 등급 기준이 궁금하다면?',
     to: '/grades',
     cta: '등급 안내 보기',
+    image: gradePhoto,
   },
 ]
 
 const AUTOPLAY_MS = 4000
 const SWIPE_THRESHOLD = 40
 
-export default function HeroBanner({ backgroundImage = heroPhoto }) {
+export default function HeroBanner() {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const touchStartX = useRef(null)
@@ -51,14 +55,14 @@ export default function HeroBanner({ backgroundImage = heroPhoto }) {
 
   return (
     <div
-      className={`hero-banner ${backgroundImage ? 'hero-banner-photo' : ''}`}
-      style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
+      className="hero-banner hero-banner-photo"
+      style={{ backgroundImage: `url(${slide.image})` }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {backgroundImage && <div className="hero-banner-scrim" />}
+      <div className="hero-banner-scrim" />
       <div className="hero-content">
         <div className="hero-slide-fade" key={index}>
           <span className="badge hero-badge">{slide.badge}</span>
