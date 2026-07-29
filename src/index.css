@@ -1439,7 +1439,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow: none;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   color: var(--accent);
   flex-shrink: 0;
 }
