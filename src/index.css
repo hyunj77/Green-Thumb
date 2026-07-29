@@ -1472,6 +1472,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  gap: 10px;
   margin-bottom: 14px;
 }
 
@@ -1480,12 +1481,17 @@ input:focus, textarea:focus, select:focus {
   font-weight: 800;
   color: var(--gt-text);
   letter-spacing: -0.01em;
+  min-width: 0;
+  flex: 1;
+  word-break: keep-all;
 }
 
 .gt-section-link {
   font-size: 13px;
   font-weight: 600;
   color: var(--gt-sage-deep);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* 그린이 카드 */
