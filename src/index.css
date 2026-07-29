@@ -1349,7 +1349,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   gap: 2px;
-  height: 80px;
+  height: 56px;
   padding-left: 16px;
   background: #fff;
 }
@@ -1359,9 +1359,9 @@ input:focus, textarea:focus, select:focus {
    원형/글래스/아웃라인/플로팅 버튼 절대 금지. */
 .gt-back-btn {
   position: relative;
-  width: 72px;
-  height: 72px;
-  margin-left: -20px;
+  width: 44px;
+  height: 44px;
+  margin-left: -10px;
   background: none;
   border: none;
   border-radius: 0;
