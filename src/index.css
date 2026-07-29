@@ -466,12 +466,25 @@ input:focus, textarea:focus, select:focus {
   overflow: hidden;
 }
 
-/* 좌우 이동 버튼이 차지하는 폭(44px 버튼 + 16px 여백)만큼 콘텐츠 영역에
-   안전 여백을 둬서, 제목이 길어져도 버튼과 절대 겹치지 않게 한다. */
 .hero-content {
   display: flex;
   flex-direction: column;
-  padding: 28px 64px;
+  padding: 28px 24px;
+}
+
+.hero-slide-fade {
+  display: flex;
+  flex-direction: column;
+  animation: hero-fade-in 0.4s ease;
+}
+
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-fade { animation: none; }
 }
 
 .hero-banner-photo {
@@ -485,7 +498,7 @@ input:focus, textarea:focus, select:focus {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.1) 60%);
 }
 
-.hero-banner > *:not(.hero-banner-scrim):not(.hero-nav) {
+.hero-banner > *:not(.hero-banner-scrim) {
   position: relative;
   z-index: 1;
 }
@@ -523,37 +536,6 @@ input:focus, textarea:focus, select:focus {
   color: var(--accent);
   font-weight: 700;
   font-size: 12px;
-}
-
-.hero-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  color: #fff;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  padding: 0;
-}
-
-.hero-nav:hover {
-  background: rgba(0, 0, 0, 0.46);
-}
-
-.hero-nav-prev {
-  left: 16px;
-}
-
-.hero-nav-next {
-  right: 16px;
 }
 
 .hero-dots {

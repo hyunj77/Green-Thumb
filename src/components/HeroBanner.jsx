@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import heroPhoto from '../assets/1.png'
 
 const SLIDES = [
@@ -16,32 +15,59 @@ const SLIDES = [
   },
 ]
 
+const AUTOPLAY_MS = 4000
+const SWIPE_THRESHOLD = 40
+
 export default function HeroBanner({ backgroundImage = heroPhoto }) {
   const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const touchStartX = useRef(null)
   const slide = SLIDES[index]
 
   const goPrev = () => setIndex((i) => (i - 1 + SLIDES.length) % SLIDES.length)
   const goNext = () => setIndex((i) => (i + 1) % SLIDES.length)
 
+  // 4초마다 자동 전환, 마우스 오버/터치 중에는 정지
+  useEffect(() => {
+    if (paused) return undefined
+    const timer = setInterval(goNext, AUTOPLAY_MS)
+    return () => clearInterval(timer)
+  }, [paused, index])
+
+  const handleTouchStart = (e) => {
+    setPaused(true)
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e) => {
+    const startX = touchStartX.current
+    touchStartX.current = null
+    setPaused(false)
+    if (startX == null) return
+    const deltaX = e.changedTouches[0].clientX - startX
+    if (deltaX > SWIPE_THRESHOLD) goPrev()
+    else if (deltaX < -SWIPE_THRESHOLD) goNext()
+  }
+
   return (
     <div
       className={`hero-banner ${backgroundImage ? 'hero-banner-photo' : ''}`}
       style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {backgroundImage && <div className="hero-banner-scrim" />}
-      <button className="hero-nav hero-nav-prev" onClick={goPrev} aria-label="이전 공지">
-        <ChevronLeft size={20} />
-      </button>
-      <button className="hero-nav hero-nav-next" onClick={goNext} aria-label="다음 공지">
-        <ChevronRight size={20} />
-      </button>
       <div className="hero-content">
-        <span className="badge hero-badge">{slide.badge}</span>
-        <h2 className="hero-title">{slide.title}</h2>
-        <p className="hero-subtitle">{slide.subtitle}</p>
-        {slide.to && (
-          <Link to={slide.to} className="hero-cta">{slide.cta} →</Link>
-        )}
+        <div className="hero-slide-fade" key={index}>
+          <span className="badge hero-badge">{slide.badge}</span>
+          <h2 className="hero-title">{slide.title}</h2>
+          <p className="hero-subtitle">{slide.subtitle}</p>
+          {slide.to && (
+            <Link to={slide.to} className="hero-cta">{slide.cta} →</Link>
+          )}
+        </div>
         <div className="hero-dots">
           {SLIDES.map((s, i) => (
             <button
