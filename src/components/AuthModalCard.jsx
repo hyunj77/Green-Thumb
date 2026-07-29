@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, Leaf } from 'lucide-react'
+import { Leaf } from 'lucide-react'
 
 function KakaoMark() {
   return (
@@ -58,8 +58,6 @@ export default function AuthModalCard({ activeTab, children }) {
   return (
     <div className="auth-modal-wrap">
       <div className="card auth-card auth-modal-card">
-        <Link to="/" className="gt-back-btn auth-modal-back" aria-label="뒤로가기"><ChevronLeft size={26} strokeWidth={2.5} color="var(--accent)" /></Link>
-
         <div className="auth-modal-brand">
           <Leaf size={22} />
           Green Thumb
