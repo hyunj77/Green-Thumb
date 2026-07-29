@@ -608,10 +608,11 @@ input:focus, textarea:focus, select:focus {
   font-size: 13px;
 }
 
-.hero-cta {
+.hero-banner > .hero-cta {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
   display: inline-flex;
-  align-self: flex-start;
-  margin-top: 10px;
   padding: 7px 14px;
   border-radius: 999px;
   background: #fff;

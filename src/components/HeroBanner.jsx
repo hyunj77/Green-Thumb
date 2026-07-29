@@ -68,9 +68,6 @@ export default function HeroBanner() {
           <span className="badge hero-badge">{slide.badge}</span>
           <h2 className="hero-title">{slide.title}</h2>
           <p className="hero-subtitle">{slide.subtitle}</p>
-          {slide.to && (
-            <Link to={slide.to} className="hero-cta">{slide.cta} →</Link>
-          )}
         </div>
         <div className="hero-dots">
           {SLIDES.map((s, i) => (
@@ -84,6 +81,9 @@ export default function HeroBanner() {
           ))}
         </div>
       </div>
+      {slide.to && (
+        <Link to={slide.to} className="hero-cta">{slide.cta} →</Link>
+      )}
     </div>
   )
 }
