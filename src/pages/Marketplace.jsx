@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { MapPin, Plus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
+import ImageUploadField from '../components/ImageUploadField'
 import {
   fetchListings, createListing,
   MARKET_CATEGORIES, MARKET_CATEGORY_LABEL,
@@ -125,7 +126,7 @@ export default function Marketplace() {
             </select>
             <input type="text" placeholder="상세 지역 (예: 마포구)" value={locationText} onChange={(e) => setLocationText(e.target.value)} />
           </div>
-          <input type="url" placeholder="이미지 URL (선택 사항)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+          <ImageUploadField folder="listings" userId={user.id} value={imageUrl} onChange={setImageUrl} />
           <button type="submit">등록하기</button>
         </form>
       )}

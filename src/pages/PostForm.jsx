@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
+import ImageUploadField from '../components/ImageUploadField'
 import { createPost, updatePost, fetchPostById, CATEGORIES, CATEGORY_GROUPS, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
 
@@ -76,7 +77,7 @@ export default function PostForm({ mode }) {
 
         <input type="text" placeholder="제목" value={title} onChange={(e) => setTitle(e.target.value)} required />
         <textarea placeholder="내용을 입력하세요" rows={8} value={content} onChange={(e) => setContent(e.target.value)} required />
-        <input type="url" placeholder="이미지 URL (선택 사항)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+        <ImageUploadField folder="posts" userId={user.id} value={imageUrl} onChange={setImageUrl} />
 
         {error && <p className="error-text">{error}</p>}
         <button type="submit" disabled={submitting}>{submitting ? '저장 중...' : '등록하기'}</button>

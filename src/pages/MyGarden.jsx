@@ -8,6 +8,7 @@ import { addGreenieExpFromWatering } from '../lib/greenie'
 import GrowthDiary from '../components/GrowthDiary'
 import AiFeaturePreview from '../components/AiFeaturePreview'
 import WateringCalendar from '../components/WateringCalendar'
+import ImageUploadField from '../components/ImageUploadField'
 
 export default function MyGarden() {
   const { user } = useAuth()
@@ -132,7 +133,7 @@ export default function MyGarden() {
             </div>
           )}
 
-          <input type="url" placeholder="사진 URL (선택 사항)" value={photoUrl} onChange={(e) => setPhotoUrl(e.target.value)} />
+          <ImageUploadField folder="plants" userId={user.id} value={photoUrl} onChange={setPhotoUrl} />
           <label className="muted">
             물주기 주기 (일){speciesInfo && !intervalTouched && ' — 품종 기준 자동 입력됨'}
             <input
