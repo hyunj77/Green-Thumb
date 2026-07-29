@@ -124,13 +124,17 @@ export default function MyGarden() {
           <input type="text" placeholder="식물 이름 (예: 몽이)" value={name} onChange={(e) => setName(e.target.value)} required />
           <input type="text" placeholder="품종 (예: 몬스테라)" value={species} onChange={(e) => setSpecies(e.target.value)} />
 
-          {speciesInfo && (
+          {speciesInfo ? (
             <div className="contact-card" style={{ padding: 14 }}>
               <div style={{ fontWeight: 700, color: 'var(--text-h)', marginBottom: 4 }}>{speciesInfo.emoji} {speciesInfo.name} 키우기 팁</div>
               <div className="muted"><Droplets size={12} style={{ verticalAlign: -1 }} /> {speciesInfo.watering} (약 {speciesInfo.wateringDays}일 주기)</div>
               <div className="muted"><Sun size={12} style={{ verticalAlign: -1 }} /> {speciesInfo.light}</div>
               <div className="muted">난이도 {speciesInfo.difficulty} · {speciesInfo.petSafe ? '반려동물 안전' : '반려동물 주의'}</div>
             </div>
+          ) : species.trim() && (
+            <p className="muted" style={{ fontSize: 12.5, margin: 0 }}>
+              📖 도감에 없는 식물이에요 — 아래 물주기 주기를 직접 입력해서 등록할 수 있어요.
+            </p>
           )}
 
           <ImageUploadField folder="plants" userId={user.id} value={photoUrl} onChange={setPhotoUrl} />
