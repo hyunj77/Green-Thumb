@@ -63,6 +63,14 @@ h1, h2, h3 {
   margin: 0 0 12px;
 }
 
+/* 홈/커뮤니티/그린하우스/MY 등 탭 최상위 화면의 상단 타이틀을 통일한다 */
+.gt-page-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-h);
+}
+
 button, input, textarea, select {
   font-family: inherit;
   font-size: 15px;

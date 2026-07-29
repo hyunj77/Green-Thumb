@@ -88,7 +88,7 @@ export default function Community() {
   return (
     <div className="glass-home">
       <div className="gt-topbar" style={{ paddingTop: 18 }}>
-        <h2 style={{ margin: 0, fontSize: 20 }}>커뮤니티</h2>
+        <h2 className="gt-page-title">커뮤니티</h2>
       </div>
 
       <div className="gt-chip-row" style={{ marginBottom: 4 }}>
