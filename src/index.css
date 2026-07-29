@@ -557,6 +557,8 @@ input:focus, textarea:focus, select:focus {
 .hero-slide-fade {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  min-height: 140px;
   animation: hero-fade-in 0.4s ease;
 }
 
