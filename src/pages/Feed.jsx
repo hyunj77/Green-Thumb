@@ -170,7 +170,7 @@ export default function Feed() {
             <Link key={type} to={`/encyclopedia?type=${encodeURIComponent(type)}`} className="gt-chip">
               <span className="gt-chip-emoji">{TYPE_EMOJI[type]}</span>
               {type.includes('·') ? (
-                <span>{type.split('·')[0]}·<wbr />{type.split('·')[1]}</span>
+                <span>{type.split('·')[0]}·<br />{type.split('·')[1]}</span>
               ) : type}
             </Link>
           ))}
