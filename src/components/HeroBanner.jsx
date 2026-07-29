@@ -11,7 +11,7 @@ const SLIDES = [
   { badge: 'PICK', title: '이웃 집사들의 방명록을 구경해보세요', subtitle: '초록 엄지 응원 도장도 눌러줄 수 있어요', image: neighborPhoto },
   {
     badge: '공지',
-    title: '🌰 씨앗 집사부터 👑 플랜트 마스터까지',
+    title: '씨앗 집사부터 플랜트 마스터까지',
     subtitle: '식물을 키울수록 등급이 올라가요. 등급 기준이 궁금하다면?',
     to: '/grades',
     cta: '등급 안내 보기',
