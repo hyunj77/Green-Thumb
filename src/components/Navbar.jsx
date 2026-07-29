@@ -38,9 +38,9 @@ export default function Navbar() {
           {unread > 0 && <span className="icon-btn-dot" />}
         </Link>
         {user ? (
-          <button className="secondary" onClick={handleSignOut}>로그아웃</button>
+          <button className="secondary" style={{ padding: '6px 16px', fontSize: 13 }} onClick={handleSignOut}>로그아웃</button>
         ) : (
-          <Link to="/login"><button>로그인</button></Link>
+          <Link to="/login"><button style={{ padding: '6px 16px', fontSize: 13 }}>로그인</button></Link>
         )}
       </div>
     </nav>
