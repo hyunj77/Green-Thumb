@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { supabase } from '../lib/supabase'
 import GreenieGame from '../components/GreenieGame'
 import { fetchFeaturedPosts } from '../lib/posts'
 import { fetchMyPlants, waterPlant, nextWateringDate } from '../lib/plants'
@@ -24,7 +23,6 @@ export default function Feed() {
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const [profile, setProfile] = useState(null)
   const [searchInput, setSearchInput] = useState('')
 
   const [myPlants, setMyPlants] = useState([])
@@ -45,12 +43,10 @@ export default function Feed() {
 
   useEffect(() => {
     if (!user) {
-      setProfile(null)
       setMyPlants([])
       setFollowingIds([])
       return
     }
-    supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data))
     fetchMyPlants(user.id).then(({ data }) => setMyPlants(data || []))
     fetchFollowingIds(user.id).then(({ data }) => setFollowingIds(data || []))
   }, [user])
@@ -93,9 +89,6 @@ export default function Feed() {
   return (
     <div className="glass-home">
       <div className="gt-topbar">
-        <Link to={user ? '/mypage' : '/login'} className="gt-avatar">
-          {profile?.avatar_url ? <img src={profile.avatar_url} alt="" /> : (profile?.username?.[0] || user?.email?.[0] || '🌱').toUpperCase()}
-        </Link>
         <form className="gt-search" onSubmit={handleSearch}>
           <Search size={16} />
           <input
@@ -176,7 +169,9 @@ export default function Feed() {
           {HOME_CATEGORY_PREVIEW.map((type) => (
             <Link key={type} to={`/encyclopedia?type=${encodeURIComponent(type)}`} className="gt-chip">
               <span className="gt-chip-emoji">{TYPE_EMOJI[type]}</span>
-              {type}
+              {type.includes('·') ? (
+                <span>{type.split('·')[0]}·<wbr />{type.split('·')[1]}</span>
+              ) : type}
             </Link>
           ))}
           <Link to="/encyclopedia" className="gt-chip gt-chip-more">

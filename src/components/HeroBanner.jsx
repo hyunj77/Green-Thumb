@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import heroPhoto from '../assets/1.png'
 
 const SLIDES = [
@@ -19,12 +20,21 @@ export default function HeroBanner({ backgroundImage = heroPhoto }) {
   const [index, setIndex] = useState(0)
   const slide = SLIDES[index]
 
+  const goPrev = () => setIndex((i) => (i - 1 + SLIDES.length) % SLIDES.length)
+  const goNext = () => setIndex((i) => (i + 1) % SLIDES.length)
+
   return (
     <div
       className={`hero-banner ${backgroundImage ? 'hero-banner-photo' : ''}`}
       style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
     >
       {backgroundImage && <div className="hero-banner-scrim" />}
+      <button className="hero-nav hero-nav-prev" onClick={goPrev} aria-label="이전 공지">
+        <ChevronLeft size={20} />
+      </button>
+      <button className="hero-nav hero-nav-next" onClick={goNext} aria-label="다음 공지">
+        <ChevronRight size={20} />
+      </button>
       <span className="badge hero-badge">{slide.badge}</span>
       <h2 className="hero-title">{slide.title}</h2>
       <p className="hero-subtitle">{slide.subtitle}</p>

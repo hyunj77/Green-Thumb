@@ -83,9 +83,9 @@ export default function UserProfile() {
               </button>
             )}
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h2 style={{ margin: 0 }}>{profile.username}</h2>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <h2 style={{ margin: 0, minWidth: 0, overflowWrap: 'anywhere' }}>{profile.username}</h2>
               <span className="badge grade-badge">{grade.emoji} {grade.name}</span>
               <Link to="/grades" style={{ fontSize: 12 }}>등급 안내 →</Link>
             </div>

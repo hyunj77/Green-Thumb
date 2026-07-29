@@ -168,24 +168,24 @@ export default function MyGarden() {
                       다음 물주기: {next.toLocaleDateString('ko-KR')} {dueSoon && '💧 필요해요!'}
                     </div>
                   )}
-                  <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                  <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
                     {!isGuest && (
-                      <button onClick={() => handleWater(plant.id)} style={{ flex: 1 }}><Droplets size={14} /> 물 줬어요</button>
+                      <button onClick={() => handleWater(plant.id)} style={{ flex: 1, whiteSpace: 'nowrap', padding: '10px 8px' }}><Droplets size={14} /> 물 줬어요</button>
                     )}
                     {info && (
-                      <button className="secondary" onClick={() => setTipId(tipId === plant.id ? null : plant.id)}>
+                      <button className="secondary" style={{ padding: '10px' }} onClick={() => setTipId(tipId === plant.id ? null : plant.id)}>
                         <Info size={14} />
                       </button>
                     )}
                     {!isGuest && (
                       <>
-                        <button className="secondary" onClick={() => openReminder(plant)}>
+                        <button className="secondary" style={{ padding: '10px' }} onClick={() => openReminder(plant)}>
                           <Bell size={14} />
                         </button>
-                        <button className="secondary" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
+                        <button className="secondary" style={{ padding: '10px' }} onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
                           <NotebookPen size={14} />
                         </button>
-                        <button className="secondary" onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
+                        <button className="secondary" style={{ padding: '10px' }} onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
                       </>
                     )}
                   </div>

@@ -26,8 +26,8 @@ export default function Encyclopedia() {
       <p className="muted" style={{ marginBottom: 16 }}>기본 관리법을 참고해서 나에게 맞는 식물을 찾아보세요</p>
 
       <div style={{ position: 'relative', marginBottom: 14, maxWidth: 320 }}>
-        <Search size={16} style={{ position: 'absolute', left: 14, top: 13, color: 'var(--accent)' }} />
-        <input type="text" placeholder="식물 이름 검색" value={query} onChange={(e) => setQuery(e.target.value)} style={{ paddingLeft: 38 }} />
+        <Search size={16} style={{ position: 'absolute', left: 14, top: 11, color: 'var(--accent)' }} />
+        <input type="text" className="search-input" placeholder="식물 이름 검색" value={query} onChange={(e) => setQuery(e.target.value)} style={{ paddingLeft: 38 }} />
       </div>
 
       <div className="chip-row" style={{ marginTop: 0, marginBottom: 10 }}>

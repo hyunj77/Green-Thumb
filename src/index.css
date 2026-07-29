@@ -48,6 +48,9 @@ body {
   flex-direction: column;
   background: var(--bg);
   box-shadow: 0 0 60px rgba(28, 43, 38, 0.06);
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 a {
@@ -107,6 +110,10 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.search-input {
+  padding: 7px 14px;
 }
 
 .card {
@@ -460,7 +467,7 @@ input:focus, textarea:focus, select:focus {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.1) 60%);
 }
 
-.hero-banner > *:not(.hero-banner-scrim) {
+.hero-banner > *:not(.hero-banner-scrim):not(.hero-nav) {
   position: relative;
   z-index: 1;
 }
@@ -498,6 +505,37 @@ input:focus, textarea:focus, select:focus {
   color: var(--accent);
   font-weight: 700;
   font-size: 12px;
+}
+
+.hero-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  padding: 0;
+}
+
+.hero-nav:hover {
+  background: rgba(0, 0, 0, 0.46);
+}
+
+.hero-nav-prev {
+  left: 16px;
+}
+
+.hero-nav-next {
+  right: 16px;
 }
 
 .hero-dots {
@@ -600,7 +638,7 @@ input:focus, textarea:focus, select:focus {
 /* Magazine feed */
 .magazine-feed {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 
@@ -691,6 +729,19 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
+  min-width: 0;
+}
+
+.community-item-head span:not(.avatar-circle) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.community-item-head span.muted {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .avatar-circle {
@@ -845,7 +896,7 @@ input:focus, textarea:focus, select:focus {
 /* Magazine overlay cards */
 .magazine-overlay-feed {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 
@@ -1315,7 +1366,7 @@ input:focus, textarea:focus, select:focus {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 7px 16px;
   color: var(--gt-text-soft);
 }
 
@@ -1324,6 +1375,7 @@ input:focus, textarea:focus, select:focus {
   background: none;
   outline: none;
   flex: 1;
+  padding: 0;
   font-size: 14px;
   color: var(--gt-text);
 }
@@ -1630,7 +1682,7 @@ input:focus, textarea:focus, select:focus {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 14px 18px;
+  padding: 6px 16px;
   border-radius: 20px;
   background: var(--gt-glass);
   border: 1px solid var(--gt-glass-border);
@@ -1706,14 +1758,14 @@ input:focus, textarea:focus, select:focus {
   font-size: 18px;
   font-weight: 800;
   margin-top: 6px;
-  max-width: 78%;
+  max-width: 94%;
 }
 
 .gt-ai-desc {
   font-size: 12.5px;
   opacity: 0.9;
   margin-top: 6px;
-  max-width: 80%;
+  max-width: 94%;
 }
 
 .gt-ai-btn {
@@ -1948,10 +2000,12 @@ body {
 
 .watering-calendar-cell {
   position: relative;
+  min-width: 0;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   border: none;
   background: transparent;
   border-radius: 10px;

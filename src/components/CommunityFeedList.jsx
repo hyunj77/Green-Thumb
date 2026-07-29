@@ -27,7 +27,7 @@ export default function CommunityFeedList({
 }) {
   return (
     <div>
-      <form onSubmit={onSearch} className="gt-search" style={{ maxWidth: 360, marginBottom: 14 }}>
+      <form onSubmit={onSearch} className="gt-search" style={{ marginBottom: 14 }}>
         <Search size={16} />
         <input type="text" placeholder="게시물 · 성장일지 검색" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
       </form>
