@@ -48,7 +48,7 @@ export default function MobileTabBar() {
             <div className="gt-sheet-handle" />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
               <h3 style={{ margin: 0, fontSize: 16 }}>빠른 실행</h3>
-              <button className="gt-icon-btn" onClick={() => setOpen(false)} aria-label="닫기">
+              <button className="gt-sheet-close" onClick={() => setOpen(false)} aria-label="닫기">
                 <X size={18} />
               </button>
             </div>
