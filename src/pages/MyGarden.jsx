@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Droplets, Info, NotebookPen, Play, Plus, Sun, Trash2 } from 'lucide-react'
+import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, deletePlant, updateWateringInterval, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, deletePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
+import { uploadImage } from '../lib/storage'
 import GrowthDiary from '../components/GrowthDiary'
 import GrowthTimelapse from '../components/GrowthTimelapse'
 import AiFeaturePreview from '../components/AiFeaturePreview'
@@ -35,6 +36,7 @@ export default function MyGarden() {
   const [timelapsePlant, setTimelapsePlant] = useState(null)
   const [timelapseLogs, setTimelapseLogs] = useState([])
   const [photoCounts, setPhotoCounts] = useState({})
+  const [uploadingPhotoId, setUploadingPhotoId] = useState(null)
 
   const speciesInfo = findSpeciesInfo(species)
 
@@ -93,6 +95,17 @@ export default function MyGarden() {
     setPlants((prev) => prev.filter((p) => p.id !== id))
   }
 
+  const handleCardPhotoSelect = async (plant, file) => {
+    if (!file || !user) return
+    setUploadingPhotoId(plant.id)
+    const { url, error } = await uploadImage('plants', user.id, file)
+    if (!error && url) {
+      const { data } = await updatePlantPhoto(plant.id, url)
+      if (data) setPlants((prev) => prev.map((p) => (p.id === plant.id ? data : p)))
+    }
+    setUploadingPhotoId(null)
+  }
+
   const openTimelapse = async (plant) => {
     const { data } = await fetchGrowthLogs(plant.id)
     setTimelapseLogs(data || [])
@@ -114,31 +127,37 @@ export default function MyGarden() {
 
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <div id="new-plant" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, scrollMarginTop: 20 }}>
+      <div id="new-plant" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, scrollMarginTop: 20 }}>
         <h2 className="gt-page-title">마이 그린 도감</h2>
         {!isGuest && (
-          <button onClick={() => setShowForm((v) => !v)} style={{ padding: '8px 14px', fontSize: 13 }}>
-            <Plus size={14} /> 식물 등록
+          <button
+            onClick={() => setShowForm((v) => !v)}
+            aria-label="식물 추가하기"
+            style={{ width: 40, height: 40, padding: 0, borderRadius: '50%', flexShrink: 0 }}
+          >
+            <Plus size={18} />
           </button>
         )}
       </div>
 
-      <SeasonalTipBanner />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+        <SeasonalTipBanner />
 
-      {greenieToast && (
-        <div className="card" style={{ padding: '10px 16px', marginBottom: 16, background: 'var(--green-light)', border: 'none', textAlign: 'center', fontWeight: 700, color: 'var(--accent)' }}>
-          {greenieToast}
-        </div>
-      )}
+        {greenieToast && (
+          <div className="card" style={{ padding: '10px 16px', background: 'var(--green-light)', border: 'none', textAlign: 'center', fontWeight: 700, color: 'var(--accent)' }}>
+            {greenieToast}
+          </div>
+        )}
 
-      {isGuest && (
-        <div className="contact-card" style={{ marginBottom: 20 }}>
-          <span className="badge">예시 화면</span>
-          <p style={{ margin: '8px 0 0' }}>
-            지금 보시는 식물들은 샘플이에요. <Link to="/login">로그인</Link>하면 나만의 식물을 직접 기록할 수 있어요.
-          </p>
-        </div>
-      )}
+        {isGuest && (
+          <div className="card" style={{ padding: '14px 16px', background: 'var(--oat)', border: 'none' }}>
+            <span className="badge" style={{ marginBottom: 4 }}>예시 화면</span>
+            <p className="gt-season-tip-text">
+              지금 보시는 식물들은 샘플이에요. <Link to="/login">로그인</Link>하면 나만의 식물을 직접 기록할 수 있어요.
+            </p>
+          </div>
+        )}
+      </div>
 
       {!isGuest && showForm && (
         <form onSubmit={handleAdd} className="card" style={{ padding: 24, marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -177,45 +196,79 @@ export default function MyGarden() {
       ) : plants.length === 0 ? (
         <p className="muted">등록된 식물이 없어요. 첫 반려식물을 등록해보세요!</p>
       ) : (
-        <div className="magazine-feed">
+        <div className="plant-grid">
           {plants.map((plant) => {
             const next = nextWateringDate(plant)
             const dueSoon = next && next <= new Date()
             const info = findSpeciesInfo(plant.species)
+
+            const today = new Date(); today.setHours(0, 0, 0, 0)
+            let waterBadge = null
+            if (next) {
+              const nextDay = new Date(next); nextDay.setHours(0, 0, 0, 0)
+              const diffDays = Math.round((nextDay - today) / 86400000)
+              waterBadge = { due: diffDays <= 0, label: diffDays <= 0 ? 'D-Day' : `D-${diffDays}` }
+            }
+            const acquiredRaw = plant.acquired_date || plant.created_at
+            const daysSince = acquiredRaw
+              ? Math.max(0, Math.round((Date.now() - new Date(acquiredRaw).getTime()) / 86400000))
+              : null
+
             return (
-              <div key={plant.id} className="magazine-card">
-                <div className="magazine-card-media">
-                  {plant.photo_url ? <img src={plant.photo_url} alt="" /> : <div className="magazine-card-media-placeholder">🌿</div>}
-                </div>
-                <div className="magazine-card-body">
-                  <div className="magazine-card-title" style={{ marginTop: 0 }}>{plant.name}</div>
-                  {plant.species && <div className="muted">{plant.species}</div>}
-                  <div className="muted" style={{ marginTop: 6 }}>
-                    마지막 물주기: {plant.last_watered_at || '기록 없음'}
-                  </div>
-                  {next && (
-                    <div className={dueSoon ? 'error-text' : 'muted'}>
-                      다음 물주기: {next.toLocaleDateString('ko-KR')} {dueSoon && '💧 필요해요!'}
-                    </div>
+              <div key={plant.id} className="plant-card">
+                <div className="plant-card-media">
+                  {plant.photo_url ? (
+                    <img src={plant.photo_url} alt="" />
+                  ) : !isGuest ? (
+                    <label className="plant-card-photo-cta">
+                      <Camera size={22} />
+                      <span>{uploadingPhotoId === plant.id ? '업로드 중...' : '사진 등록하기'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        disabled={uploadingPhotoId === plant.id}
+                        onChange={(e) => { handleCardPhotoSelect(plant, e.target.files?.[0]); e.target.value = '' }}
+                      />
+                    </label>
+                  ) : (
+                    <div className="magazine-card-media-placeholder">🌿</div>
                   )}
-                  <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
+                  {daysSince != null && <span className="plant-card-badge plant-card-badge-day">D+{daysSince}</span>}
+                  {waterBadge && (
+                    <span className="plant-card-badge plant-card-badge-water" data-due={waterBadge.due}>
+                      {waterBadge.label}
+                    </span>
+                  )}
+                </div>
+                <div className="plant-card-body">
+                  <div className="plant-card-title">{plant.name}</div>
+                  {plant.species && <div className="plant-card-species">{plant.species}</div>}
+                  <div className="plant-card-lastwater">
+                    마지막 물주기: {plant.last_watered_at || '기록 없음'}
+                    {dueSoon && <span className="error-text" style={{ fontSize: 12, marginLeft: 4 }}>💧 필요해요!</span>}
+                  </div>
+
+                  <div className="plant-card-actions">
                     {!isGuest && (
-                      <button onClick={() => handleWater(plant.id)} style={{ flex: 1, justifyContent: 'center', whiteSpace: 'nowrap', padding: '10px 8px' }}><Droplets size={14} /> 물 줬어요</button>
+                      <button className="plant-card-water-btn" onClick={() => handleWater(plant.id)}>
+                        <Droplets size={14} /> 물주기 완료
+                      </button>
                     )}
                     {info && (
-                      <button className="secondary" style={{ padding: '10px' }} onClick={() => setTipId(tipId === plant.id ? null : plant.id)}>
+                      <button className="secondary plant-card-icon-btn" onClick={() => setTipId(tipId === plant.id ? null : plant.id)}>
                         <Info size={14} />
                       </button>
                     )}
                     {!isGuest && (
                       <>
-                        <button className="secondary" style={{ padding: '10px' }} onClick={() => openReminder(plant)}>
+                        <button className="secondary plant-card-icon-btn" onClick={() => openReminder(plant)}>
                           <Bell size={14} />
                         </button>
-                        <button className="secondary" style={{ padding: '10px' }} onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
+                        <button className="secondary plant-card-icon-btn" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
                           <NotebookPen size={14} />
                         </button>
-                        <button className="secondary" style={{ padding: '10px' }} onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
+                        <button className="secondary plant-card-icon-btn" onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
                       </>
                     )}
                   </div>
@@ -264,7 +317,12 @@ export default function MyGarden() {
         </div>
       )}
 
-      {!loading && plants.length > 0 && <WateringCalendar plants={plants} />}
+      {!loading && plants.length > 0 && (
+        <>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '32px 0 24px' }} />
+          <WateringCalendar plants={plants} />
+        </>
+      )}
 
       {!loading && plants.length > 0 && (
         <div className="gt-section">

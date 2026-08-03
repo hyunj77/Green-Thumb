@@ -51,6 +51,16 @@ export async function waterPlant(id) {
   return { data, error }
 }
 
+export async function updatePlantPhoto(id, photoUrl) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ photo_url: photoUrl })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
 export async function updateWateringInterval(id, days) {
   const { data, error } = await supabase
     .from('plants')
