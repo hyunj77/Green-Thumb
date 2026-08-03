@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { Camera, MapPin, MessageSquare } from 'lucide-react'
+import { Camera, MapPin, MessageSquare, ThumbsUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import BackHeader from '../components/BackHeader'
@@ -8,6 +8,7 @@ import AvatarEditModal from '../components/AvatarEditModal'
 import { fetchPostsByAuthor, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
 import { fetchGrowthLogsByAuthor } from '../lib/growthLogs'
+import { fetchStampInfo, toggleStamp } from '../lib/guestbook'
 import { computeGardenScore, getGrade } from '../lib/grade'
 
 export default function UserProfile() {
@@ -20,6 +21,9 @@ export default function UserProfile() {
   const [growthLogs, setGrowthLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingAvatar, setEditingAvatar] = useState(false)
+  const [stampCount, setStampCount] = useState(0)
+  const [stampedByMe, setStampedByMe] = useState(false)
+  const [stamping, setStamping] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -28,14 +32,26 @@ export default function UserProfile() {
       fetchPostsByAuthor(id),
       fetchMyPlants(id),
       fetchGrowthLogsByAuthor(id),
-    ]).then(([profileRes, postsRes, plantsRes, growthRes]) => {
+      fetchStampInfo(id, user?.id),
+    ]).then(([profileRes, postsRes, plantsRes, growthRes, stampRes]) => {
       setProfile(profileRes.data)
       setPosts(postsRes.data || [])
       setPlants(plantsRes.data || [])
       setGrowthLogs(growthRes.data || [])
+      setStampCount(stampRes.count)
+      setStampedByMe(stampRes.stampedByMe)
       setLoading(false)
     })
-  }, [id])
+  }, [id, user?.id])
+
+  const handleStamp = async () => {
+    if (!user || stamping) return
+    setStamping(true)
+    const nowStamped = await toggleStamp(id, user.id, stampedByMe)
+    setStampedByMe(nowStamped)
+    setStampCount((c) => c + (nowStamped ? 1 : -1))
+    setStamping(false)
+  }
 
   // 커뮤니티 성장일지 카드를 눌러 들어온 경우, 해당 기록으로 스크롤 이동
   useEffect(() => {
@@ -109,11 +125,21 @@ export default function UserProfile() {
         {profile.bio && <p style={{ marginTop: 14 }}>{profile.bio}</p>}
 
         {user && user.id !== profile.id && (
-          <Link to={`/messages?with=${profile.id}`}>
-            <button className="secondary" style={{ marginTop: 14 }}>
-              <MessageSquare size={14} /> 쪽지 보내기
+          <div style={{ display: 'flex', gap: 8, marginTop: 14, flexWrap: 'wrap' }}>
+            <Link to={`/messages?with=${profile.id}`}>
+              <button className="secondary">
+                <MessageSquare size={14} /> 쪽지 보내기
+              </button>
+            </Link>
+            <button className={stampedByMe ? '' : 'secondary'} onClick={handleStamp} disabled={stamping}>
+              <ThumbsUp size={14} fill={stampedByMe ? 'currentColor' : 'none'} /> {stampedByMe ? '응원했어요' : '응원하기'} {stampCount > 0 && `(${stampCount})`}
             </button>
-          </Link>
+          </div>
+        )}
+        {(!user || user.id === profile.id) && stampCount > 0 && (
+          <p className="muted" style={{ marginTop: 10, marginBottom: 0 }}>
+            <ThumbsUp size={13} style={{ verticalAlign: -2 }} /> 이웃들의 초록 엄지 응원 {stampCount}개
+          </p>
         )}
 
         <div className="profile-stat-row">
