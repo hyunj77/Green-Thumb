@@ -19,7 +19,20 @@ export default function GrowthTimelapse({ logs, onClose }) {
     return () => clearInterval(timer)
   }, [playing, photos.length])
 
-  if (photos.length === 0) return null
+  if (photos.length === 0) {
+    return (
+      <div className="timelapse-backdrop" onClick={onClose}>
+        <div className="timelapse-card" onClick={(e) => e.stopPropagation()} style={{ padding: '32px 24px', textAlign: 'center' }}>
+          <button className="timelapse-close" onClick={onClose} aria-label="닫기">
+            <X size={18} />
+          </button>
+          <p style={{ fontSize: 28, margin: '8px 0 10px' }}>📷</p>
+          <p style={{ margin: 0, fontWeight: 700 }}>아직 사진이 있는 기록이 없어요</p>
+          <p className="muted" style={{ marginTop: 6 }}>사진과 함께 성장 기록을 남기면 여기서 타임랩스로 볼 수 있어요.</p>
+        </div>
+      </div>
+    )
+  }
   const photo = photos[index]
 
   return (

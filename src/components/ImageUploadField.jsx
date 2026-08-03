@@ -32,14 +32,8 @@ export default function ImageUploadField({ folder, userId, value, onChange, plac
           style={{ width: '100%', maxHeight: 160, objectFit: 'cover', borderRadius: 12, marginBottom: 8, display: 'block' }}
         />
       )}
-      <label
-        className="secondary"
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.6 : 1, marginBottom: 8,
-        }}
-      >
-        <Camera size={15} /> {uploading ? '업로드 중...' : '갤러리에서 사진 선택'}
+      <label className="gt-upload-btn" data-uploading={uploading}>
+        <Camera size={17} /> {uploading ? '업로드 중...' : '갤러리에서 사진 선택'}
         <input type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }} disabled={uploading} />
       </label>
       <input type="url" placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} />

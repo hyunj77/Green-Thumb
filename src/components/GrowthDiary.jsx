@@ -56,16 +56,14 @@ export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
         </form>
       )}
 
-      {photoCount >= 2 && (
-        <button
-          type="button"
-          className="secondary"
-          style={{ marginBottom: 14, fontSize: 12.5 }}
-          onClick={() => setShowTimelapse(true)}
-        >
-          <Clapperboard size={13} /> 성장 타임랩스 보기 ({photoCount}장)
-        </button>
-      )}
+      <button
+        type="button"
+        className="secondary"
+        style={{ marginBottom: 14, fontSize: 12.5 }}
+        onClick={() => setShowTimelapse(true)}
+      >
+        <Clapperboard size={13} /> 성장 타임랩스 보기{photoCount > 0 ? ` (${photoCount}장)` : ''}
+      </button>
 
       {showTimelapse && <GrowthTimelapse logs={logs} onClose={() => setShowTimelapse(false)} />}
 
