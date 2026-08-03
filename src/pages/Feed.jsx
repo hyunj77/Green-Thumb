@@ -7,17 +7,35 @@ import { fetchFeaturedPosts } from '../lib/posts'
 import { fetchMyPlants, waterPlant, nextWateringDate } from '../lib/plants'
 import { fetchTodayGrowthLogsByAuthor } from '../lib/growthLogs'
 import { PLANT_SPECIES, PLANT_TYPES } from '../lib/encyclopedia'
+import { PLANT_DIRECTORY } from '../lib/plantDirectory'
 import { fetchSuggestedGardeners, fetchFollowingIds, toggleFollow } from '../lib/follows'
 import { timeAgo } from '../lib/time'
 
 const TYPE_EMOJI = { 관엽식물: '🌿', '다육·선인장': '🌵', '꽃·개화식물': '🌸', '허브·식용': '🌱', 행잉식물: '🪴', 공기정화: '🍃', 수경재배: '💧', 초보자용: '🔰' }
 const HOME_CATEGORY_PREVIEW = PLANT_TYPES.slice(0, 4)
+const ALL_DIRECTORY_PLANTS = [...PLANT_SPECIES, ...PLANT_DIRECTORY]
 
 function todaySpecies() {
   const key = new Date().toISOString().slice(0, 10)
   let hash = 0
   for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0
   return PLANT_SPECIES[hash % PLANT_SPECIES.length]
+}
+
+// 오늘 날짜로 고정된 시드로 도감 미리보기 10종을 뽑는다 (새로고침해도 하루 동안은 동일)
+function todayDirectoryPreview(count = 10) {
+  const key = new Date().toISOString().slice(0, 10)
+  let seed = 0
+  for (let i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) >>> 0
+  const pool = [...ALL_DIRECTORY_PLANTS]
+  const picked = []
+  for (let i = 0; i < count && pool.length > 0; i++) {
+    seed = (seed * 1103515245 + 12345) >>> 0
+    const idx = seed % pool.length
+    picked.push(pool[idx])
+    pool.splice(idx, 1)
+  }
+  return picked
 }
 
 export default function Feed() {
@@ -93,6 +111,7 @@ export default function Feed() {
   }
 
   const todayPlant = todaySpecies()
+  const directoryPreview = todayDirectoryPreview()
 
   return (
     <div className="glass-home">
@@ -210,6 +229,21 @@ export default function Feed() {
           <p className="gt-ai-desc">마이 그린 도감에서 준비 중이에요.<br />조금만 기다려주세요.</p>
           <span className="gt-pill-btn gt-ai-btn" style={{ alignSelf: 'center' }}><Camera size={14} /> 사진 촬영하고 진단받기</span>
         </button>
+      </div>
+
+      <div className="gt-section">
+        <div className="gt-section-head">
+          <span className="gt-section-title">식물 도감</span>
+          <Link to="/encyclopedia" className="gt-section-link">전체 {ALL_DIRECTORY_PLANTS.length}종 보기</Link>
+        </div>
+        <div className="gt-directory-scroll">
+          {directoryPreview.map((p) => (
+            <Link key={p.name} to={`/encyclopedia?type=${encodeURIComponent(p.type)}`} className="gt-directory-card">
+              <span className="gt-directory-emoji">{p.emoji}</span>
+              <span className="gt-directory-name">{p.name}</span>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="gt-section">

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Camera, Clapperboard, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
+import { Bell, Camera, Clapperboard, Droplets, GalleryHorizontal, Info, LayoutGrid, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
@@ -40,6 +40,7 @@ export default function MyGarden() {
   const [uploadingPhotoId, setUploadingPhotoId] = useState(null)
   const [photoUploadError, setPhotoUploadError] = useState(null)
   const [activeSlide, setActiveSlide] = useState(0)
+  const [plantView, setPlantView] = useState('slider')
   const sliderRef = useRef(null)
   const dragRef = useRef({ dragging: false, startX: 0, startScroll: 0 })
 
@@ -245,7 +246,28 @@ export default function MyGarden() {
           <button style={{ marginTop: 4 }} onClick={() => setShowForm(true)}><Plus size={14} /> 식물 등록하기</button>
         </div>
       ) : (
-        <div className="plant-slider-wrap">
+        <>
+          {plants.length > 1 && (
+            <div className="plant-view-toggle">
+              <button
+                type="button"
+                className={plantView === 'slider' ? '' : 'secondary'}
+                onClick={() => setPlantView('slider')}
+                aria-label="한 장씩 보기"
+              >
+                <GalleryHorizontal size={13} /> 한 장씩
+              </button>
+              <button
+                type="button"
+                className={plantView === 'grid' ? '' : 'secondary'}
+                onClick={() => setPlantView('grid')}
+                aria-label="전체 보기"
+              >
+                <LayoutGrid size={13} /> 전체 보기
+              </button>
+            </div>
+          )}
+        <div className="plant-slider-wrap" data-view={plantView}>
           <div
             className="plant-slider-track"
             ref={sliderRef}
@@ -386,9 +408,10 @@ export default function MyGarden() {
           })}
           </div>
         </div>
+        </>
       )}
 
-      {!loading && plants.length > 1 && (
+      {!loading && plantView === 'slider' && plants.length > 1 && (
         <div className="plant-slider-pagination">
           <div className="plant-slider-dots">
             {plants.map((p, i) => (

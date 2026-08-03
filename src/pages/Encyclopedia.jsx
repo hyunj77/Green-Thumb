@@ -3,6 +3,11 @@ import { useSearchParams } from 'react-router-dom'
 import { BookOpen, PawPrint, Search, Sun, Droplet } from 'lucide-react'
 import BackHeader from '../components/BackHeader'
 import { PLANT_SPECIES, DIFFICULTY_ORDER, PLANT_TYPES, matchesType } from '../lib/encyclopedia'
+import { PLANT_DIRECTORY } from '../lib/plantDirectory'
+
+// 상세 정보(물주기/난이도/반려동물 안전성)가 확인된 PLANT_SPECIES를 먼저,
+// 이름·분류만 있는 PLANT_DIRECTORY를 뒤에 붙여서 도감 전체를 구성한다.
+const ALL_PLANTS = [...PLANT_SPECIES, ...PLANT_DIRECTORY]
 
 export default function Encyclopedia() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -15,7 +20,7 @@ export default function Encyclopedia() {
     else setSearchParams({})
   }
 
-  const filtered = PLANT_SPECIES
+  const filtered = ALL_PLANTS
     .filter((p) => p.name.includes(query.trim()))
     .filter((p) => !difficulty || p.difficulty === difficulty)
     .filter((p) => matchesType(p, type))
@@ -23,7 +28,7 @@ export default function Encyclopedia() {
   return (
     <div style={{ padding: '0 20px 40px' }}>
       <BackHeader title={<><BookOpen size={18} style={{ verticalAlign: -3, marginRight: 6 }} />식물 도감</>} />
-      <p className="muted" style={{ marginBottom: 16 }}>기본 관리법을 참고해서 나에게 맞는 식물을 찾아보세요</p>
+      <p className="muted" style={{ marginBottom: 16 }}>{ALL_PLANTS.length}종의 식물을 만나보세요. 물주기·난이도 정보는 종류별로 순차 업데이트 중이에요</p>
 
       <div style={{ position: 'relative', marginBottom: 14, maxWidth: 320 }}>
         <Search size={16} style={{ position: 'absolute', left: 14, top: 11, color: 'var(--accent)' }} />
@@ -62,16 +67,22 @@ export default function Encyclopedia() {
             )}
             <div style={{ padding: 18 }}>
               <div style={{ fontWeight: 700, color: 'var(--text-h)', marginBottom: 4 }}>{plant.name}</div>
-              <span className="badge">난이도 {plant.difficulty}</span>
-              <div className="muted" style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Droplet size={13} /> {plant.watering}
-              </div>
-              <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Sun size={13} /> {plant.light}
-              </div>
-              <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <PawPrint size={13} /> {plant.petSafe ? '반려동물 안전' : '반려동물 주의'}
-              </div>
+              {plant.difficulty ? (
+                <>
+                  <span className="badge">난이도 {plant.difficulty}</span>
+                  <div className="muted" style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Droplet size={13} /> {plant.watering}
+                  </div>
+                  <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Sun size={13} /> {plant.light}
+                  </div>
+                  <div className="muted" style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <PawPrint size={13} /> {plant.petSafe ? '반려동물 안전' : '반려동물 주의'}
+                  </div>
+                </>
+              ) : (
+                <span className="badge" style={{ background: 'var(--oat)', color: 'var(--text-soft)' }}>상세 정보 준비중</span>
+              )}
             </div>
           </div>
         ))}
