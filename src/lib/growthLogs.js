@@ -54,6 +54,18 @@ export async function fetchPhotoCountsByPlantIds(plantIds) {
   return counts
 }
 
+// 특정 유저의 프로필에서 보여줄 성장일지 (사진이 있는 기록만)
+export async function fetchGrowthLogsByAuthor(authorId, limit = 30) {
+  const { data, error } = await supabase
+    .from('growth_logs')
+    .select('id, log_date, note, photo_url, created_at, plant:plants(id, name)')
+    .eq('author_id', authorId)
+    .not('photo_url', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  return { data: data || [], error }
+}
+
 // 매거진 피드: 마이 그린 도감에 올라온 성장 사진들을 모아 보여준다
 export async function fetchPublicGrowthFeed(limit = 12) {
   const { data, error } = await supabase

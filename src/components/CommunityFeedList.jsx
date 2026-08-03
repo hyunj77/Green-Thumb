@@ -8,7 +8,7 @@ const HOT_THRESHOLD = 3
 const isHot = (item) => (item.reaction_count || 0) + (item.comment_count || 0) >= HOT_THRESHOLD
 
 function cardHref(item) {
-  return item.kind === 'growth' ? `/users/${item.author?.id}` : `/posts/${item.id}`
+  return item.kind === 'growth' ? `/users/${item.author?.id}#${item.id}` : `/posts/${item.id}`
 }
 
 export default function CommunityFeedList({

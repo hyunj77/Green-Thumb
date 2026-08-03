@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { Camera, MapPin, MessageSquare } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -7,14 +7,17 @@ import BackHeader from '../components/BackHeader'
 import AvatarEditModal from '../components/AvatarEditModal'
 import { fetchPostsByAuthor, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyPlants } from '../lib/plants'
+import { fetchGrowthLogsByAuthor } from '../lib/growthLogs'
 import { computeGardenScore, getGrade } from '../lib/grade'
 
 export default function UserProfile() {
   const { id } = useParams()
   const { user } = useAuth()
+  const location = useLocation()
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
   const [plants, setPlants] = useState([])
+  const [growthLogs, setGrowthLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingAvatar, setEditingAvatar] = useState(false)
 
@@ -24,13 +27,22 @@ export default function UserProfile() {
       supabase.from('profiles').select('*').eq('id', id).single(),
       fetchPostsByAuthor(id),
       fetchMyPlants(id),
-    ]).then(([profileRes, postsRes, plantsRes]) => {
+      fetchGrowthLogsByAuthor(id),
+    ]).then(([profileRes, postsRes, plantsRes, growthRes]) => {
       setProfile(profileRes.data)
       setPosts(postsRes.data || [])
       setPlants(plantsRes.data || [])
+      setGrowthLogs(growthRes.data || [])
       setLoading(false)
     })
   }, [id])
+
+  // 커뮤니티 성장일지 카드를 눌러 들어온 경우, 해당 기록으로 스크롤 이동
+  useEffect(() => {
+    if (loading || !location.hash) return
+    const el = document.getElementById(location.hash.slice(1))
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [loading, location.hash])
 
   const isOwner = user && profile && user.id === profile.id
 
@@ -138,6 +150,26 @@ export default function UserProfile() {
                 <div className="magazine-card-body">
                   <div className="magazine-card-title" style={{ marginTop: 0 }}>{plant.name}</div>
                   {plant.species && <div className="muted">{plant.species}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {growthLogs.length > 0 && (
+        <>
+          <h3>🌱 {profile.username}님의 성장일지</h3>
+          <div className="magazine-feed" style={{ marginBottom: 28 }}>
+            {growthLogs.map((log) => (
+              <div key={log.id} id={`growth-${log.id}`} className="magazine-card" style={{ scrollMarginTop: 20 }}>
+                <div className="magazine-card-media">
+                  <img src={log.photo_url} alt="" />
+                </div>
+                <div className="magazine-card-body">
+                  {log.plant?.name && <span className="badge">🌿 {log.plant.name}</span>}
+                  <div className="magazine-card-title">{log.note || '성장 기록'}</div>
+                  <div className="muted">{new Date(log.log_date).toLocaleDateString('ko-KR')}</div>
                 </div>
               </div>
             ))}
