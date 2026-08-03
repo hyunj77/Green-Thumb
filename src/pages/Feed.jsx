@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check } from 'lucide-react'
+import { Search, Droplet, Camera, NotebookPen, Heart, Sprout, MessageCircle, Check, ArrowRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import GreenieGame from '../components/GreenieGame'
 import { fetchFeaturedPosts } from '../lib/posts'
@@ -27,6 +27,7 @@ export default function Feed() {
   const [searchInput, setSearchInput] = useState('')
 
   const [myPlants, setMyPlants] = useState([])
+  const [plantsLoaded, setPlantsLoaded] = useState(false)
   const [wateringAll, setWateringAll] = useState(false)
   const [todayGrowthLogs, setTodayGrowthLogs] = useState([])
   const [localMissions, setLocalMissions] = useState({ like: false, visitGreenie: false })
@@ -48,9 +49,10 @@ export default function Feed() {
       setMyPlants([])
       setFollowingIds([])
       setTodayGrowthLogs([])
+      setPlantsLoaded(false)
       return
     }
-    fetchMyPlants(user.id).then(({ data }) => setMyPlants(data || []))
+    fetchMyPlants(user.id).then(({ data }) => { setMyPlants(data || []); setPlantsLoaded(true) })
     fetchFollowingIds(user.id).then(({ data }) => setFollowingIds(data || []))
     fetchTodayGrowthLogsByAuthor(user.id).then(({ data }) => setTodayGrowthLogs(data))
   }, [user])
@@ -105,6 +107,16 @@ export default function Feed() {
           />
         </form>
       </div>
+
+      {user && plantsLoaded && myPlants.length === 0 && (
+        <Link to="/garden#new-plant" className="gt-onboarding-banner">
+          <div>
+            <div className="gt-onboarding-title">🌱 첫 반려식물을 등록해보세요</div>
+            <div className="gt-onboarding-desc">식물을 등록하면 물주기 알림, 성장일기, 그린 등급까지 시작돼요</div>
+          </div>
+          <ArrowRight size={18} />
+        </Link>
+      )}
 
       <GreenieGame />
 

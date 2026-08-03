@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Bell, MessageSquare, Plus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchUnreadCount } from '../lib/notifications'
+import { supabase } from '../lib/supabase'
 import BrandLogo from './BrandLogo'
 
 export default function Navbar() {
@@ -16,6 +17,17 @@ export default function Navbar() {
       return
     }
     fetchUnreadCount(user.id).then(({ count }) => setUnread(count))
+
+    // 실시간 갱신: 새 알림이 오면 다시 보지 않아도 배지가 바로 뜬다
+    const channel = supabase
+      .channel(`navbar-notifications-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
+        () => setUnread((n) => n + 1),
+      )
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
   }, [user])
 
   const handleSignOut = async () => {

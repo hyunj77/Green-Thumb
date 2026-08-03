@@ -2282,6 +2282,29 @@ input:focus, textarea:focus, select:focus {
   color: var(--gt-text-soft);
 }
 
+.gt-onboarding-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--gt-sage), var(--gt-sage-deep));
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.gt-onboarding-title {
+  font-weight: 800;
+  font-size: 14.5px;
+}
+
+.gt-onboarding-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 3px;
+}
+
 .gt-pill-btn {
   display: inline-flex;
   align-items: center;

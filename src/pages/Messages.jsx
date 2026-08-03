@@ -33,6 +33,26 @@ export default function Messages() {
     supabase.from('profiles').select('id, username').eq('id', activePartnerId).single().then(({ data }) => setActivePartner(data))
   }, [user, activePartnerId])
 
+  // 실시간 수신: 상대가 보낸 메시지를 화면을 벗어났다 돌아오지 않아도 바로 반영
+  useEffect(() => {
+    if (!user) return
+    const channel = supabase
+      .channel(`messages-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: `recipient_id=eq.${user.id}` },
+        (payload) => {
+          const m = payload.new
+          if (String(m.sender_id) === activePartnerId) {
+            setThread((prev) => (prev.some((t) => t.id === m.id) ? prev : [...prev, m]))
+          }
+          fetchConversations(user.id).then(({ data }) => setConversations(data))
+        },
+      )
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [user, activePartnerId])
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [thread])

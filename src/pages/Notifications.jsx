@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Droplets, MessageCircle, MessageSquare, Sprout } from 'lucide-react'
+import { Droplets, MessageCircle, MessageSquare, Sprout, UserPlus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import { fetchMyNotifications, markNotificationRead, markAllNotificationsRead } from '../lib/notifications'
@@ -11,6 +11,7 @@ const TYPE_META = {
   reaction: { Icon: Sprout, label: '반응' },
   message: { Icon: MessageSquare, label: '쪽지' },
   watering: { Icon: Droplets, label: '물주기 알림' },
+  follow: { Icon: UserPlus, label: '팔로우' },
 }
 
 export default function Notifications() {
@@ -37,6 +38,7 @@ export default function Notifications() {
     }
     if (n.type === 'message') navigate('/messages')
     else if (n.type === 'watering') navigate('/garden')
+    else if (n.type === 'follow' && n.actor?.id) navigate(`/users/${n.actor.id}`)
     else if (n.post_id) navigate(`/posts/${n.post_id}`)
   }
 
@@ -82,7 +84,9 @@ export default function Notifications() {
                     </span>
                     <span className="muted">· {label} · {timeAgo(n.created_at)}</span>
                   </div>
-                  <div className="community-item-text">{n.content_preview}</div>
+                  <div className="community-item-text">
+                    {n.content_preview || (n.type === 'follow' ? '나를 팔로우하기 시작했어요' : '')}
+                  </div>
                 </div>
                 {!n.is_read && <span className="icon-btn-dot" style={{ position: 'static', flexShrink: 0, marginTop: 4 }} />}
               </div>
