@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Globe, RefreshCw, Shirt } from 'lucide-react'
+import { Droplets, Globe, Heart, RefreshCw, Shirt } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from '../components/GreenieCharacter'
 import BackHeader from '../components/BackHeader'
@@ -9,6 +9,7 @@ import {
   equipItem,
   fetchRandomGreenies,
   fetchMyGreenie,
+  fetchVisitStatusBatch,
   growthStage,
   MAX_LEVEL,
   requiredExp,
@@ -58,6 +59,7 @@ export default function GreenieHome() {
   const [levelUpMsg, setLevelUpMsg] = useState('')
   const [levelUpSignal, setLevelUpSignal] = useState(0)
   const [visitPool, setVisitPool] = useState([])
+  const [visitStatusMap, setVisitStatusMap] = useState({})
   const saveTimer = useRef(null)
 
   useEffect(() => {
@@ -73,7 +75,11 @@ export default function GreenieHome() {
 
   const rollVisitPool = () => {
     if (!user) return
-    fetchRandomGreenies(user.id, 12).then(({ data }) => setVisitPool(data))
+    fetchRandomGreenies(user.id, 12).then(({ data }) => {
+      setVisitPool(data)
+      const ids = (data || []).map((g) => g.user_id)
+      fetchVisitStatusBatch(user.id, ids).then(setVisitStatusMap)
+    })
   }
 
   useEffect(() => {
@@ -176,13 +182,22 @@ export default function GreenieHome() {
             <p className="muted">아직 방문할 수 있는 그린이가 없어요.</p>
           ) : (
             <div className="greenie-visit-grid">
-              {visitPool.map((g) => (
-                <Link key={g.user_id} to={`/greenie/${g.user_id}`} className="greenie-visit-card">
-                  <GreenieCharacter level={g.level} hat={g.equipped_hat} accessory={g.equipped_accessory} size={48} />
-                  <div className="greenie-visit-name">{g.profile?.username || '이웃 집사'}</div>
-                  <div className="muted" style={{ fontSize: 11 }}>Lv. {g.level}</div>
-                </Link>
-              ))}
+              {visitPool.map((g) => {
+                const status = visitStatusMap[g.user_id]
+                return (
+                  <Link key={g.user_id} to={`/greenie/${g.user_id}`} className="greenie-visit-card">
+                    {status && (status.watered || status.petted) && (
+                      <span className="greenie-visit-done">
+                        {status.watered && <Droplets size={11} />}
+                        {status.petted && <Heart size={11} />}
+                      </span>
+                    )}
+                    <GreenieCharacter level={g.level} hat={g.equipped_hat} accessory={g.equipped_accessory} size={48} />
+                    <div className="greenie-visit-name">{g.profile?.username || '이웃 집사'}</div>
+                    <div className="muted" style={{ fontSize: 11 }}>Lv. {g.level}</div>
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>

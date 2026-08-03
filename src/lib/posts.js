@@ -61,7 +61,9 @@ export async function fetchPosts({ category, categories, search, page = 1, sort 
       'id, title, content, image_url, category, price, deal_status, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)',
       { count: 'exact' },
     )
-    .order('created_at', { ascending: false })
+
+  if (sort === 'price_low') query = query.order('price', { ascending: true, nullsFirst: false })
+  else query = query.order('created_at', { ascending: false })
 
   if (category) query = query.eq('category', category)
   else if (categories?.length) query = query.in('category', categories)

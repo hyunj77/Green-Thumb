@@ -90,6 +90,7 @@ export default function CommunityBoard() {
           totalPages={totalPages}
           goPage={goPage}
           onCardClick={navigate}
+          showPriceSort={tab.key === 'market'}
         />
       </div>
 

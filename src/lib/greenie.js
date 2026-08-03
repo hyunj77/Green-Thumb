@@ -198,6 +198,21 @@ export async function fetchVisitStatus(visitorId, targetUserId) {
   return { watered: data?.watered || false, petted: data?.petted || false }
 }
 
+// 방문하기 그리드용: 여러 대상의 오늘 물주기/쓰다듬기 완료 여부를 한 번에 조회
+export async function fetchVisitStatusBatch(visitorId, targetUserIds) {
+  if (!visitorId || targetUserIds.length === 0) return {}
+  const today = new Date().toISOString().slice(0, 10)
+  const { data } = await supabase
+    .from('greenie_visits')
+    .select('target_user_id, watered, petted')
+    .eq('visitor_id', visitorId)
+    .eq('visit_date', today)
+    .in('target_user_id', targetUserIds)
+  const map = {}
+  ;(data || []).forEach((row) => { map[row.target_user_id] = { watered: row.watered, petted: row.petted } })
+  return map
+}
+
 async function interactWithGreenie(visitorId, targetUserId, kind) {
   const today = new Date().toISOString().slice(0, 10)
   const status = await fetchVisitStatus(visitorId, targetUserId)

@@ -28,6 +28,7 @@ export default function CommunityFeedList({
   totalPages,
   goPage,
   onCardClick,
+  showPriceSort = false,
 }) {
   const [userResults, setUserResults] = useState([])
 
@@ -62,6 +63,9 @@ export default function CommunityFeedList({
         <div className="view-toggle" style={{ marginBottom: 0, flexShrink: 0 }}>
           <button className={sort === 'recent' ? 'view-toggle-active' : ''} onClick={() => setSort('recent')}>최신순</button>
           <button className={sort === 'popular' ? 'view-toggle-active' : ''} onClick={() => setSort('popular')}>🔥 인기순</button>
+          {showPriceSort && (
+            <button className={sort === 'price_low' ? 'view-toggle-active' : ''} onClick={() => setSort('price_low')}>낮은 가격순</button>
+          )}
         </div>
         <div className="view-toggle" style={{ marginBottom: 0, flexShrink: 0 }}>
           <button className={viewMode === 'list' ? 'view-toggle-active' : ''} onClick={() => setViewMode('list')}>
