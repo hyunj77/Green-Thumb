@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
+import { Bell, Clapperboard, Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, deletePlant, updateWateringInterval, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchGrowthLogs } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
 import GrowthDiary from '../components/GrowthDiary'
+import GrowthTimelapse from '../components/GrowthTimelapse'
 import AiFeaturePreview from '../components/AiFeaturePreview'
 import WateringCalendar from '../components/WateringCalendar'
 import ImageUploadField from '../components/ImageUploadField'
@@ -28,6 +30,8 @@ export default function MyGarden() {
   const [reminderDraft, setReminderDraft] = useState(7)
   const [savingReminder, setSavingReminder] = useState(false)
   const [greenieToast, setGreenieToast] = useState('')
+  const [timelapsePlant, setTimelapsePlant] = useState(null)
+  const [timelapseLogs, setTimelapseLogs] = useState([])
 
   const speciesInfo = findSpeciesInfo(species)
 
@@ -78,6 +82,12 @@ export default function MyGarden() {
     if (!confirm('이 식물 기록을 삭제할까요?')) return
     await deletePlant(id)
     setPlants((prev) => prev.filter((p) => p.id !== id))
+  }
+
+  const openTimelapse = async (plant) => {
+    const { data } = await fetchGrowthLogs(plant.id)
+    setTimelapseLogs(data || [])
+    setTimelapsePlant(plant)
   }
 
   const openReminder = (plant) => {
@@ -244,6 +254,31 @@ export default function MyGarden() {
       )}
 
       {!loading && plants.length > 0 && <WateringCalendar plants={plants} />}
+
+      {!loading && plants.length > 0 && (
+        <div className="gt-section">
+          <div className="gt-section-head">
+            <span className="gt-section-title">🎬 성장 타임랩스</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {plants.map((plant) => (
+              <button
+                key={plant.id}
+                type="button"
+                className="secondary"
+                style={{ justifyContent: 'flex-start' }}
+                onClick={() => openTimelapse(plant)}
+              >
+                <Clapperboard size={14} /> {plant.name} 타임랩스 보기
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {timelapsePlant && (
+        <GrowthTimelapse logs={timelapseLogs} onClose={() => setTimelapsePlant(null)} />
+      )}
 
       <AiFeaturePreview />
     </div>
