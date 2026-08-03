@@ -355,16 +355,16 @@ export default function MyGarden() {
                       <p className="muted" style={{ marginTop: 0, marginBottom: 10 }}>
                         마지막 물주기로부터 며칠마다 알려드릴지 정해주세요.
                       </p>
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                         <input
                           type="number"
                           min={1}
                           value={reminderDraft}
                           onChange={(e) => setReminderDraft(e.target.value)}
-                          style={{ maxWidth: 90 }}
+                          style={{ width: 64, flexShrink: 0 }}
                         />
-                        <span className="muted">일마다</span>
-                        <button onClick={() => handleSaveReminder(plant.id)} disabled={savingReminder} style={{ marginLeft: 'auto' }}>
+                        <span className="muted" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>일마다</span>
+                        <button onClick={() => handleSaveReminder(plant.id)} disabled={savingReminder} style={{ marginLeft: 'auto', flexShrink: 0 }}>
                           저장
                         </button>
                       </div>

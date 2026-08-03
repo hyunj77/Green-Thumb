@@ -1191,6 +1191,21 @@ input:focus, textarea:focus, select:focus {
   transform: scale(1);
 }
 
+@media (max-width: 420px) {
+  .plant-slide {
+    width: calc(100% - 20px);
+  }
+
+  .plant-card-title {
+    font-size: 17px;
+  }
+
+  .plant-card-species,
+  .plant-card-lastwater {
+    font-size: 13px;
+  }
+}
+
 .plant-slider-arrow {
   position: absolute;
   top: 40%;
