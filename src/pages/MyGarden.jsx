@@ -244,7 +244,7 @@ export default function MyGarden() {
         <div className="plant-slider-wrap">
           <button
             type="button"
-            className="plant-slider-arrow"
+            className="plant-slider-arrow plant-slider-arrow-prev"
             onClick={() => goToSlide(activeSlide - 1)}
             disabled={activeSlide === 0}
             aria-label="이전 식물"
@@ -393,7 +393,7 @@ export default function MyGarden() {
           </div>
           <button
             type="button"
-            className="plant-slider-arrow"
+            className="plant-slider-arrow plant-slider-arrow-next"
             onClick={() => goToSlide(activeSlide + 1)}
             disabled={activeSlide === plants.length - 1}
             aria-label="다음 식물"
