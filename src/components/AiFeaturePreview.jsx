@@ -16,7 +16,7 @@ const SAMPLES = [
 export default function AiFeaturePreview() {
   return (
     <section id="ai-preview" style={{ marginTop: 32, scrollMarginTop: 20 }}>
-      <h3 className="tl-card-head" style={{ marginBottom: 8 }}>✨ AI 스마트 기능 (준비중)</h3>
+      <h3 className="gt-section-title" style={{ display: 'block', marginBottom: 8 }}>✨ AI 스마트 기능 (준비중)</h3>
       <p className="muted" style={{ marginBottom: 16 }}>
         아래는 실제 동작하지 않는 예시 화면이에요. 외부 AI API 연동은 별도로 검토 중이에요.
       </p>
