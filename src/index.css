@@ -2012,6 +2012,40 @@ input:focus, textarea:focus, select:focus {
   outline: 2px solid var(--accent);
 }
 
+.greenie-visit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.greenie-visit-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  background: var(--oat);
+  border-radius: 16px;
+  padding: 14px 6px 12px;
+  color: inherit;
+}
+
+.greenie-visit-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-h);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.greenie-visit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
 /* ══════════════════════════════════════════════════════════════════════
    Glass Home — sage green / glassmorphism 홈 화면 전용 디자인 시스템
    (다른 화면에는 영향 없이 .glass-home 안에서만 적용됨)

@@ -165,3 +165,64 @@ export async function addGreenieExpFromWatering(userId) {
   await saveGreenie(userId, next)
   return next
 }
+
+// 방문하기: 새로고침할 때마다 랜덤 N명의 다른 유저 그린이를 보여준다
+export async function fetchRandomGreenies(excludeUserId, count = 12) {
+  let query = supabase
+    .from('greenies')
+    .select('user_id, level, exp, equipped_hat, equipped_accessory, profile:profiles(id, username)')
+    .limit(200)
+  if (excludeUserId) query = query.neq('user_id', excludeUserId)
+  const { data, error } = await query
+  const pool = data || []
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[pool[i], pool[j]] = [pool[j], pool[i]]
+  }
+  return { data: pool.slice(0, count), error }
+}
+
+const VISIT_WATER_EXP = 300
+const VISIT_PET_EXP = 100
+
+export async function fetchVisitStatus(visitorId, targetUserId) {
+  if (!visitorId) return { watered: false, petted: false }
+  const today = new Date().toISOString().slice(0, 10)
+  const { data } = await supabase
+    .from('greenie_visits')
+    .select('watered, petted')
+    .eq('visitor_id', visitorId)
+    .eq('target_user_id', targetUserId)
+    .eq('visit_date', today)
+    .maybeSingle()
+  return { watered: data?.watered || false, petted: data?.petted || false }
+}
+
+async function interactWithGreenie(visitorId, targetUserId, kind) {
+  const today = new Date().toISOString().slice(0, 10)
+  const status = await fetchVisitStatus(visitorId, targetUserId)
+  if (status[kind]) return { done: false, greenie: null }
+
+  const { data: target } = await fetchGreenieByUserId(targetUserId)
+  if (!target) return { done: false, greenie: null }
+  const amount = kind === 'watered' ? VISIT_WATER_EXP : VISIT_PET_EXP
+  const next = applyExp(target.level, target.exp, amount)
+  await saveGreenie(targetUserId, next)
+
+  await supabase
+    .from('greenie_visits')
+    .upsert(
+      { visitor_id: visitorId, target_user_id: targetUserId, visit_date: today, [kind]: true },
+      { onConflict: 'visitor_id,target_user_id,visit_date' },
+    )
+
+  return { done: true, greenie: { ...target, ...next } }
+}
+
+export function waterOthersGreenie(visitorId, targetUserId) {
+  return interactWithGreenie(visitorId, targetUserId, 'watered')
+}
+
+export function petOthersGreenie(visitorId, targetUserId) {
+  return interactWithGreenie(visitorId, targetUserId, 'petted')
+}

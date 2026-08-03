@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { RefreshCw } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from '../components/GreenieCharacter'
 import BackHeader from '../components/BackHeader'
 import {
   applyExp,
   equipItem,
-  fetchGreenieLeaderboard,
+  fetchRandomGreenies,
   fetchMyGreenie,
   growthStage,
   MAX_LEVEL,
@@ -56,7 +57,7 @@ export default function GreenieHome() {
   const [loading, setLoading] = useState(true)
   const [levelUpMsg, setLevelUpMsg] = useState('')
   const [levelUpSignal, setLevelUpSignal] = useState(0)
-  const [leaderboard, setLeaderboard] = useState([])
+  const [visitPool, setVisitPool] = useState([])
   const saveTimer = useRef(null)
 
   useEffect(() => {
@@ -68,8 +69,17 @@ export default function GreenieHome() {
       setGreenie(data)
       setLoading(false)
     })
-    fetchGreenieLeaderboard(user.id).then(({ data }) => setLeaderboard(data))
   }, [user, navigate])
+
+  const rollVisitPool = () => {
+    if (!user) return
+    fetchRandomGreenies(user.id, 12).then(({ data }) => setVisitPool(data))
+  }
+
+  useEffect(() => {
+    if (tab === 'visit') rollVisitPool()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, user])
 
   const handleTap = () => {
     setGreenie((prev) => {
@@ -156,18 +166,21 @@ export default function GreenieHome() {
         </>
       ) : (
         <div className="card" style={{ marginTop: 20, padding: '22px 24px' }}>
-          <h3 style={{ marginBottom: 14 }}>🌍 다른 사람 그린이 방문하기</h3>
-          {leaderboard.length === 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <h3 style={{ margin: 0 }}>🌍 다른 사람 그린이 방문하기</h3>
+            <button type="button" className="secondary" style={{ padding: '7px 12px', fontSize: 12.5 }} onClick={rollVisitPool}>
+              <RefreshCw size={13} /> 새로고침
+            </button>
+          </div>
+          {visitPool.length === 0 ? (
             <p className="muted">아직 방문할 수 있는 그린이가 없어요.</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {leaderboard.map((g) => (
-                <Link key={g.user_id} to={`/greenie/${g.user_id}`} className="shortcut-banner">
-                  <GreenieCharacter level={g.level} hat={g.equipped_hat} accessory={g.equipped_accessory} size={36} />
-                  <div>
-                    <div className="shortcut-banner-label">{g.profile?.username || '이웃 집사'}</div>
-                    <div className="muted" style={{ fontSize: 12 }}>Lv. {g.level}</div>
-                  </div>
+            <div className="greenie-visit-grid">
+              {visitPool.map((g) => (
+                <Link key={g.user_id} to={`/greenie/${g.user_id}`} className="greenie-visit-card">
+                  <GreenieCharacter level={g.level} hat={g.equipped_hat} accessory={g.equipped_accessory} size={48} />
+                  <div className="greenie-visit-name">{g.profile?.username || '이웃 집사'}</div>
+                  <div className="muted" style={{ fontSize: 11 }}>Lv. {g.level}</div>
                 </Link>
               ))}
             </div>
