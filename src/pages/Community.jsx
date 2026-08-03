@@ -13,7 +13,7 @@ import { TOP_TABS, normalizeGrowthLog, normalizePost } from '../lib/communityTab
 async function fetchRecentPostsPool(search, limit = 60) {
   let query = supabase
     .from('posts')
-    .select('id, title, content, image_url, category, created_at, author:profiles(id, username), plant:plants(name), comments(count), post_reactions(count)')
+    .select('id, title, content, image_url, category, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)')
     .order('created_at', { ascending: false })
     .limit(limit)
   if (search) query = query.ilike('title', `%${search}%`)

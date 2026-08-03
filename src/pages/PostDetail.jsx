@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Bookmark, Heart, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
+import GradeBadge from '../components/GradeBadge'
 import { fetchPostById, deletePost, CATEGORY_LABEL } from '../lib/posts'
 import { fetchComments, createComment, deleteComment } from '../lib/comments'
 import { fetchReactionCounts, addReaction, removeReaction } from '../lib/reactions'
@@ -106,9 +107,11 @@ export default function PostDetail() {
       <div className="card" style={{ padding: '28px 32px' }}>
         <span className="badge">{CATEGORY_LABEL[post.category] || post.category}</span>
         <h2 style={{ marginTop: 12 }}>{post.title}</h2>
-        <div className="muted">
-          {post.author?.username || '알 수 없음'} · {new Date(post.created_at).toLocaleString('ko-KR')}
-          {post.plant?.name && <span> · 🌿 {post.plant.name} ({post.plant.species || '품종 미상'})</span>}
+        <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <span>{post.author?.username || '알 수 없음'}</span>
+          <GradeBadge score={post.author?.garden_score} />
+          <span>· {new Date(post.created_at).toLocaleString('ko-KR')}</span>
+          {post.plant?.name && <span>· 🌿 {post.plant.name} ({post.plant.species || '품종 미상'})</span>}
         </div>
 
         {post.image_url && <img src={post.image_url} alt="" style={{ width: '100%', borderRadius: 16, margin: '16px 0' }} />}
@@ -137,7 +140,10 @@ export default function PostDetail() {
           {comments.map((c) => (
             <div key={c.id} style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <strong style={{ color: 'var(--text-h)' }}>{c.author?.username || '알 수 없음'}</strong>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <strong style={{ color: 'var(--text-h)' }}>{c.author?.username || '알 수 없음'}</strong>
+                  <GradeBadge score={c.author?.garden_score} />
+                </span>
                 {user && user.id === c.author?.id && (
                   <button className="secondary" style={{ padding: '2px 10px' }} onClick={() => handleDeleteComment(c.id)}>
                     <Trash2 size={12} />

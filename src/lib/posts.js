@@ -36,7 +36,7 @@ export async function fetchPosts({ category, categories, search, page = 1, sort 
   let query = supabase
     .from('posts')
     .select(
-      'id, title, content, image_url, category, created_at, author:profiles(id, username), plant:plants(name), comments(count), post_reactions(count)',
+      'id, title, content, image_url, category, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })
@@ -69,7 +69,7 @@ export async function fetchPosts({ category, categories, search, page = 1, sort 
 export async function fetchPostById(id) {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, author:profiles(id, username), plant:plants(id, name, species)')
+    .select('*, author:profiles(id, username, garden_score), plant:plants(id, name, species)')
     .eq('id', id)
     .single()
   return { data, error }
@@ -109,7 +109,7 @@ export async function fetchPostsByAuthor(authorId) {
 export async function fetchFeaturedPosts(limit = 12) {
   const { data, error } = await supabase
     .from('posts')
-    .select('id, title, content, image_url, category, created_at, author:profiles(username), comments(count), post_reactions(count)')
+    .select('id, title, content, image_url, category, created_at, author:profiles(username, garden_score), comments(count), post_reactions(count)')
     .not('image_url', 'is', null)
     .order('created_at', { ascending: false })
     .limit(50)

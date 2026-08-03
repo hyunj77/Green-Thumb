@@ -58,7 +58,7 @@ export async function fetchPhotoCountsByPlantIds(plantIds) {
 export async function fetchPublicGrowthFeed(limit = 12) {
   const { data, error } = await supabase
     .from('growth_logs')
-    .select('id, log_date, note, photo_url, created_at, plant:plants(id, name, owner:profiles(id, username))')
+    .select('id, log_date, note, photo_url, created_at, plant:plants(id, name, owner:profiles(id, username, garden_score))')
     .not('photo_url', 'is', null)
     .order('created_at', { ascending: false })
     .limit(limit)

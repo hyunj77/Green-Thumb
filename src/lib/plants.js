@@ -1,5 +1,14 @@
 import { supabase } from './supabase'
+import { computeGardenScore } from './grade'
 import mongiPhoto from '../assets/몬스테라2.png'
+
+// 커뮤니티 게시글/댓글에 등급 배지를 바로 노출할 수 있도록, 식물이 늘거나
+// 줄어들 때마다 점수를 profiles에 캐싱해둔다 (매번 plants를 조회하지 않기 위해).
+export async function syncGardenScore(ownerId) {
+  const { data } = await supabase.from('plants').select('species').eq('owner_id', ownerId)
+  const score = computeGardenScore(data || [])
+  await supabase.from('profiles').update({ garden_score: score }).eq('id', ownerId)
+}
 
 export const SAMPLE_PLANTS = [
   { id: 'sample-1', name: '몬스테라 몽이', species: '몬스테라 델리시오사', photo_url: mongiPhoto, last_watered_at: '2026-07-15', watering_interval_days: 7 },
@@ -38,6 +47,7 @@ export async function createPlant({ ownerId, name, species, photoUrl, acquiredDa
     })
     .select()
     .single()
+  if (data) await syncGardenScore(ownerId)
   return { data, error }
 }
 
@@ -91,8 +101,9 @@ export async function updateWateringInterval(id, days) {
   return { data, error }
 }
 
-export async function deletePlant(id) {
+export async function deletePlant(id, ownerId) {
   const { error } = await supabase.from('plants').delete().eq('id', id)
+  if (!error && ownerId) await syncGardenScore(ownerId)
   return { error }
 }
 

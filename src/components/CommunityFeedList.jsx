@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Heart, LayoutGrid, List, MessageCircle, Search } from 'lucide-react'
 import { CATEGORY_LABEL } from '../lib/posts'
 import { timeAgo } from '../lib/time'
+import GradeBadge from './GradeBadge'
 
 const HOT_THRESHOLD = 3
 const isHot = (item) => (item.reaction_count || 0) + (item.comment_count || 0) >= HOT_THRESHOLD
@@ -59,6 +60,7 @@ export default function CommunityFeedList({
                 <div className="community-item-head">
                   <span className="avatar-circle">{(item.author?.username || '?')[0]}</span>
                   <span style={{ fontWeight: 700, color: 'var(--gt-text)' }}>{item.author?.username || '알 수 없음'}</span>
+                  <GradeBadge score={item.author?.garden_score} />
                   <span className="muted">· {timeAgo(item.created_at)}</span>
                 </div>
                 <div className="community-item-text">
@@ -103,7 +105,10 @@ export default function CommunityFeedList({
                   </>
                 )}
                 <div className="magazine-card-title">{item.title}</div>
-                <div className="muted">{item.author?.username || '알 수 없음'}</div>
+                <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  {item.author?.username || '알 수 없음'}
+                  <GradeBadge score={item.author?.garden_score} />
+                </div>
               </div>
             </Link>
           ))}

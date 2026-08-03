@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
@@ -58,6 +58,11 @@ export default function MyGarden() {
   }
 
   useEffect(load, [user])
+
+  // 등급 배지가 항상 최신 식물 구성을 반영하도록, 마이 그린 도감을 열 때마다 동기화
+  useEffect(() => {
+    if (user) syncGardenScore(user.id)
+  }, [user])
 
   // 성장 타임랩스 카드에 표시할 사진 개수 뱃지를 한 번에 조회
   useEffect(() => {
