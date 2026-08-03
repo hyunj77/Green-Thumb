@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Camera, ChevronLeft, ChevronRight, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun, Trash2 } from 'lucide-react'
+import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, deletePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
@@ -96,12 +96,6 @@ export default function MyGarden() {
   const handleFertilize = async (id) => {
     const { data } = await fertilizePlant(id)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
-  }
-
-  const handleDelete = async (id) => {
-    if (!confirm('이 식물 기록을 삭제할까요?')) return
-    await deletePlant(id)
-    setPlants((prev) => prev.filter((p) => p.id !== id))
   }
 
   const handleCardPhotoSelect = async (plant, file) => {
@@ -242,15 +236,6 @@ export default function MyGarden() {
         <p className="muted">등록된 식물이 없어요. 첫 반려식물을 등록해보세요!</p>
       ) : (
         <div className="plant-slider-wrap">
-          <button
-            type="button"
-            className="plant-slider-arrow plant-slider-arrow-prev"
-            onClick={() => goToSlide(activeSlide - 1)}
-            disabled={activeSlide === 0}
-            aria-label="이전 식물"
-          >
-            <ChevronLeft size={16} />
-          </button>
           <div
             className="plant-slider-track"
             ref={sliderRef}
@@ -344,7 +329,6 @@ export default function MyGarden() {
                         <button className="secondary plant-card-icon-btn" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)}>
                           <NotebookPen size={14} />
                         </button>
-                        <button className="secondary plant-card-icon-btn" onClick={() => handleDelete(plant.id)}><Trash2 size={14} /></button>
                       </>
                     )}
                   </div>
@@ -391,15 +375,6 @@ export default function MyGarden() {
             )
           })}
           </div>
-          <button
-            type="button"
-            className="plant-slider-arrow plant-slider-arrow-next"
-            onClick={() => goToSlide(activeSlide + 1)}
-            disabled={activeSlide === plants.length - 1}
-            aria-label="다음 식물"
-          >
-            <ChevronRight size={16} />
-          </button>
         </div>
       )}
 

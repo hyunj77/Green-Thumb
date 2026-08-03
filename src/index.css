@@ -1206,33 +1206,6 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
-.plant-slider-arrow {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  z-index: 2;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  border-radius: 50%;
-  background: #fff;
-  color: var(--accent);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-.plant-slider-arrow-prev {
-  left: -2px;
-}
-
-.plant-slider-arrow-next {
-  right: -2px;
-}
-
-.plant-slider-arrow:disabled {
-  opacity: 0.3;
-}
-
 .plant-slider-pagination {
   display: flex;
   align-items: center;
