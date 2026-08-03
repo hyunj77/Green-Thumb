@@ -51,7 +51,7 @@ export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
         <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
           <textarea placeholder="오늘의 기록 (예: 새잎 1개 나왔어요!)" rows={2} value={note} onChange={(e) => setNote(e.target.value)} required />
           <input type="number" placeholder="키(cm)" step="0.1" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} style={{ width: 100 }} />
-          <ImageUploadField folder="growth" userId={currentUserId} value={photoUrl} onChange={setPhotoUrl} placeholder="사진 URL (선택)" />
+          <ImageUploadField folder="growth" userId={currentUserId} value={photoUrl} onChange={setPhotoUrl} />
           <button type="submit" disabled={submitting} style={{ alignSelf: 'flex-start' }}>{submitting ? '기록 중...' : '기록 추가'}</button>
         </form>
       )}

@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { Camera } from 'lucide-react'
 import { uploadImage } from '../lib/storage'
 
-// 게시글/식물/장터/성장일기 공용 사진 첨부 필드.
-// 갤러리에서 실제 파일을 업로드하는 게 기본 경로고, URL 직접 입력도 계속 지원한다.
-export default function ImageUploadField({ folder, userId, value, onChange, placeholder = '사진 URL (선택 사항)' }) {
+// 게시글/식물/장터/성장일기 공용 사진 첨부 필드. 갤러리에서 파일을 업로드해 Storage URL로 저장한다.
+export default function ImageUploadField({ folder, userId, value, onChange }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
 
@@ -33,10 +32,9 @@ export default function ImageUploadField({ folder, userId, value, onChange, plac
         />
       )}
       <label className="gt-upload-btn" data-uploading={uploading}>
-        <Camera size={17} /> {uploading ? '업로드 중...' : '갤러리에서 사진 선택'}
+        <Camera size={17} /> {uploading ? '업로드 중...' : value ? '다른 사진으로 변경' : '갤러리에서 사진 선택'}
         <input type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }} disabled={uploading} />
       </label>
-      <input type="url" placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} />
       {error && <p className="error-text" style={{ fontSize: 12, marginTop: 4 }}>{error}</p>}
     </div>
   )
