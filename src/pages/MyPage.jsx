@@ -76,12 +76,10 @@ export default function MyPage() {
             <p className="muted" style={{ margin: '4px 0 0' }}>{user.email}</p>
           </div>
         </div>
-        {grade.next && (
-          <p className="muted" style={{ margin: '12px 0 0' }}>
-            다음 등급 {grade.next.emoji} {grade.next.name}까지 {grade.next.pointsToNext}점 남았어요 (그린 포인트 {grade.score})
-          </p>
-        )}
-        <Link to={`/users/${user.id}`} style={{ display: 'inline-block', marginTop: 10, fontSize: 14 }}>공개 프로필 보기 →</Link>
+        <div style={{ display: 'flex', gap: 14, marginTop: 10, flexWrap: 'wrap' }}>
+          <Link to={`/users/${user.id}`} style={{ fontSize: 14 }}>공개 프로필 보기 →</Link>
+          <Link to="/settings" style={{ fontSize: 14 }}>⚙️ 계정 설정</Link>
+        </div>
       </div>
 
       {editingAvatar && (

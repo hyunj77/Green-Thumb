@@ -24,6 +24,7 @@ import Messages from './pages/Messages'
 import GreenieHome from './pages/GreenieHome'
 import GreenieVisit from './pages/GreenieVisit'
 import GreenieStagesGuide from './pages/GreenieStagesGuide'
+import Settings from './pages/Settings'
 
 export default function App() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="/users/:id" element={<UserProfile />} />
           <Route path="/grades" element={<GradeGuide />} />
           <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
           <Route path="/greenie" element={<ProtectedRoute><GreenieHome /></ProtectedRoute>} />
