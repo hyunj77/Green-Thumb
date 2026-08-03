@@ -41,6 +41,19 @@ export async function fetchTodayGrowthLogsByAuthor(authorId) {
   return { data: data || [], error }
 }
 
+// 성장 타임랩스 카드에 표시할 식물별 사진 개수 (한 번의 쿼리로 일괄 조회)
+export async function fetchPhotoCountsByPlantIds(plantIds) {
+  if (!plantIds.length) return {}
+  const { data } = await supabase
+    .from('growth_logs')
+    .select('plant_id')
+    .in('plant_id', plantIds)
+    .not('photo_url', 'is', null)
+  const counts = {}
+  ;(data || []).forEach((row) => { counts[row.plant_id] = (counts[row.plant_id] || 0) + 1 })
+  return counts
+}
+
 // 매거진 피드: 마이 그린 도감에 올라온 성장 사진들을 모아 보여준다
 export async function fetchPublicGrowthFeed(limit = 12) {
   const { data, error } = await supabase

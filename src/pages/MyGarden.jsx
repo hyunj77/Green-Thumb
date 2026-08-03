@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Clapperboard, Droplets, Info, NotebookPen, Plus, Sun, Trash2 } from 'lucide-react'
+import { Bell, Droplets, Info, NotebookPen, Play, Plus, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, deletePlant, updateWateringInterval, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
-import { fetchGrowthLogs } from '../lib/growthLogs'
+import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
 import GrowthDiary from '../components/GrowthDiary'
@@ -11,6 +11,8 @@ import GrowthTimelapse from '../components/GrowthTimelapse'
 import AiFeaturePreview from '../components/AiFeaturePreview'
 import WateringCalendar from '../components/WateringCalendar'
 import ImageUploadField from '../components/ImageUploadField'
+import SeasonalTipBanner from '../components/SeasonalTipBanner'
+import SymptomGuide from '../components/SymptomGuide'
 
 export default function MyGarden() {
   const { user } = useAuth()
@@ -32,6 +34,7 @@ export default function MyGarden() {
   const [greenieToast, setGreenieToast] = useState('')
   const [timelapsePlant, setTimelapsePlant] = useState(null)
   const [timelapseLogs, setTimelapseLogs] = useState([])
+  const [photoCounts, setPhotoCounts] = useState({})
 
   const speciesInfo = findSpeciesInfo(species)
 
@@ -49,6 +52,12 @@ export default function MyGarden() {
   }
 
   useEffect(load, [user])
+
+  // 성장 타임랩스 카드에 표시할 사진 개수 뱃지를 한 번에 조회
+  useEffect(() => {
+    if (!user || plants.length === 0) { setPhotoCounts({}); return }
+    fetchPhotoCountsByPlantIds(plants.map((p) => p.id)).then(setPhotoCounts)
+  }, [user, plants])
 
   // '+' 버튼 등 다른 화면에서 해시로 들어오면 등록 폼을 열거나 AI 미리보기로 스크롤한다
   useEffect(() => {
@@ -113,6 +122,8 @@ export default function MyGarden() {
           </button>
         )}
       </div>
+
+      <SeasonalTipBanner />
 
       {greenieToast && (
         <div className="card" style={{ padding: '10px 16px', marginBottom: 16, background: 'var(--green-light)', border: 'none', textAlign: 'center', fontWeight: 700, color: 'var(--accent)' }}>
@@ -260,18 +271,37 @@ export default function MyGarden() {
           <div className="gt-section-head">
             <span className="gt-section-title">🎬 성장 타임랩스</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {plants.map((plant) => (
-              <button
-                key={plant.id}
-                type="button"
-                className="secondary"
-                style={{ justifyContent: 'flex-start' }}
-                onClick={() => openTimelapse(plant)}
-              >
-                <Clapperboard size={14} /> {plant.name} 타임랩스 보기
-              </button>
-            ))}
+          <div className="tl-thumb-scroll">
+            {plants.map((plant) => {
+              const days = plant.created_at
+                ? Math.max(0, Math.round((Date.now() - new Date(plant.created_at).getTime()) / 86400000))
+                : null
+              const count = photoCounts[plant.id] || 0
+              return (
+                <button
+                  key={plant.id}
+                  type="button"
+                  className="tl-thumb-card"
+                  onClick={() => openTimelapse(plant)}
+                >
+                  <div className="tl-thumb-media">
+                    {plant.photo_url ? (
+                      <img src={plant.photo_url} alt="" />
+                    ) : (
+                      <div className="tl-thumb-placeholder">🌿</div>
+                    )}
+                    <span className="tl-thumb-play"><Play size={16} fill="#fff" /></span>
+                    {count > 0 && <span className="tl-thumb-badge">{count}장</span>}
+                  </div>
+                  <div className="tl-thumb-body">
+                    <div className="tl-thumb-title">{plant.name}</div>
+                    <div className="tl-thumb-meta">
+                      {days != null ? `D+${days}` : '타임랩스 보기'}{plant.species ? ` · ${plant.species}` : ''}
+                    </div>
+                  </div>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
@@ -279,6 +309,8 @@ export default function MyGarden() {
       {timelapsePlant && (
         <GrowthTimelapse logs={timelapseLogs} plant={timelapsePlant} onClose={() => setTimelapsePlant(null)} />
       )}
+
+      <SymptomGuide />
 
       <AiFeaturePreview />
     </div>

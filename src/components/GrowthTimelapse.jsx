@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Camera, Clock3, Pause, Play, Share2 } from 'lucide-react'
 import BackHeader from './BackHeader'
+import GrowthBeforeAfter from './GrowthBeforeAfter'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 
 // AI 없이, 성장일기에 쌓인 실제 사진과 기록을 날짜순으로 모아 보여주는 성장 타임랩스 페이지.
@@ -142,6 +143,8 @@ export default function GrowthTimelapse({ logs, plant, onClose }) {
                 ))}
               </div>
             </div>
+
+            <GrowthBeforeAfter photos={photos} />
           </>
         )}
 
