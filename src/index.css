@@ -228,6 +228,12 @@ input:focus, textarea:focus, select:focus {
   white-space: nowrap;
 }
 
+.grade-badge-emoji {
+  font-size: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .auth-card input,
 .auth-card textarea,
 .auth-card select {

@@ -60,7 +60,7 @@ export default function CommunityFeedList({
                 <div className="community-item-head">
                   <span className="avatar-circle">{(item.author?.username || '?')[0]}</span>
                   <span style={{ fontWeight: 700, color: 'var(--gt-text)' }}>{item.author?.username || '알 수 없음'}</span>
-                  <GradeBadge score={item.author?.garden_score} />
+                  <GradeBadge score={item.author?.garden_score} compact />
                   <span className="muted">· {timeAgo(item.created_at)}</span>
                 </div>
                 <div className="community-item-text">
@@ -107,7 +107,7 @@ export default function CommunityFeedList({
                 <div className="magazine-card-title">{item.title}</div>
                 <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                   {item.author?.username || '알 수 없음'}
-                  <GradeBadge score={item.author?.garden_score} />
+                  <GradeBadge score={item.author?.garden_score} compact />
                 </div>
               </div>
             </Link>
