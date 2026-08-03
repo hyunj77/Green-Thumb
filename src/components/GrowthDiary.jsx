@@ -4,7 +4,7 @@ import { fetchGrowthLogs, createGrowthLog, deleteGrowthLog } from '../lib/growth
 import ImageUploadField from './ImageUploadField'
 import GrowthTimelapse from './GrowthTimelapse'
 
-export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
+export default function GrowthDiary({ plantId, ownerId, currentUserId, plant }) {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [note, setNote] = useState('')
@@ -65,7 +65,7 @@ export default function GrowthDiary({ plantId, ownerId, currentUserId }) {
         <Clapperboard size={13} /> 성장 타임랩스 보기{photoCount > 0 ? ` (${photoCount}장)` : ''}
       </button>
 
-      {showTimelapse && <GrowthTimelapse logs={logs} onClose={() => setShowTimelapse(false)} />}
+      {showTimelapse && <GrowthTimelapse logs={logs} plant={plant} onClose={() => setShowTimelapse(false)} />}
 
       {loading ? (
         <p className="muted">불러오는 중...</p>

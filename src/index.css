@@ -36,6 +36,7 @@
 body {
   margin: 0;
   background: var(--oat);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
 }
 
 /* 웹사이트가 아니라 '앱'처럼 보이도록 폭을 모바일~태블릿 범위로 고정한다.
@@ -475,86 +476,206 @@ input:focus, textarea:focus, select:focus {
   flex-shrink: 0;
 }
 
-/* 성장 타임랩스 */
+/* 성장 타임랩스 (전체 화면 페이지형 오버레이) */
 .timelapse-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
   z-index: 100;
+  background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.timelapse-card {
-  position: relative;
-  width: 100%;
-  max-width: 360px;
-  background: var(--bg);
+.timelapse-page {
+  min-height: 100%;
+  padding: 0 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.timelapse-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.timelapse-hero-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--text-h);
+  line-height: 1.3;
+}
+
+.timelapse-hero-sub {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--text-soft, var(--text));
+  line-height: 1.6;
+}
+
+.timelapse-hero-photo {
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.tl-card {
+  background: var(--green-light);
   border-radius: 20px;
   padding: 16px;
-  box-shadow: var(--shadow);
 }
 
-.timelapse-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.4);
-  color: #fff;
-  border: none;
+.tl-card-head {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-h);
+  margin-bottom: 14px;
+}
+
+.tl-scrub-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tl-scrub-play {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   padding: 0;
 }
 
-.timelapse-image-wrap {
-  position: relative;
-  border-radius: 14px;
-  overflow: hidden;
-  aspect-ratio: 1;
-  background: var(--green-light);
+.tl-scrub-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 2px 2px 4px;
 }
 
-.timelapse-image {
-  width: 100%;
-  height: 100%;
+.tl-scrub-item {
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.tl-scrub-thumb {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
   object-fit: cover;
-  display: block;
+  border: 2px solid transparent;
 }
 
-.timelapse-date {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 8px 12px;
-  background: linear-gradient(0deg, rgba(0,0,0,0.6), transparent);
-  color: #fff;
-  font-size: 12.5px;
-  font-weight: 600;
+.tl-scrub-thumb[data-active="true"] {
+  border-color: var(--accent);
 }
 
-.timelapse-controls {
+.tl-scrub-date {
+  font-size: 10.5px;
+  color: var(--text-soft, var(--text));
+  white-space: nowrap;
+}
+
+.tl-scrub-date[data-active="true"] {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.tl-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.tl-stat {
+  background: var(--green-light);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+}
+
+.tl-stat-label {
+  font-size: 11px;
+  color: var(--text-soft, var(--text));
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 4px;
 }
 
-.timelapse-progress {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--text-soft, var(--text));
+.tl-stat-value {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-h);
+  margin-top: 4px;
   font-variant-numeric: tabular-nums;
+}
+
+.tl-records-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 2px 4px;
+}
+
+.tl-record-card {
+  flex-shrink: 0;
+  width: 110px;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tl-record-photo {
+  width: 110px;
+  height: 110px;
+  border-radius: 14px;
+  object-fit: cover;
+  display: block;
+  border: 2px solid transparent;
+}
+
+.tl-record-photo[data-active="true"] {
+  border-color: var(--accent);
+}
+
+.tl-record-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin-top: 6px;
+}
+
+.tl-record-note {
+  font-size: 11px;
+  color: var(--text-soft, var(--text));
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tl-tip-card {
+  background: var(--green-light);
+  border-radius: 18px;
+  padding: 18px;
 }
 
 /* Hero banner */

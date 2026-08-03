@@ -243,7 +243,7 @@ export default function MyGarden() {
                   {!isGuest && expandedId === plant.id && (
                     <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
                       <div className="contact-row-label" style={{ marginBottom: 8 }}>🌱 성장일기</div>
-                      <GrowthDiary plantId={plant.id} ownerId={plant.owner_id} currentUserId={user.id} />
+                      <GrowthDiary plantId={plant.id} ownerId={plant.owner_id} currentUserId={user.id} plant={plant} />
                     </div>
                   )}
                 </div>
@@ -277,7 +277,7 @@ export default function MyGarden() {
       )}
 
       {timelapsePlant && (
-        <GrowthTimelapse logs={timelapseLogs} onClose={() => setTimelapsePlant(null)} />
+        <GrowthTimelapse logs={timelapseLogs} plant={timelapsePlant} onClose={() => setTimelapsePlant(null)} />
       )}
 
       <AiFeaturePreview />
