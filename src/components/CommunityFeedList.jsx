@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, LayoutGrid, List, MessageCircle, Search } from 'lucide-react'
 import { CATEGORY_LABEL, DEAL_STATUS_LABEL, formatDealPrice, isMarketCategory } from '../lib/posts'
+import { searchProfiles } from '../lib/profiles'
 import { timeAgo } from '../lib/time'
 import GradeBadge from './GradeBadge'
 
@@ -26,12 +28,34 @@ export default function CommunityFeedList({
   goPage,
   onCardClick,
 }) {
+  const [userResults, setUserResults] = useState([])
+
+  useEffect(() => {
+    const q = searchInput.trim()
+    if (!q) { setUserResults([]); return undefined }
+    const timer = setTimeout(() => {
+      searchProfiles(q).then(({ data }) => setUserResults(data))
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
   return (
     <div>
-      <form onSubmit={onSearch} className="gt-search" style={{ marginBottom: 14 }}>
+      <form onSubmit={onSearch} className="gt-search" style={{ marginBottom: userResults.length > 0 ? 10 : 14 }}>
         <Search size={16} />
-        <input type="text" placeholder="게시물 · 성장일지 검색" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+        <input type="text" placeholder="게시물 · 성장일지 · 유저 검색" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
       </form>
+
+      {userResults.length > 0 && (
+        <div className="user-search-row">
+          {userResults.map((u) => (
+            <Link key={u.id} to={`/users/${u.id}`} className="user-search-chip">
+              {u.avatar_url ? <img src={u.avatar_url} alt="" /> : <span className="avatar-circle">{u.username?.[0] || '?'}</span>}
+              <span>{u.username}</span>
+            </Link>
+          ))}
+        </div>
+      )}
 
       <div className="view-toggle-row">
         <div className="view-toggle" style={{ marginBottom: 0, flexShrink: 0 }}>

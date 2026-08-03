@@ -1467,6 +1467,41 @@ input:focus, textarea:focus, select:focus {
   flex-shrink: 0;
 }
 
+.user-search-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.user-search-row::-webkit-scrollbar {
+  display: none;
+}
+
+.user-search-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 12px 6px 6px;
+  border-radius: 999px;
+  background: var(--gt-bg-1, var(--oat));
+  border: 1px solid var(--border);
+  color: var(--text-h);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.user-search-chip img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .community-item-text {
   color: var(--text-h);
   font-weight: 600;
