@@ -592,6 +592,12 @@ input:focus, textarea:focus, select:focus {
   gap: 16px;
   overflow-x: auto;
   padding: 2px 2px 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tl-scrub-track::-webkit-scrollbar {
+  display: none;
 }
 
 .tl-scrub-item {
@@ -664,6 +670,12 @@ input:focus, textarea:focus, select:focus {
   gap: 10px;
   overflow-x: auto;
   padding: 2px 2px 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tl-records-strip::-webkit-scrollbar {
+  display: none;
 }
 
 .tl-record-card {
@@ -789,6 +801,12 @@ input:focus, textarea:focus, select:focus {
   scroll-snap-type: x mandatory;
   padding: 2px 2px 6px;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tl-thumb-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .tl-thumb-card {
@@ -1255,7 +1273,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
   margin-bottom: 14px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -1268,7 +1286,7 @@ input:focus, textarea:focus, select:focus {
 
 .view-toggle {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   margin-bottom: 16px;
 }
 
@@ -1276,8 +1294,9 @@ input:focus, textarea:focus, select:focus {
   background: color-mix(in srgb, var(--gt-sage) 16%, white);
   color: var(--gt-sage-deep);
   box-shadow: none;
-  font-size: 12px;
-  padding: 7px 14px;
+  font-size: 11.5px;
+  padding: 6px 9px;
+  white-space: nowrap;
 }
 
 .view-toggle-active {
@@ -2641,16 +2660,31 @@ body {
   font-weight: 700;
 }
 
-.watering-calendar-dot {
+.watering-calendar-dots {
   position: absolute;
   bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+}
+
+.watering-calendar-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: #ff8a5c;
 }
 
-.watering-calendar-cell.is-selected .watering-calendar-dot {
+.watering-calendar-dot-fert {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.watering-calendar-cell.is-selected .watering-calendar-dot,
+.watering-calendar-cell.is-selected .watering-calendar-dot-fert {
   background: #fff;
 }
 

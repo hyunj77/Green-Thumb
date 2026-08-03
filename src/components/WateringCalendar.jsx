@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, Droplets } from 'lucide-react'
-import { nextWateringDate } from '../lib/plants'
+import { ChevronLeft, ChevronRight, Droplets, Sprout } from 'lucide-react'
+import { nextWateringDate, nextFertilizingDate } from '../lib/plants'
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -22,6 +22,12 @@ export default function WateringCalendar({ plants }) {
       .filter((x) => x.due)
   }, [plants])
 
+  const dueFertilizer = useMemo(() => {
+    return plants
+      .map((p) => ({ plant: p, due: nextFertilizingDate(p) }))
+      .filter((x) => x.due)
+  }, [plants])
+
   const cells = useMemo(() => {
     const year = cursor.getFullYear()
     const month = cursor.getMonth()
@@ -35,11 +41,12 @@ export default function WateringCalendar({ plants }) {
 
   const today = new Date()
   const dueOnSelected = duePlants.filter((x) => sameDay(x.due, selected))
+  const fertilizerOnSelected = dueFertilizer.filter((x) => sameDay(x.due, selected))
 
   return (
     <div className="card watering-calendar" style={{ padding: 20, marginTop: 24 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <h3 style={{ margin: 0, fontSize: 16 }}>💧 물주기 캘린더</h3>
+        <h3 style={{ margin: 0, fontSize: 16 }}>💧🌱 케어 캘린더</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <button
             className="secondary"
@@ -70,6 +77,7 @@ export default function WateringCalendar({ plants }) {
         {cells.map((date, i) => {
           if (!date) return <div key={`pad-${i}`} />
           const due = duePlants.filter((x) => sameDay(x.due, date))
+          const fertDue = dueFertilizer.filter((x) => sameDay(x.due, date))
           const isToday = sameDay(date, today)
           const isSelected = sameDay(date, selected)
           return (
@@ -79,7 +87,12 @@ export default function WateringCalendar({ plants }) {
               onClick={() => setSelected(date)}
             >
               <span>{date.getDate()}</span>
-              {due.length > 0 && <span className="watering-calendar-dot" />}
+              {(due.length > 0 || fertDue.length > 0) && (
+                <span className="watering-calendar-dots">
+                  {due.length > 0 && <span className="watering-calendar-dot" />}
+                  {fertDue.length > 0 && <span className="watering-calendar-dot-fert" />}
+                </span>
+              )}
             </button>
           )
         })}
@@ -87,17 +100,24 @@ export default function WateringCalendar({ plants }) {
 
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
         <div className="contact-row-label" style={{ marginBottom: 8 }}>
-          {selected.getMonth() + 1}월 {selected.getDate()}일 물주기
+          {selected.getMonth() + 1}월 {selected.getDate()}일 케어 예정
         </div>
-        {dueOnSelected.length === 0 ? (
-          <p className="muted" style={{ margin: 0 }}>이 날 물을 줄 식물이 없어요.</p>
+        {dueOnSelected.length === 0 && fertilizerOnSelected.length === 0 ? (
+          <p className="muted" style={{ margin: 0 }}>이 날 예정된 케어가 없어요.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {dueOnSelected.map(({ plant }) => (
-              <div key={plant.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5 }}>
-                <Droplets size={14} color="var(--accent)" />
+              <div key={`water-${plant.id}`} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5 }}>
+                <Droplets size={14} color="#ff8a5c" />
                 <span style={{ fontWeight: 700 }}>{plant.name}</span>
-                <span className="muted">{plant.watering_interval_days}일 주기</span>
+                <span className="muted">물주기 · {plant.watering_interval_days}일 주기</span>
+              </div>
+            ))}
+            {fertilizerOnSelected.map(({ plant }) => (
+              <div key={`fert-${plant.id}`} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5 }}>
+                <Sprout size={14} color="var(--accent)" />
+                <span style={{ fontWeight: 700 }}>{plant.name}</span>
+                <span className="muted">영양제 · {plant.fertilizing_interval_days}일 주기</span>
               </div>
             ))}
           </div>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sun, Trash2 } from 'lucide-react'
+import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, deletePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, deletePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
@@ -87,6 +87,11 @@ export default function MyGarden() {
     const greenie = await addGreenieExpFromWatering(user.id)
     setGreenieToast(`🌱 그린이가 쑥쑥 자랐어요! (Lv.${greenie.level})`)
     setTimeout(() => setGreenieToast(''), 2500)
+  }
+
+  const handleFertilize = async (id) => {
+    const { data } = await fertilizePlant(id)
+    if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
   }
 
   const handleDelete = async (id) => {
@@ -248,11 +253,19 @@ export default function MyGarden() {
                     마지막 물주기: {plant.last_watered_at || '기록 없음'}
                     {dueSoon && <span className="error-text" style={{ fontSize: 12, marginLeft: 4 }}>💧 필요해요!</span>}
                   </div>
+                  <div className="plant-card-lastwater">
+                    마지막 영양제: {plant.last_fertilized_at || '기록 없음'}
+                  </div>
 
                   <div className="plant-card-actions">
                     {!isGuest && (
                       <button className="plant-card-water-btn" onClick={() => handleWater(plant.id)}>
                         <Droplets size={14} /> 물주기 완료
+                      </button>
+                    )}
+                    {!isGuest && (
+                      <button className="secondary plant-card-icon-btn" onClick={() => handleFertilize(plant.id)} aria-label="영양제 줬어요">
+                        <Sprout size={14} />
                       </button>
                     )}
                     {info && (

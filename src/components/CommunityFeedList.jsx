@@ -42,7 +42,7 @@ export default function CommunityFeedList({
             <List size={14} /> 리스트
           </button>
           <button className={viewMode === 'grid' ? 'view-toggle-active' : ''} onClick={() => setViewMode('grid')}>
-            <LayoutGrid size={14} /> 이미지만
+            <LayoutGrid size={14} /> 이미지
           </button>
         </div>
       </div>

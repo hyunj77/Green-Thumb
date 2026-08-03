@@ -51,6 +51,26 @@ export async function waterPlant(id) {
   return { data, error }
 }
 
+export async function fertilizePlant(id) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ last_fertilized_at: new Date().toISOString().slice(0, 10) })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
+export async function updateFertilizingInterval(id, days) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ fertilizing_interval_days: days })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
 export async function updatePlantPhoto(id, photoUrl) {
   const { data, error } = await supabase
     .from('plants')
@@ -80,5 +100,12 @@ export function nextWateringDate(plant) {
   if (!plant.last_watered_at) return null
   const last = new Date(plant.last_watered_at)
   last.setDate(last.getDate() + (plant.watering_interval_days || 7))
+  return last
+}
+
+export function nextFertilizingDate(plant) {
+  if (!plant.last_fertilized_at) return null
+  const last = new Date(plant.last_fertilized_at)
+  last.setDate(last.getDate() + (plant.fertilizing_interval_days || 30))
   return last
 }
