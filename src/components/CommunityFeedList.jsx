@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Heart, LayoutGrid, List, MessageCircle, Search } from 'lucide-react'
-import { CATEGORY_LABEL } from '../lib/posts'
+import { CATEGORY_LABEL, DEAL_STATUS_LABEL, formatDealPrice, isMarketCategory } from '../lib/posts'
 import { timeAgo } from '../lib/time'
 import GradeBadge from './GradeBadge'
 
@@ -72,6 +72,16 @@ export default function CommunityFeedList({
                     <span className="badge">🌱 성장일지</span>
                   ) : (
                     <>
+                      {isMarketCategory(item.category) && (
+                        <>
+                          <span className="badge" style={{ background: 'var(--accent)', color: '#fff' }}>
+                            {formatDealPrice(item.category, item.price)}
+                          </span>
+                          {item.deal_status && item.deal_status !== 'available' && (
+                            <span className="badge">{DEAL_STATUS_LABEL[item.deal_status]}</span>
+                          )}
+                        </>
+                      )}
                       {isHot(item) && <span className="badge badge-hot">🔥 인기</span>}
                       <span className="badge">{CATEGORY_LABEL[item.category] || item.category}</span>
                       <span className="muted community-stat"><Heart size={13} /> {item.reaction_count}</span>
@@ -100,6 +110,11 @@ export default function CommunityFeedList({
                   <span className="badge">🌱 성장일지</span>
                 ) : (
                   <>
+                    {isMarketCategory(item.category) && (
+                      <span className="badge" style={{ background: 'var(--accent)', color: '#fff', marginRight: 6 }}>
+                        {formatDealPrice(item.category, item.price)}
+                      </span>
+                    )}
                     {isHot(item) && <span className="badge badge-hot" style={{ marginRight: 6 }}>🔥 인기</span>}
                     <span className="badge">{CATEGORY_LABEL[item.category] || item.category}</span>
                   </>

@@ -32,7 +32,11 @@ export default function CommunityBoard() {
     async function load() {
       if (tab.key === 'growth') {
         const { data } = await fetchPublicGrowthFeed(60)
-        const filtered = (data || []).filter((log) => !search || (log.note || '').includes(search) || (log.plant?.name || '').includes(search))
+        const filtered = (data || []).filter((log) => {
+          if (!search) return true
+          const q = search.toLowerCase()
+          return (log.note || '').toLowerCase().includes(q) || (log.plant?.name || '').toLowerCase().includes(q)
+        })
         const normalized = filtered.map(normalizeGrowthLog)
         if (!cancelled) {
           setTotalCount(normalized.length)

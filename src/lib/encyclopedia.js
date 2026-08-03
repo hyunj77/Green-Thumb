@@ -36,5 +36,10 @@ export function findSpeciesInfo(species) {
   if (!species) return null
   const trimmed = species.trim()
   if (!trimmed) return null
-  return PLANT_SPECIES.find((p) => trimmed.includes(p.name) || p.name.includes(trimmed)) || null
+  const exact = PLANT_SPECIES.find((p) => p.name === trimmed)
+  if (exact) return exact
+  const matches = PLANT_SPECIES.filter((p) => trimmed.includes(p.name) || p.name.includes(trimmed))
+  if (matches.length === 0) return null
+  // 가장 이름이 긴(구체적인) 종을 우선한다 — 예: "알보 몬스테라"가 "몬스테라"보다 먼저 매칭되도록
+  return matches.reduce((best, cur) => (cur.name.length > best.name.length ? cur : best))
 }

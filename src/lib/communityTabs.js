@@ -6,6 +6,7 @@ export const TOP_TABS = [
   { key: 'question', label: '질문', categories: ['question'] },
   { key: 'info', label: '식물정보', categories: ['tip', 'trivia'] },
   { key: 'challenge', label: '그린썸 루틴 챌린지', categories: ['challenge_notice', 'watering_proof', 'growth_proof'] },
+  { key: 'market', label: '로컬 장터', categories: ['market_sell', 'market_buy', 'market_free'] },
 ]
 
 export function findTab(key) {

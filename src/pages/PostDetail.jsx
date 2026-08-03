@@ -4,7 +4,7 @@ import { Bookmark, Heart, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import GradeBadge from '../components/GradeBadge'
-import { fetchPostById, deletePost, CATEGORY_LABEL } from '../lib/posts'
+import { fetchPostById, deletePost, updateDealStatus, CATEGORY_LABEL, DEAL_STATUS_LABEL, formatDealPrice, isMarketCategory } from '../lib/posts'
 import { fetchComments, createComment, deleteComment } from '../lib/comments'
 import { fetchReactionCounts, addReaction, removeReaction } from '../lib/reactions'
 import { fetchMyBookmarkedPostIds, addBookmark, removeBookmark } from '../lib/bookmarks'
@@ -69,6 +69,11 @@ export default function PostDetail() {
     navigate('/')
   }
 
+  const handleSetDealStatus = async (status) => {
+    const { data } = await updateDealStatus(id, status)
+    if (data) setPost((prev) => ({ ...prev, deal_status: data.deal_status }))
+  }
+
   const handleComment = async (e) => {
     e.preventDefault()
     if (!commentText.trim()) return
@@ -106,6 +111,14 @@ export default function PostDetail() {
       <BackHeader title={CATEGORY_LABEL[post.category] || post.category} />
       <div className="card" style={{ padding: '28px 32px' }}>
         <span className="badge">{CATEGORY_LABEL[post.category] || post.category}</span>
+        {isMarketCategory(post.category) && (
+          <span className="badge" style={{ marginLeft: 6, background: 'var(--accent)', color: '#fff' }}>
+            {formatDealPrice(post.category, post.price)}
+          </span>
+        )}
+        {isMarketCategory(post.category) && post.deal_status !== 'available' && (
+          <span className="badge" style={{ marginLeft: 6 }}>{DEAL_STATUS_LABEL[post.deal_status]}</span>
+        )}
         <h2 style={{ marginTop: 12 }}>{post.title}</h2>
         <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           <span>{post.author?.username || '알 수 없음'}</span>
@@ -124,10 +137,30 @@ export default function PostDetail() {
           <button className={bookmarked ? '' : 'secondary'} onClick={toggleBookmark}>
             <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} /> {bookmarked ? '저장됨' : '저장하기'}
           </button>
+          {!isOwner && user && isMarketCategory(post.category) && (
+            <Link to={`/messages?with=${post.author_id}`}>
+              <button className="secondary">💬 판매자에게 메시지</button>
+            </Link>
+          )}
         </div>
 
+        {isOwner && isMarketCategory(post.category) && (
+          <div style={{ display: 'flex', gap: 6, marginTop: 20, flexWrap: 'wrap' }}>
+            {Object.entries(DEAL_STATUS_LABEL).map(([status, label]) => (
+              <button
+                key={status}
+                className={post.deal_status === status ? '' : 'secondary'}
+                style={{ padding: '8px 12px', fontSize: 13 }}
+                onClick={() => handleSetDealStatus(status)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {isOwner && (
-          <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
             <Link to={`/posts/${id}/edit`}><button className="secondary">수정</button></Link>
             <button className="secondary" onClick={handleDeletePost}>삭제</button>
           </div>

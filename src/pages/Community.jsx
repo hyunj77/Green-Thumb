@@ -13,7 +13,7 @@ import { TOP_TABS, normalizeGrowthLog, normalizePost } from '../lib/communityTab
 async function fetchRecentPostsPool(search, limit = 60) {
   let query = supabase
     .from('posts')
-    .select('id, title, content, image_url, category, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)')
+    .select('id, title, content, image_url, category, price, deal_status, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)')
     .order('created_at', { ascending: false })
     .limit(limit)
   if (search) query = query.ilike('title', `%${search}%`)
@@ -56,7 +56,11 @@ export default function Community() {
       const merged = [
         ...postData.map(normalizePost),
         ...(growthResult.data || [])
-          .filter((log) => !search || (log.note || '').includes(search) || (log.plant?.name || '').includes(search))
+          .filter((log) => {
+            if (!search) return true
+            const q = search.toLowerCase()
+            return (log.note || '').toLowerCase().includes(q) || (log.plant?.name || '').toLowerCase().includes(q)
+          })
           .map(normalizeGrowthLog),
       ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 

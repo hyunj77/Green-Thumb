@@ -12,6 +12,10 @@ export const CATEGORY_GROUPS = [
     title: '🏆 그린 썸 루틴 챌린지',
     categories: ['challenge_notice', 'watering_proof', 'growth_proof'],
   },
+  {
+    title: '🛍️ 로컬 장터',
+    categories: ['market_sell', 'market_buy', 'market_free'],
+  },
 ]
 
 export const CATEGORY_LABEL = {
@@ -24,6 +28,24 @@ export const CATEGORY_LABEL = {
   challenge_notice: '챌린지 공지',
   watering_proof: '데일리 물주기 인증',
   growth_proof: '성장 기록 인증',
+  market_sell: '판매해요',
+  market_buy: '구해요',
+  market_free: '나눔해요',
+}
+
+export const MARKET_CATEGORIES = ['market_sell', 'market_buy', 'market_free']
+export const isMarketCategory = (category) => MARKET_CATEGORIES.includes(category)
+
+export const DEAL_STATUS_LABEL = {
+  available: '거래중',
+  reserved: '예약중',
+  done: '거래완료',
+}
+
+export function formatDealPrice(category, price) {
+  if (category === 'market_free') return '나눔'
+  if (price == null) return '가격 미정'
+  return `${price.toLocaleString('ko-KR')}원`
 }
 
 export const CATEGORIES = CATEGORY_GROUPS.flatMap((g) => g.categories)
@@ -36,7 +58,7 @@ export async function fetchPosts({ category, categories, search, page = 1, sort 
   let query = supabase
     .from('posts')
     .select(
-      'id, title, content, image_url, category, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)',
+      'id, title, content, image_url, category, price, deal_status, created_at, author:profiles(id, username, garden_score), plant:plants(name), comments(count), post_reactions(count)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: false })
@@ -125,19 +147,35 @@ export async function fetchFeaturedPosts(limit = 12) {
   return { data: normalized.slice(0, limit), error: null }
 }
 
-export async function createPost({ title, content, category, imageUrl, plantId, authorId }) {
+export async function createPost({ title, content, category, imageUrl, plantId, authorId, price }) {
   const { data, error } = await supabase
     .from('posts')
-    .insert({ title, content, category, image_url: imageUrl || null, plant_id: plantId || null, author_id: authorId })
+    .insert({
+      title, content, category, image_url: imageUrl || null, plant_id: plantId || null, author_id: authorId,
+      price: isMarketCategory(category) && category !== 'market_free' ? Number(price) || null : null,
+    })
     .select()
     .single()
   return { data, error }
 }
 
-export async function updatePost(id, { title, content, category, imageUrl, plantId }) {
+export async function updatePost(id, { title, content, category, imageUrl, plantId, price }) {
   const { data, error } = await supabase
     .from('posts')
-    .update({ title, content, category, image_url: imageUrl || null, plant_id: plantId || null, updated_at: new Date().toISOString() })
+    .update({
+      title, content, category, image_url: imageUrl || null, plant_id: plantId || null, updated_at: new Date().toISOString(),
+      price: isMarketCategory(category) && category !== 'market_free' ? Number(price) || null : null,
+    })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
+export async function updateDealStatus(id, dealStatus) {
+  const { data, error } = await supabase
+    .from('posts')
+    .update({ deal_status: dealStatus })
     .eq('id', id)
     .select()
     .single()
