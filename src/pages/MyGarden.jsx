@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun, Trash2 } from 'lucide-react'
+import { Bell, Camera, ChevronLeft, ChevronRight, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, deletePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
@@ -37,6 +37,10 @@ export default function MyGarden() {
   const [timelapseLogs, setTimelapseLogs] = useState([])
   const [photoCounts, setPhotoCounts] = useState({})
   const [uploadingPhotoId, setUploadingPhotoId] = useState(null)
+  const [photoUploadError, setPhotoUploadError] = useState(null)
+  const [activeSlide, setActiveSlide] = useState(0)
+  const sliderRef = useRef(null)
+  const dragRef = useRef({ dragging: false, startX: 0, startScroll: 0 })
 
   const speciesInfo = findSpeciesInfo(species)
 
@@ -103,13 +107,49 @@ export default function MyGarden() {
   const handleCardPhotoSelect = async (plant, file) => {
     if (!file || !user) return
     setUploadingPhotoId(plant.id)
+    setPhotoUploadError(null)
     const { url, error } = await uploadImage('plants', user.id, file)
-    if (!error && url) {
-      const { data } = await updatePlantPhoto(plant.id, url)
+    if (error) {
+      console.error('식물 사진 업로드 실패:', error)
+      setPhotoUploadError({ plantId: plant.id, message: error.message || '업로드에 실패했어요.' })
+    } else if (url) {
+      const { data, error: updateError } = await updatePlantPhoto(plant.id, url)
       if (data) setPlants((prev) => prev.map((p) => (p.id === plant.id ? data : p)))
+      if (updateError) {
+        console.error('식물 사진 저장 실패:', updateError)
+        setPhotoUploadError({ plantId: plant.id, message: updateError.message || '사진 저장에 실패했어요.' })
+      }
     }
     setUploadingPhotoId(null)
   }
+
+  const goToSlide = (i) => {
+    const el = sliderRef.current
+    if (!el || plants.length === 0) return
+    const clamped = Math.max(0, Math.min(plants.length - 1, i))
+    const maxScroll = el.scrollWidth - el.clientWidth
+    el.scrollTo({ left: maxScroll * (clamped / Math.max(1, plants.length - 1)), behavior: 'smooth' })
+  }
+
+  const handleSliderScroll = () => {
+    const el = sliderRef.current
+    if (!el || plants.length <= 1) return
+    const maxScroll = el.scrollWidth - el.clientWidth
+    if (maxScroll <= 0) return
+    const idx = Math.round((el.scrollLeft / maxScroll) * (plants.length - 1))
+    setActiveSlide((prev) => (prev === idx ? prev : idx))
+  }
+
+  const handleTrackPointerDown = (e) => {
+    if (e.pointerType !== 'mouse' || !sliderRef.current) return
+    dragRef.current = { dragging: true, startX: e.clientX, startScroll: sliderRef.current.scrollLeft }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+  const handleTrackPointerMove = (e) => {
+    if (!dragRef.current.dragging || !sliderRef.current) return
+    sliderRef.current.scrollLeft = dragRef.current.startScroll - (e.clientX - dragRef.current.startX)
+  }
+  const stopTrackDrag = () => { dragRef.current.dragging = false }
 
   const openTimelapse = async (plant) => {
     const { data } = await fetchGrowthLogs(plant.id)
@@ -201,8 +241,26 @@ export default function MyGarden() {
       ) : plants.length === 0 ? (
         <p className="muted">등록된 식물이 없어요. 첫 반려식물을 등록해보세요!</p>
       ) : (
-        <div className="plant-grid">
-          {plants.map((plant) => {
+        <div className="plant-slider-wrap">
+          <button
+            type="button"
+            className="plant-slider-arrow"
+            onClick={() => goToSlide(activeSlide - 1)}
+            disabled={activeSlide === 0}
+            aria-label="이전 식물"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <div
+            className="plant-slider-track"
+            ref={sliderRef}
+            onScroll={handleSliderScroll}
+            onPointerDown={handleTrackPointerDown}
+            onPointerMove={handleTrackPointerMove}
+            onPointerUp={stopTrackDrag}
+            onPointerLeave={stopTrackDrag}
+          >
+          {plants.map((plant, slideIndex) => {
             const next = nextWateringDate(plant)
             const dueSoon = next && next <= new Date()
             const info = findSpeciesInfo(plant.species)
@@ -220,7 +278,7 @@ export default function MyGarden() {
               : null
 
             return (
-              <div key={plant.id} className="plant-card">
+              <div key={plant.id} className="plant-card plant-slide" data-active={slideIndex === activeSlide}>
                 <div className="plant-card-media">
                   {plant.photo_url ? (
                     <img src={plant.photo_url} alt="" />
@@ -256,6 +314,11 @@ export default function MyGarden() {
                   <div className="plant-card-lastwater">
                     마지막 영양제: {plant.last_fertilized_at || '기록 없음'}
                   </div>
+                  {photoUploadError?.plantId === plant.id && (
+                    <p className="error-text" style={{ fontSize: 12, margin: '6px 0 0' }}>
+                      📷 {photoUploadError.message}
+                    </p>
+                  )}
 
                   <div className="plant-card-actions">
                     {!isGuest && (
@@ -327,6 +390,34 @@ export default function MyGarden() {
               </div>
             )
           })}
+          </div>
+          <button
+            type="button"
+            className="plant-slider-arrow"
+            onClick={() => goToSlide(activeSlide + 1)}
+            disabled={activeSlide === plants.length - 1}
+            aria-label="다음 식물"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
+
+      {!loading && plants.length > 1 && (
+        <div className="plant-slider-pagination">
+          <div className="plant-slider-dots">
+            {plants.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                className="plant-slider-dot"
+                data-active={i === activeSlide}
+                onClick={() => goToSlide(i)}
+                aria-label={`${i + 1}번째 식물`}
+              />
+            ))}
+          </div>
+          <span className="plant-slider-counter">{activeSlide + 1} / {plants.length}</span>
         </div>
       )}
 

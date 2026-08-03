@@ -1147,10 +1147,101 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* 마이 그린 도감 — 식물 카드 (물주기/기록에 최적화) */
-.plant-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+.plant-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.plant-slider-track {
+  display: flex;
   gap: 16px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 4px 0 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.plant-slider-track:active {
+  cursor: grabbing;
+}
+
+.plant-slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+.plant-slide {
+  flex: 0 0 auto;
+  width: min(300px, 82vw);
+  scroll-snap-align: center;
+  transform: scale(0.95);
+  opacity: 0.7;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.plant-slide[data-active="true"] {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.plant-card.plant-slide:hover {
+  transform: scale(1);
+}
+
+.plant-slider-arrow {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.plant-slider-arrow:disabled {
+  opacity: 0.3;
+}
+
+.plant-slider-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.plant-slider-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.plant-slider-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--border);
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.plant-slider-dot[data-active="true"] {
+  width: 16px;
+  border-radius: 4px;
+  background: var(--accent);
+}
+
+.plant-slider-counter {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-soft, var(--text));
+  font-variant-numeric: tabular-nums;
 }
 
 .plant-card {
