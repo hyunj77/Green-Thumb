@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { GitCompareArrows } from 'lucide-react'
 
 function monthKey(dateStr) {
   const d = new Date(dateStr)
@@ -55,7 +56,7 @@ export default function GrowthBeforeAfter({ photos }) {
 
   return (
     <div className="tl-card">
-      <div className="tl-card-head">🔀 Before & After 비교</div>
+      <div className="tl-card-head"><GitCompareArrows size={15} style={{ verticalAlign: -3, marginRight: 4 }} />Before & After 비교</div>
       <div className="tl-ba-selects">
         <select value={before.key} onChange={(e) => setBeforeKey(e.target.value)}>
           {monthly.map((m) => <option key={m.key} value={m.key}>이전 · {monthLabel(m.key)}</option>)}

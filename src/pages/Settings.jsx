@@ -1,12 +1,22 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Laptop, Moon, Settings as SettingsIcon, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import { getStoredTheme, setTheme } from '../lib/theme'
 import BackHeader from '../components/BackHeader'
+
+const THEME_OPTIONS = [
+  { key: 'light', label: '라이트', Icon: Sun },
+  { key: 'dark', label: '다크', Icon: Moon },
+  { key: 'system', label: '시스템', Icon: Laptop },
+]
 
 export default function Settings() {
   const { user, updatePassword, signOut } = useAuth()
   const navigate = useNavigate()
+
+  const [theme, setThemeState] = useState(() => getStoredTheme() || 'system')
 
   const [newPassword, setNewPassword] = useState('')
   const [pwSaving, setPwSaving] = useState(false)
@@ -18,6 +28,11 @@ export default function Settings() {
   const [deleteError, setDeleteError] = useState('')
 
   if (!user) return null
+
+  const handleThemeChange = (key) => {
+    setThemeState(key)
+    setTheme(key === 'system' ? null : key)
+  }
 
   const handlePasswordChange = async (e) => {
     e.preventDefault()
@@ -54,7 +69,23 @@ export default function Settings() {
 
   return (
     <div style={{ padding: '0 20px 60px', maxWidth: 560, margin: '0 auto' }}>
-      <BackHeader title="⚙️ 계정 설정" />
+      <BackHeader title={<><SettingsIcon size={18} style={{ verticalAlign: -3, marginRight: 6 }} />계정 설정</>} />
+
+      <div className="card" style={{ padding: '24px 28px', marginBottom: 20 }}>
+        <h3 style={{ marginTop: 0 }}>화면 테마</h3>
+        <div className="theme-toggle-row">
+          {THEME_OPTIONS.map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              type="button"
+              className={theme === key ? '' : 'secondary'}
+              onClick={() => handleThemeChange(key)}
+            >
+              <Icon size={14} /> {label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="card" style={{ padding: '24px 28px', marginBottom: 20 }}>
         <h3 style={{ marginTop: 0 }}>비밀번호 변경</h3>

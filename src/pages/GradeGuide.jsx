@@ -1,10 +1,11 @@
+import { Award } from 'lucide-react'
 import BackHeader from '../components/BackHeader'
 import { GRADE_TIERS, DIFFICULTY_WEIGHT } from '../lib/grade'
 
 export default function GradeGuide() {
   return (
     <div style={{ padding: '0 20px 60px', maxWidth: 640, margin: '0 auto' }}>
-      <BackHeader title="🏅 그린 썸 등급 안내" />
+      <BackHeader title={<><Award size={18} style={{ verticalAlign: -3, marginRight: 6 }} />그린 썸 등급 안내</>} />
       <p className="muted" style={{ marginBottom: 24 }}>
         마이 그린 도감에 등록한 식물의 <strong>개수</strong>와 <strong>난이도</strong>를 합산한
         "그린 포인트"로 등급이 정해져요. 어려운 식물을 키우거나, 여러 식물을 함께 키울수록 포인트가 쌓여요.

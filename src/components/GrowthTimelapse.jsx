@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Camera, Clock3, Pause, Play, Share2 } from 'lucide-react'
+import { Camera, CalendarDays, Clock3, FolderOpen, NotebookPen, Pause, Play, Ruler, Share2, Sprout } from 'lucide-react'
 import BackHeader from './BackHeader'
 import GrowthBeforeAfter from './GrowthBeforeAfter'
 import { findSpeciesInfo } from '../lib/encyclopedia'
@@ -106,28 +106,28 @@ export default function GrowthTimelapse({ logs, plant, onClose }) {
             <div className="tl-stats">
               {daysTogether != null && (
                 <div className="tl-stat">
-                  <div className="tl-stat-label">🌿 함께한 기간</div>
+                  <div className="tl-stat-label"><CalendarDays size={12} style={{ verticalAlign: -2, marginRight: 3 }} />함께한 기간</div>
                   <div className="tl-stat-value">{daysTogether}일</div>
                 </div>
               )}
               <div className="tl-stat">
-                <div className="tl-stat-label">📝 기록 횟수</div>
+                <div className="tl-stat-label"><NotebookPen size={12} style={{ verticalAlign: -2, marginRight: 3 }} />기록 횟수</div>
                 <div className="tl-stat-value">{sortedLogs.length}회</div>
               </div>
               {heightGrowth != null && (
                 <div className="tl-stat">
-                  <div className="tl-stat-label">📏 키 성장</div>
+                  <div className="tl-stat-label"><Ruler size={12} style={{ verticalAlign: -2, marginRight: 3 }} />키 성장</div>
                   <div className="tl-stat-value">{heightGrowth > 0 ? '+' : ''}{heightGrowth}cm</div>
                 </div>
               )}
               <div className="tl-stat">
-                <div className="tl-stat-label">📷 사진 기록</div>
+                <div className="tl-stat-label"><Camera size={12} style={{ verticalAlign: -2, marginRight: 3 }} />사진 기록</div>
                 <div className="tl-stat-value">{photos.length}장</div>
               </div>
             </div>
 
             <div>
-              <div className="tl-card-head">🗂️ 성장 기록</div>
+              <div className="tl-card-head"><FolderOpen size={15} style={{ verticalAlign: -3, marginRight: 4 }} />성장 기록</div>
               <div className="tl-records-strip">
                 {photos.map((photo, i) => (
                   <button
@@ -149,7 +149,7 @@ export default function GrowthTimelapse({ logs, plant, onClose }) {
         )}
 
         <div className="tl-tip-card">
-          <div style={{ fontWeight: 800, marginBottom: 6, color: 'var(--text-h)' }}>🌱 오늘의 한마디</div>
+          <div style={{ fontWeight: 800, marginBottom: 6, color: 'var(--text-h)' }}><Sprout size={15} style={{ verticalAlign: -3, marginRight: 4 }} />오늘의 한마디</div>
           {speciesInfo ? (
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
               {plantName}는 {speciesInfo.light}을 좋아해요.<br />

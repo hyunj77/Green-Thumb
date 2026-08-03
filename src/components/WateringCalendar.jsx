@@ -46,7 +46,9 @@ export default function WateringCalendar({ plants }) {
   return (
     <div className="card watering-calendar" style={{ padding: 20, marginTop: 24 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <h3 style={{ margin: 0, fontSize: 16 }}>💧🌱 케어 캘린더</h3>
+        <h3 style={{ margin: 0, fontSize: 16, display: 'flex', alignItems: 'center', gap: 5 }}>
+          <Droplets size={16} /><Sprout size={16} />케어 캘린더
+        </h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <button
             className="secondary"

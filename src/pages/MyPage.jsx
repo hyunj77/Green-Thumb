@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Camera, MessageCircle, Sprout, FileText, ThumbsUp } from 'lucide-react'
+import { Camera, MessageCircle, Sprout, FileText, ThumbsUp, Settings as SettingsIcon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPosts, CATEGORY_LABEL } from '../lib/posts'
 import { fetchMyStats } from '../lib/stats'
@@ -78,7 +78,7 @@ export default function MyPage() {
         </div>
         <div style={{ display: 'flex', gap: 14, marginTop: 10, flexWrap: 'wrap' }}>
           <Link to={`/users/${user.id}`} style={{ fontSize: 14 }}>공개 프로필 보기 →</Link>
-          <Link to="/settings" style={{ fontSize: 14 }}>⚙️ 계정 설정</Link>
+          <Link to="/settings" style={{ fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 4 }}><SettingsIcon size={13} />계정 설정</Link>
         </div>
       </div>
 

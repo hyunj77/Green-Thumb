@@ -9,6 +9,10 @@
   --accent: #00C896;
   --shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.08);
 
+  /* 세컨더리 액센트 — 등급/성취처럼 '상태'를 나타내는 요소를 민트 그린과 구분하기 위한 골드 톤 */
+  --gold: #b8860b;
+  --gold-bg: #fff3d6;
+
   /* Glass Home 디자인 시스템 토큰 — 기존 브랜드 색(민트 그린 #00C896)에 맞춘다 */
   --gt-sage: #00c896;
   --gt-sage-deep: #00966f;
@@ -27,6 +31,65 @@
   color: var(--text);
   background: var(--bg);
   min-height: 100svh;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --green: #3ecf9b;
+    --green-light: #163329;
+    --oat: #121416;
+    --text: #b9c2bc;
+    --text-h: #f1f4f2;
+    --bg: #1c2023;
+    --border: #2d3336;
+    --accent: #3ecf9b;
+    --shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.5);
+
+    --gold: #e3ab4a;
+    --gold-bg: #3a2e14;
+
+    --gt-sage: #3ecf9b;
+    --gt-sage-deep: #6fe3b8;
+    --gt-olive: #6fe3b8;
+    --gt-lime: #4decc4;
+    --gt-bg-1: #17231e;
+    --gt-bg-2: #1a2b23;
+    --gt-text: #e4e9e5;
+    --gt-text-soft: #8b978f;
+    --gt-glass: rgba(255, 255, 255, 0.06);
+    --gt-glass-strong: rgba(255, 255, 255, 0.1);
+    --gt-glass-border: rgba(255, 255, 255, 0.14);
+    --gt-glass-shadow: 0 12px 36px -16px rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* 계정 설정의 라이트/다크 수동 토글 — OS 설정과 무관하게 강제 적용 */
+:root[data-theme="dark"] {
+  --green: #3ecf9b;
+  --green-light: #163329;
+  --oat: #121416;
+  --text: #b9c2bc;
+  --text-h: #f1f4f2;
+  --bg: #1c2023;
+  --border: #2d3336;
+  --accent: #3ecf9b;
+  --shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.5);
+
+  --gold: #e3ab4a;
+  --gold-bg: #3a2e14;
+
+  --gt-sage: #3ecf9b;
+  --gt-sage-deep: #6fe3b8;
+  --gt-olive: #6fe3b8;
+  --gt-lime: #4decc4;
+  --gt-bg-1: #17231e;
+  --gt-bg-2: #1a2b23;
+  --gt-text: #e4e9e5;
+  --gt-text-soft: #8b978f;
+  --gt-glass: rgba(255, 255, 255, 0.06);
+  --gt-glass-strong: rgba(255, 255, 255, 0.1);
+  --gt-glass-border: rgba(255, 255, 255, 0.14);
+  --gt-glass-shadow: 0 12px 36px -16px rgba(0, 0, 0, 0.7);
 }
 
 * {
@@ -105,7 +168,7 @@ button:disabled {
 }
 
 button.secondary {
-  background: #fff;
+  background: var(--bg);
   color: var(--accent);
   border: 1px solid var(--border);
 }
@@ -138,7 +201,7 @@ input, textarea, select {
   padding: 10px 14px;
   border-radius: 12px;
   border: 2px solid var(--border);
-  background: #fff;
+  background: var(--bg);
   color: var(--text);
 }
 
@@ -152,7 +215,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .card {
-  background: #fff;
+  background: var(--bg);
   border-radius: 20px;
   padding: 20px 24px;
   box-shadow: var(--shadow);
@@ -211,7 +274,7 @@ input:focus, textarea:focus, select:focus {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
-  background: color-mix(in srgb, var(--gt-sage) 16%, white);
+  background: color-mix(in srgb, var(--gt-sage) 16%, var(--bg));
   color: var(--gt-sage-deep);
 }
 
@@ -223,8 +286,8 @@ input:focus, textarea:focus, select:focus {
   border-radius: 999px;
   font-size: 10.5px;
   font-weight: 700;
-  background: color-mix(in srgb, var(--gt-sage) 14%, white);
-  color: var(--gt-sage-deep);
+  background: var(--gold-bg);
+  color: var(--gold);
   white-space: nowrap;
 }
 
@@ -488,7 +551,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--bg);
   border: 1px solid var(--border);
   color: var(--accent);
   box-shadow: none;
@@ -784,7 +847,7 @@ input:focus, textarea:focus, select:focus {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: #fff;
+  background: var(--bg);
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
   transform: translateX(-50%);
   z-index: 2;
@@ -833,7 +896,7 @@ input:focus, textarea:focus, select:focus {
   flex-shrink: 0;
   scroll-snap-align: start;
   width: 168px;
-  background: #fff;
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 0;
@@ -1008,7 +1071,7 @@ input:focus, textarea:focus, select:focus {
   display: inline-flex;
   padding: 7px 14px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--bg);
   color: var(--accent);
   font-weight: 700;
   font-size: 12px;
@@ -1031,7 +1094,7 @@ input:focus, textarea:focus, select:focus {
 
 .hero-dot[data-active='true'] {
   width: 18px;
-  background: #fff;
+  background: var(--bg);
 }
 
 /* Board menu (grouped chip rows) */
@@ -1129,7 +1192,7 @@ input:focus, textarea:focus, select:focus {
   color: inherit;
   border-radius: 20px;
   overflow: hidden;
-  background: #fff;
+  background: var(--bg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
@@ -1261,7 +1324,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .plant-card {
-  background: #fff;
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 20px;
   overflow: hidden;
@@ -1376,6 +1439,17 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* View toggle */
+.theme-toggle-row {
+  display: flex;
+  gap: 8px;
+}
+
+.theme-toggle-row button {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 13px;
+}
+
 .view-toggle-row {
   display: flex;
   align-items: center;
@@ -1398,7 +1472,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .view-toggle button {
-  background: color-mix(in srgb, var(--gt-sage) 16%, white);
+  background: color-mix(in srgb, var(--gt-sage) 16%, var(--bg));
   color: var(--gt-sage-deep);
   box-shadow: none;
   font-size: 11.5px;
@@ -1561,7 +1635,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Stat tiles */
 .stat-grid {
-  background: #fff;
+  background: var(--bg);
   border-radius: 24px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
@@ -1595,7 +1669,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Shortcut list (grouped white card, Pedal-style rows) */
 .shortcut-banner-row {
-  background: #fff;
+  background: var(--bg);
   border-radius: 24px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
@@ -1918,7 +1992,7 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   height: 10px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--bg);
   border: 1px solid var(--border);
   overflow: hidden;
   margin-bottom: 4px;
@@ -2184,7 +2258,7 @@ input:focus, textarea:focus, select:focus {
   gap: 2px;
   height: 88px;
   padding-left: 0;
-  background: #fff;
+  background: var(--bg);
 }
 
 /* 뒤로가기 버튼 전용 — 화면에는 브랜드 그린 컬러의 Chevron Left 아이콘만 보이고,
@@ -2584,7 +2658,7 @@ input:focus, textarea:focus, select:focus {
 
 .gt-ai-btn {
   margin-top: 16px;
-  background: #fff;
+  background: var(--bg);
   color: var(--gt-sage-deep);
 }
 
@@ -2813,6 +2887,19 @@ body {
   background: color-mix(in srgb, var(--gt-sage) 10%, transparent);
 }
 
+.gt-sheet-action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gt-sage), var(--gt-sage-deep));
+  color: #fff;
+  box-shadow: 0 10px 18px -10px rgba(0, 150, 111, 0.6);
+}
+
 /* 물주기 캘린더 */
 .watering-calendar-grid {
   display: grid;
@@ -2884,20 +2971,9 @@ body {
 
 .watering-calendar-cell.is-selected .watering-calendar-dot,
 .watering-calendar-cell.is-selected .watering-calendar-dot-fert {
-  background: #fff;
+  background: var(--bg);
 }
 
-.gt-sheet-action-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--gt-sage), var(--gt-sage-deep));
-  color: #fff;
-}
 
 .gt-tab-active {
   color: #00966f;

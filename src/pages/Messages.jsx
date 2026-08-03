@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Send } from 'lucide-react'
+import { MessageSquare, Send } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import { fetchConversations, fetchMessagesWith, sendMessage } from '../lib/messages'
@@ -71,7 +71,7 @@ export default function Messages() {
   if (!user) {
     return (
       <div style={{ padding: '0 20px 60px' }}>
-        <BackHeader title="💌 쪽지함" />
+        <BackHeader title={<><MessageSquare size={18} style={{ verticalAlign: -3, marginRight: 6 }} />쪽지함</>} />
         <p className="muted">쪽지를 보려면 <Link to="/login">로그인</Link>이 필요해요.</p>
       </div>
     )
@@ -79,7 +79,7 @@ export default function Messages() {
 
   return (
     <div style={{ padding: '0 20px 60px' }}>
-      <BackHeader title="💌 쪽지함" onBack={activePartnerId ? () => setSearchParams({}) : undefined} />
+      <BackHeader title={<><MessageSquare size={18} style={{ verticalAlign: -3, marginRight: 6 }} />쪽지함</>} onBack={activePartnerId ? () => setSearchParams({}) : undefined} />
 
       <div className="messages-layout">
         <div className="messages-conv-list">

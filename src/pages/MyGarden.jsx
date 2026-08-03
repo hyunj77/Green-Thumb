@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Camera, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
+import { Bell, Camera, Clapperboard, Droplets, Info, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
@@ -340,7 +340,7 @@ export default function MyGarden() {
 
                   {reminderId === plant.id && (
                     <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
-                      <div className="contact-row-label" style={{ marginBottom: 8 }}>🔔 물주기 알림 설정</div>
+                      <div className="contact-row-label" style={{ marginBottom: 8 }}><Bell size={13} style={{ verticalAlign: -2, marginRight: 4 }} />물주기 알림 설정</div>
                       <p className="muted" style={{ marginTop: 0, marginBottom: 10 }}>
                         마지막 물주기로부터 며칠마다 알려드릴지 정해주세요.
                       </p>
@@ -371,7 +371,7 @@ export default function MyGarden() {
 
                   {!isGuest && expandedId === plant.id && (
                     <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
-                      <div className="contact-row-label" style={{ marginBottom: 8 }}>🌱 성장일기</div>
+                      <div className="contact-row-label" style={{ marginBottom: 8 }}><Sprout size={13} style={{ verticalAlign: -2, marginRight: 4 }} />성장일기</div>
                       <GrowthDiary plantId={plant.id} ownerId={plant.owner_id} currentUserId={user.id} plant={plant} />
                     </div>
                   )}
@@ -411,7 +411,7 @@ export default function MyGarden() {
       {!loading && plants.length > 0 && (
         <div className="gt-section">
           <div className="gt-section-head">
-            <span className="gt-section-title">🎬 성장 타임랩스</span>
+            <span className="gt-section-title"><Clapperboard size={16} style={{ verticalAlign: -3, marginRight: 5 }} />성장 타임랩스</span>
           </div>
           <div className="tl-thumb-scroll">
             {plants.map((plant) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Bookmark, Heart, Trash2 } from 'lucide-react'
+import { Bookmark, Heart, MessageCircle, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import GradeBadge from '../components/GradeBadge'
@@ -139,7 +139,7 @@ export default function PostDetail() {
           </button>
           {!isOwner && user && isMarketCategory(post.category) && (
             <Link to={`/messages?with=${post.author_id}`}>
-              <button className="secondary">💬 판매자에게 메시지</button>
+              <button className="secondary"><MessageCircle size={14} /> 판매자에게 메시지</button>
             </Link>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { MapPin, Plus } from 'lucide-react'
+import { MapPin, Plus, Store } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import ImageUploadField from '../components/ImageUploadField'
@@ -59,7 +59,7 @@ export default function Marketplace() {
   return (
     <div style={{ padding: '0 20px 40px' }}>
       <BackHeader
-        title="🪴 로컬 장터"
+        title={<><Store size={18} style={{ verticalAlign: -3, marginRight: 6 }} />로컬 장터</>}
         right={user && (
           <button onClick={() => setShowForm((v) => !v)}>
             <Plus size={14} /> 매물 등록

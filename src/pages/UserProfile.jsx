@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { Camera, MapPin, MessageSquare, ThumbsUp } from 'lucide-react'
+import { Camera, Image, MapPin, MessageSquare, Sprout, ThumbsUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import BackHeader from '../components/BackHeader'
@@ -166,7 +166,7 @@ export default function UserProfile() {
 
       {plants.length > 0 && (
         <>
-          <h3>🌿 {profile.username}님이 키우는 식물</h3>
+          <h3><Sprout size={17} style={{ verticalAlign: -3, marginRight: 5 }} />{profile.username}님이 키우는 식물</h3>
           <div className="magazine-feed" style={{ marginBottom: 28 }}>
             {plants.map((plant) => (
               <div key={plant.id} className="magazine-card">
@@ -185,7 +185,7 @@ export default function UserProfile() {
 
       {growthLogs.length > 0 && (
         <>
-          <h3>🌱 {profile.username}님의 성장일지</h3>
+          <h3><Sprout size={17} style={{ verticalAlign: -3, marginRight: 5 }} />{profile.username}님의 성장일지</h3>
           <div className="magazine-feed" style={{ marginBottom: 28 }}>
             {growthLogs.map((log) => (
               <div key={log.id} id={`growth-${log.id}`} className="magazine-card" style={{ scrollMarginTop: 20 }}>
@@ -203,7 +203,7 @@ export default function UserProfile() {
         </>
       )}
 
-      <h3>📷 {profile.username}님의 스토리</h3>
+      <h3><Image size={17} style={{ verticalAlign: -3, marginRight: 5 }} />{profile.username}님의 스토리</h3>
       {posts.length === 0 ? (
         <p className="muted">아직 작성한 게시물이 없어요.</p>
       ) : (

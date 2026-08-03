@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { RefreshCw } from 'lucide-react'
+import { Globe, RefreshCw, Shirt } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import GreenieCharacter from '../components/GreenieCharacter'
 import BackHeader from '../components/BackHeader'
@@ -159,7 +159,7 @@ export default function GreenieHome() {
           </div>
 
           <div className="card" style={{ marginTop: 20, padding: '22px 24px' }}>
-            <h3 style={{ marginBottom: 14 }}>👕 그린이 옷장</h3>
+            <h3 style={{ marginBottom: 14 }}><Shirt size={17} style={{ verticalAlign: -3, marginRight: 5 }} />그린이 옷장</h3>
             <ClosetRow title="모자" slot="hat" level={level} equippedKey={hat} onEquip={handleEquip} />
             <ClosetRow title="악세사리" slot="accessory" level={level} equippedKey={accessory} onEquip={handleEquip} />
           </div>
@@ -167,7 +167,7 @@ export default function GreenieHome() {
       ) : (
         <div className="card" style={{ marginTop: 20, padding: '22px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <h3 style={{ margin: 0 }}>🌍 다른 사람 그린이 방문하기</h3>
+            <h3 style={{ margin: 0 }}><Globe size={17} style={{ verticalAlign: -3, marginRight: 5 }} />다른 사람 그린이 방문하기</h3>
             <button type="button" className="secondary" style={{ padding: '7px 12px', fontSize: 12.5 }} onClick={rollVisitPool}>
               <RefreshCw size={13} /> 새로고침
             </button>

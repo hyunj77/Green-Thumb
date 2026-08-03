@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { PawPrint, Search, Sun, Droplet } from 'lucide-react'
+import { BookOpen, PawPrint, Search, Sun, Droplet } from 'lucide-react'
 import BackHeader from '../components/BackHeader'
 import { PLANT_SPECIES, DIFFICULTY_ORDER, PLANT_TYPES, matchesType } from '../lib/encyclopedia'
 
@@ -22,7 +22,7 @@ export default function Encyclopedia() {
 
   return (
     <div style={{ padding: '0 20px 40px' }}>
-      <BackHeader title="📖 식물 도감" />
+      <BackHeader title={<><BookOpen size={18} style={{ verticalAlign: -3, marginRight: 6 }} />식물 도감</>} />
       <p className="muted" style={{ marginBottom: 16 }}>기본 관리법을 참고해서 나에게 맞는 식물을 찾아보세요</p>
 
       <div style={{ position: 'relative', marginBottom: 14, maxWidth: 320 }}>

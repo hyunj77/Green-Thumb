@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { House, MessageSquare, PenSquare, Plus, Sprout, Stethoscope, User, X } from 'lucide-react'
+import { BookOpen, House, Leaf, MessageSquare, PenSquare, Plus, Sprout, Stethoscope, User, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const LEFT_TABS = [
@@ -11,6 +11,8 @@ const LEFT_TABS = [
 const QUICK_ACTIONS = [
   { to: '/garden#ai-preview', label: 'AI 식물 진단', desc: '사진으로 병해충·상태를 확인해요', Icon: Stethoscope, requireAuth: false },
   { to: '/garden#new-plant', label: '식물 등록하기', desc: '새로운 반려식물을 그린 도감에 추가해요', Icon: Sprout, requireAuth: true },
+  { to: '/garden', label: '도감 보기', desc: '등록한 식물과 물주기 상태를 한눈에 확인해요', Icon: BookOpen, requireAuth: false },
+  { to: '/greenie', label: '그린이 키우기', desc: '그린이를 키우고 보상을 모아보세요', Icon: Leaf, requireAuth: true },
   { to: '/write', label: '글쓰기', desc: '오늘의 이야기를 이웃들과 나눠요', Icon: PenSquare, requireAuth: true },
 ]
 

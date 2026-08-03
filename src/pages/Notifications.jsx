@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Droplets, MessageCircle, MessageSquare, Sprout, UserPlus } from 'lucide-react'
+import { Bell, Droplets, MessageCircle, MessageSquare, Sprout, UserPlus } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import { fetchMyNotifications, markNotificationRead, markAllNotificationsRead } from '../lib/notifications'
@@ -51,7 +51,7 @@ export default function Notifications() {
   if (!user) {
     return (
       <div style={{ padding: '0 20px 60px', maxWidth: 560, margin: '0 auto' }}>
-        <BackHeader title="🔔 내 소식" />
+        <BackHeader title={<><Bell size={18} style={{ verticalAlign: -3, marginRight: 6 }} />내 소식</>} />
         <p className="muted">알림을 보려면 <Link to="/login">로그인</Link>이 필요해요.</p>
       </div>
     )
@@ -60,7 +60,7 @@ export default function Notifications() {
   return (
     <div style={{ padding: '0 20px 60px', maxWidth: 560, margin: '0 auto' }}>
       <BackHeader
-        title="🔔 내 소식"
+        title={<><Bell size={18} style={{ verticalAlign: -3, marginRight: 6 }} />내 소식</>}
         right={items.some((i) => !i.is_read) && (
           <button className="secondary" onClick={handleMarkAll}>모두 읽음</button>
         )}
