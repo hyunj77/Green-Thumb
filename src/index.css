@@ -222,6 +222,47 @@ input:focus, textarea:focus, select:focus {
   border: 1px solid var(--border);
 }
 
+.skeleton-block {
+  background: linear-gradient(90deg, var(--border) 25%, var(--oat) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block { animation: none; }
+}
+
+.skeleton-card {
+  padding: 14px;
+}
+
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 36px 20px;
+  color: var(--text-soft, var(--text));
+  text-align: center;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 13.5px;
+}
+
 .gt-season-tip {
   position: relative;
   padding: 14px 40px 14px 16px;
@@ -1439,6 +1480,22 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* View toggle */
+.notif-filter-row {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.notif-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.notif-filter-row button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .theme-toggle-row {
   display: flex;
   gap: 8px;

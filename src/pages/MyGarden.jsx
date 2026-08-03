@@ -14,6 +14,7 @@ import WateringCalendar from '../components/WateringCalendar'
 import ImageUploadField from '../components/ImageUploadField'
 import SeasonalTipBanner from '../components/SeasonalTipBanner'
 import SymptomGuide from '../components/SymptomGuide'
+import { SkeletonList } from '../components/Skeleton'
 
 export default function MyGarden() {
   const { user } = useAuth()
@@ -236,9 +237,13 @@ export default function MyGarden() {
       )}
 
       {loading ? (
-        <p className="muted">불러오는 중...</p>
+        <SkeletonList count={1} variant="card" />
       ) : plants.length === 0 ? (
-        <p className="muted">등록된 식물이 없어요. 첫 반려식물을 등록해보세요!</p>
+        <div className="empty-state">
+          <Sprout size={28} />
+          <p>등록된 식물이 없어요. 첫 반려식물을 등록해보세요!</p>
+          <button style={{ marginTop: 4 }} onClick={() => setShowForm(true)}><Plus size={14} /> 식물 등록하기</button>
+        </div>
       ) : (
         <div className="plant-slider-wrap">
           <div

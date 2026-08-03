@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import { fetchConversations, fetchMessagesWith, sendMessage } from '../lib/messages'
 import { supabase } from '../lib/supabase'
+import { SkeletonList } from '../components/Skeleton'
 import { timeAgo } from '../lib/time'
 
 export default function Messages() {
@@ -84,9 +85,12 @@ export default function Messages() {
       <div className="messages-layout">
         <div className="messages-conv-list">
           {loading ? (
-            <p className="muted">불러오는 중...</p>
+            <SkeletonList count={4} />
           ) : conversations.length === 0 ? (
-            <p className="muted">아직 주고받은 쪽지가 없어요.</p>
+            <div className="empty-state">
+              <MessageSquare size={26} />
+              <p>아직 주고받은 쪽지가 없어요.</p>
+            </div>
           ) : (
             conversations.map(({ partner, lastMessage }) => (
               <button

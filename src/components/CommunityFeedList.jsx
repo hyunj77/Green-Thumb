@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart, LayoutGrid, List, MessageCircle, Search } from 'lucide-react'
+import { Heart, LayoutGrid, List, MessageCircle, PenSquare, Search } from 'lucide-react'
 import { CATEGORY_LABEL, DEAL_STATUS_LABEL, formatDealPrice, isMarketCategory } from '../lib/posts'
 import { searchProfiles } from '../lib/profiles'
 import { timeAgo } from '../lib/time'
 import GradeBadge from './GradeBadge'
+import { SkeletonList } from './Skeleton'
 
 const HOT_THRESHOLD = 3
 const isHot = (item) => (item.reaction_count || 0) + (item.comment_count || 0) >= HOT_THRESHOLD
@@ -73,9 +74,13 @@ export default function CommunityFeedList({
       </div>
 
       {loading ? (
-        <p className="muted">불러오는 중...</p>
+        <SkeletonList count={4} />
       ) : items.length === 0 ? (
-        <p className="muted">아직 콘텐츠가 없어요.</p>
+        <div className="empty-state">
+          <PenSquare size={28} />
+          <p>아직 콘텐츠가 없어요.</p>
+          <Link to="/write"><button style={{ marginTop: 4 }}>첫 글 남기기</button></Link>
+        </div>
       ) : viewMode === 'list' ? (
         <div className="community-list">
           {items.map((item) => (

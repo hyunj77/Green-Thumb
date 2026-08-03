@@ -4,7 +4,17 @@ import { Bell, Droplets, MessageCircle, MessageSquare, Sprout, UserPlus } from '
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import { fetchMyNotifications, markNotificationRead, markAllNotificationsRead } from '../lib/notifications'
+import { SkeletonList } from '../components/Skeleton'
 import { timeAgo } from '../lib/time'
+
+const FILTERS = [
+  { key: 'all', label: '전체' },
+  { key: 'comment', label: '댓글' },
+  { key: 'reaction', label: '반응' },
+  { key: 'message', label: '쪽지' },
+  { key: 'watering', label: '물주기' },
+  { key: 'follow', label: '팔로우' },
+]
 
 const TYPE_META = {
   comment: { Icon: MessageCircle, label: '댓글' },
@@ -19,6 +29,7 @@ export default function Notifications() {
   const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('all')
 
   const load = () => {
     if (!user) return setLoading(false)
@@ -48,6 +59,8 @@ export default function Notifications() {
     setItems((prev) => prev.map((i) => ({ ...i, is_read: true })))
   }
 
+  const filteredItems = filter === 'all' ? items : items.filter((i) => i.type === filter)
+
   if (!user) {
     return (
       <div style={{ padding: '0 20px 60px', maxWidth: 560, margin: '0 auto' }}>
@@ -66,13 +79,33 @@ export default function Notifications() {
         )}
       />
 
+      {!loading && items.length > 0 && (
+        <div className="view-toggle notif-filter-row">
+          {FILTERS.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              className={filter === f.key ? 'view-toggle-active' : ''}
+              onClick={() => setFilter(f.key)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading ? (
-        <p className="muted">불러오는 중...</p>
+        <SkeletonList count={4} />
       ) : items.length === 0 ? (
-        <p className="muted">아직 알림이 없어요. 댓글이나 반응, 쪽지가 오면 여기에 표시돼요.</p>
+        <div className="empty-state">
+          <Bell size={28} />
+          <p>아직 알림이 없어요. 댓글이나 반응, 쪽지가 오면 여기에 표시돼요.</p>
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <p className="muted" style={{ textAlign: 'center', padding: '20px 0' }}>이 유형의 알림이 없어요.</p>
       ) : (
         <div className="community-list">
-          {items.map((n) => {
+          {filteredItems.map((n) => {
             const { Icon, label } = TYPE_META[n.type] || {}
             return (
               <div key={n.id} className="community-item" onClick={() => handleClick(n)} style={{ opacity: n.is_read ? 0.6 : 1 }}>
