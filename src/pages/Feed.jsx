@@ -22,22 +22,6 @@ function todaySpecies() {
   return PLANT_SPECIES[hash % PLANT_SPECIES.length]
 }
 
-// 오늘 날짜로 고정된 시드로 도감 미리보기 10종을 뽑는다 (새로고침해도 하루 동안은 동일)
-function todayDirectoryPreview(count = 10) {
-  const key = new Date().toISOString().slice(0, 10)
-  let seed = 0
-  for (let i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) >>> 0
-  const pool = [...ALL_DIRECTORY_PLANTS]
-  const picked = []
-  for (let i = 0; i < count && pool.length > 0; i++) {
-    seed = (seed * 1103515245 + 12345) >>> 0
-    const idx = seed % pool.length
-    picked.push(pool[idx])
-    pool.splice(idx, 1)
-  }
-  return picked
-}
-
 export default function Feed() {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -111,7 +95,6 @@ export default function Feed() {
   }
 
   const todayPlant = todaySpecies()
-  const directoryPreview = todayDirectoryPreview()
 
   return (
     <div className="glass-home">
@@ -188,20 +171,18 @@ export default function Feed() {
             더보기
           </Link>
         </div>
-        <div className="gt-directory-scroll" style={{ marginTop: 10 }}>
-          {directoryPreview.map((p) => (
-            <Link key={p.name} to={`/encyclopedia?type=${encodeURIComponent(p.type)}`} className="gt-directory-card">
-              <span className="gt-directory-emoji">{p.emoji}</span>
-              <span className="gt-directory-name">{p.name}</span>
-            </Link>
-          ))}
-        </div>
-        <Link to={`/encyclopedia?type=${encodeURIComponent(todayPlant.type)}`} className="gt-card gt-today-plant" style={{ marginTop: 12 }}>
-          <div className="gt-today-plant-emoji">{todayPlant.emoji}</div>
-          <div>
-            <div className="muted" style={{ fontSize: 11, fontWeight: 700, marginBottom: 2 }}>오늘의 식물</div>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>{todayPlant.name}</div>
-            <div className="gt-greenie-sub" style={{ marginTop: 2 }}>{todayPlant.watering} · {todayPlant.light}</div>
+        <Link
+          to={`/encyclopedia?type=${encodeURIComponent(todayPlant.type)}`}
+          className="gt-card gt-today-plant"
+          style={{ marginTop: 12, ...(todayPlant.photo ? { backgroundImage: `url(${todayPlant.photo})` } : {}) }}
+          data-has-photo={Boolean(todayPlant.photo)}
+        >
+          {todayPlant.photo && <div className="gt-today-plant-scrim" />}
+          {!todayPlant.photo && <div className="gt-today-plant-emoji">{todayPlant.emoji}</div>}
+          <div className="gt-today-plant-body">
+            <div className="gt-today-plant-label">오늘의 식물 {todayPlant.emoji}</div>
+            <div style={{ fontWeight: 800, fontSize: 18 }}>{todayPlant.name}</div>
+            <div className="gt-today-plant-sub">{todayPlant.watering} · {todayPlant.light}</div>
             <div className="gt-today-plant-tags">
               <span>난이도 {todayPlant.difficulty}</span>
               <span>{todayPlant.petSafe ? '반려동물 안전' : '반려동물 주의'}</span>
