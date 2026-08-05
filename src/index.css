@@ -1100,7 +1100,7 @@ input:focus, textarea:focus, select:focus {
 .hero-banner-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.1) 60%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 .hero-banner > *:not(.hero-banner-scrim) {
@@ -2812,7 +2812,7 @@ input:focus, textarea:focus, select:focus {
 .gt-today-plant-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.1) 55%, rgba(0, 0, 0, 0.05) 100%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
   z-index: 0;
 }
 
