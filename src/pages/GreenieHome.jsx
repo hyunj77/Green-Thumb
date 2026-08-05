@@ -21,16 +21,16 @@ import {
 function ClosetRow({ title, slot, level, equippedKey, onEquip }) {
   const items = unlockedItems(level, slot)
   return (
-    <div style={{ marginBottom: 18 }}>
-      <div className="contact-row-label" style={{ marginBottom: 8 }}>{title}</div>
-      <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4 }}>
+    <div style={{ marginBottom: 22 }}>
+      <div className="contact-row-label" style={{ marginBottom: 10, fontSize: 14 }}>{title}</div>
+      <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
         <button
           type="button"
           className={`greenie-item-slot ${!equippedKey ? 'greenie-item-slot-active' : ''}`}
           onClick={() => onEquip(slot, null)}
         >
-          <span style={{ fontSize: 22 }}>✋</span>
-          <span className="muted" style={{ fontSize: 11 }}>없음</span>
+          <span style={{ fontSize: 28 }}>✋</span>
+          <span className="muted" style={{ fontSize: 12 }}>없음</span>
         </button>
         {items.map((item) => (
           <button
@@ -39,11 +39,11 @@ function ClosetRow({ title, slot, level, equippedKey, onEquip }) {
             className={`greenie-item-slot ${equippedKey === item.key ? 'greenie-item-slot-active' : ''}`}
             onClick={() => onEquip(slot, item.key)}
           >
-            <span style={{ fontSize: 22 }}>{item.emoji}</span>
-            <span className="muted" style={{ fontSize: 11 }}>Lv.{item.level}</span>
+            <span style={{ fontSize: 28 }}>{item.emoji}</span>
+            <span className="muted" style={{ fontSize: 12 }}>Lv.{item.level}</span>
           </button>
         ))}
-        {items.length === 0 && <p className="muted" style={{ fontSize: 13 }}>레벨을 올리면 아이템이 열려요!</p>}
+        {items.length === 0 && <p className="muted" style={{ fontSize: 13.5 }}>레벨을 올리면 아이템이 열려요!</p>}
       </div>
     </div>
   )
@@ -146,7 +146,7 @@ export default function GreenieHome() {
               level={level}
               hat={hat}
               accessory={accessory}
-              size={180}
+              size={220}
               interactive
               onTap={handleTap}
               levelUpSignal={levelUpSignal}
@@ -164,8 +164,8 @@ export default function GreenieHome() {
             {levelUpMsg && <div className="greenie-levelup">{levelUpMsg}</div>}
           </div>
 
-          <div className="card" style={{ marginTop: 20, padding: '22px 24px' }}>
-            <h3 style={{ marginBottom: 14 }}><Shirt size={17} style={{ verticalAlign: -3, marginRight: 5 }} />그린이 옷장</h3>
+          <div className="card" style={{ marginTop: 20, padding: '28px 26px' }}>
+            <h3 style={{ marginBottom: 18, fontSize: 17 }}><Shirt size={18} style={{ verticalAlign: -3, marginRight: 6 }} />그린이 옷장</h3>
             <ClosetRow title="모자" slot="hat" level={level} equippedKey={hat} onEquip={handleEquip} />
             <ClosetRow title="악세사리" slot="accessory" level={level} equippedKey={accessory} onEquip={handleEquip} />
           </div>
