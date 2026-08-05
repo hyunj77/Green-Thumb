@@ -2051,35 +2051,35 @@ input:focus, textarea:focus, select:focus {
   margin-top: 24px;
   background: linear-gradient(160deg, var(--green-light), #fff);
   border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 40px 24px;
+  border-radius: 32px;
+  padding: 52px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .greenie-info {
   width: 100%;
-  max-width: 320px;
+  max-width: 360px;
   text-align: center;
 }
 
 .greenie-level {
   font-weight: 800;
-  font-size: 19px;
+  font-size: 23px;
   color: var(--text-h);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .greenie-progress-track {
   width: 100%;
-  height: 14px;
+  height: 18px;
   border-radius: 999px;
   background: var(--bg);
   border: 1px solid var(--border);
   overflow: hidden;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .greenie-progress-fill {
@@ -2208,7 +2208,7 @@ input:focus, textarea:focus, select:focus {
 .greenie-visit-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 14px;
 }
 
 .greenie-visit-card {
@@ -2216,11 +2216,11 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   text-align: center;
   background: var(--oat);
-  border-radius: 16px;
-  padding: 14px 6px 12px;
+  border-radius: 18px;
+  padding: 18px 8px 16px;
   color: inherit;
 }
 

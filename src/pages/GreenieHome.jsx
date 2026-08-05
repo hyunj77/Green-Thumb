@@ -146,7 +146,7 @@ export default function GreenieHome() {
               level={level}
               hat={hat}
               accessory={accessory}
-              size={220}
+              size={280}
               interactive
               onTap={handleTap}
               levelUpSignal={levelUpSignal}
@@ -171,9 +171,9 @@ export default function GreenieHome() {
           </div>
         </>
       ) : (
-        <div className="card" style={{ marginTop: 20, padding: '22px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <h3 style={{ margin: 0 }}><Globe size={17} style={{ verticalAlign: -3, marginRight: 5 }} />다른 사람 그린이 방문하기</h3>
+        <div className="card" style={{ marginTop: 20, padding: '28px 26px', minHeight: 460 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <h3 style={{ margin: 0, fontSize: 17 }}><Globe size={18} style={{ verticalAlign: -3, marginRight: 6 }} />다른 사람 그린이 방문하기</h3>
             <button type="button" className="secondary" style={{ padding: '7px 12px', fontSize: 12.5 }} onClick={rollVisitPool}>
               <RefreshCw size={13} /> 새로고침
             </button>
@@ -192,7 +192,7 @@ export default function GreenieHome() {
                         {status.petted && <Heart size={11} />}
                       </span>
                     )}
-                    <GreenieCharacter level={g.level} hat={g.equipped_hat} accessory={g.equipped_accessory} size={48} />
+                    <GreenieCharacter level={g.level} hat={g.equipped_hat} accessory={g.equipped_accessory} size={64} />
                     <div className="greenie-visit-name">{g.profile?.username || '이웃 집사'}</div>
                     <div className="muted" style={{ fontSize: 11 }}>Lv. {g.level}</div>
                   </Link>
