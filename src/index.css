@@ -1100,7 +1100,11 @@ input:focus, textarea:focus, select:focus {
 .hero-banner-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+  /* 배너는 오늘의 식물 카드보다 텍스트 블록(배지+제목+2줄 부제)이 더 길어서,
+     단순 2단 그라데이션은 부제 둘째 줄쯤에서 이미 다 옅어져 밝은 배경과
+     겹쳐 버렸다. 텍스트가 있는 구간(대략 하단 70%) 전체를 충분히 어둡게
+     유지하다가 이미지가 잘 보여도 되는 상단에서만 걷히도록 3단으로 늘렸다. */
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0) 100%);
 }
 
 .hero-banner > *:not(.hero-banner-scrim) {
