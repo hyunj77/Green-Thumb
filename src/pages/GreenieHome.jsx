@@ -164,14 +164,14 @@ export default function GreenieHome() {
             {levelUpMsg && <div className="greenie-levelup">{levelUpMsg}</div>}
           </div>
 
-          <div className="card" style={{ marginTop: 20, padding: '28px 26px' }}>
+          <div className="card" style={{ marginTop: 20, padding: '28px 26px', minHeight: 480, boxSizing: 'border-box' }}>
             <h3 style={{ marginBottom: 18, fontSize: 17 }}><Shirt size={18} style={{ verticalAlign: -3, marginRight: 6 }} />그린이 옷장</h3>
             <ClosetRow title="모자" slot="hat" level={level} equippedKey={hat} onEquip={handleEquip} />
             <ClosetRow title="악세사리" slot="accessory" level={level} equippedKey={accessory} onEquip={handleEquip} />
           </div>
         </>
       ) : (
-        <div className="card" style={{ marginTop: 20, padding: '28px 26px', minHeight: 460 }}>
+        <div className="card" style={{ marginTop: 20, padding: '28px 26px', minHeight: 480, boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <h3 style={{ margin: 0, fontSize: 17 }}><Globe size={18} style={{ verticalAlign: -3, marginRight: 6 }} />다른 사람 그린이 방문하기</h3>
             <button type="button" className="secondary" style={{ padding: '7px 12px', fontSize: 12.5 }} onClick={rollVisitPool}>

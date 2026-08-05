@@ -2053,9 +2053,12 @@ input:focus, textarea:focus, select:focus {
   border: 1px solid var(--border);
   border-radius: 32px;
   padding: 52px 24px;
+  min-height: 480px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 24px;
 }
 
