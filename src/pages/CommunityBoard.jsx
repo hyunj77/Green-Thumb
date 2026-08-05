@@ -19,10 +19,17 @@ export default function CommunityBoard() {
   const [items, setItems] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [viewMode, setViewMode] = useState('list')
+  // 성장일지 게시판은 사진이 핵심이라 인스타그램 피드처럼 이미지 위주 보기를 기본값으로 한다
+  const [viewMode, setViewMode] = useState(tab?.key === 'growth' ? 'grid' : 'list')
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
+
+  // 다른 게시판으로 이동해도(컴포넌트가 그대로 재사용될 때) 보기 기본값이 다시 맞게 적용되도록
+  useEffect(() => {
+    setViewMode(tab?.key === 'growth' ? 'grid' : 'list')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardKey])
 
   useEffect(() => {
     if (!tab) return
