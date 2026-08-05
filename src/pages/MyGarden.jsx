@@ -34,8 +34,8 @@ export default function MyGarden() {
   const [reminderDraft, setReminderDraft] = useState(7)
   const [savingReminder, setSavingReminder] = useState(false)
   const [greenieToast, setGreenieToast] = useState('')
-  const [actionToast, setActionToast] = useState(null)
-  const actionToastTimer = useRef(null)
+  const [actionToasts, setActionToasts] = useState([])
+  const actionToastSeq = useRef(0)
   const [timelapsePlant, setTimelapsePlant] = useState(null)
   const [timelapseLogs, setTimelapseLogs] = useState([])
   const [photoCounts, setPhotoCounts] = useState({})
@@ -97,41 +97,54 @@ export default function MyGarden() {
     setName(''); setSpecies(''); setPhotoUrl(''); setInterval_(7); setIntervalTouched(false); setShowForm(false)
   }
 
+  // 각 토스트가 독립적으로 뜨고 사라지도록 — 물주기/영양제를 연달아 눌러도
+  // 먼저 뜬 토스트가 뒤에 뜬 토스트에 묻히지 않고 각자 취소 가능해야 한다
   const showActionToast = (toast) => {
-    clearTimeout(actionToastTimer.current)
-    setActionToast(toast)
-    actionToastTimer.current = setTimeout(() => setActionToast(null), 5000)
+    const toastId = (actionToastSeq.current += 1)
+    setActionToasts((prev) => [...prev, { ...toast, id: toastId }])
+    setTimeout(() => {
+      setActionToasts((prev) => prev.filter((t) => t.id !== toastId))
+    }, 5000)
+  }
+
+  const dismissActionToast = (toastId) => {
+    setActionToasts((prev) => prev.filter((t) => t.id !== toastId))
   }
 
   const handleWater = async (id) => {
-    const previous = plants.find((p) => p.id === id)?.last_watered_at ?? null
+    const plant = plants.find((p) => p.id === id)
+    const today = new Date().toISOString().slice(0, 10)
+    // 하루 한 번만 인정 — 이미 오늘 준 식물이면 그린이 경험치도 다시 안 준다
+    if (plant?.last_watered_at === today) {
+      showActionToast({ message: '오늘은 이미 물을 줬어요 💧' })
+      return
+    }
+    const previous = plant?.last_watered_at ?? null
     const { data } = await waterPlant(id)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
-    showActionToast({ message: '💧 물주기 완료', onUndo: () => handleUndoWater(id, previous) })
+    showActionToast({ message: '💧 물주기 완료', onUndo: (toastId) => handleUndoWater(id, previous, toastId) })
     const greenie = await addGreenieExpFromWatering(user.id)
     setGreenieToast(`🌱 그린이가 쑥쑥 자랐어요! (Lv.${greenie.level})`)
     setTimeout(() => setGreenieToast(''), 2500)
   }
 
-  const handleUndoWater = async (id, previousDate) => {
+  const handleUndoWater = async (id, previousDate, toastId) => {
     const { data } = await undoWaterPlant(id, previousDate)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
-    clearTimeout(actionToastTimer.current)
-    setActionToast(null)
+    dismissActionToast(toastId)
   }
 
   const handleFertilize = async (id) => {
     const previous = plants.find((p) => p.id === id)?.last_fertilized_at ?? null
     const { data } = await fertilizePlant(id)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
-    showActionToast({ message: '🌱 영양제 완료', onUndo: () => handleUndoFertilize(id, previous) })
+    showActionToast({ message: '🌱 영양제 완료', onUndo: (toastId) => handleUndoFertilize(id, previous, toastId) })
   }
 
-  const handleUndoFertilize = async (id, previousDate) => {
+  const handleUndoFertilize = async (id, previousDate, toastId) => {
     const { data } = await undoFertilizePlant(id, previousDate)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
-    clearTimeout(actionToastTimer.current)
-    setActionToast(null)
+    dismissActionToast(toastId)
   }
 
   const handleCardPhotoSelect = async (plant, file) => {
@@ -282,19 +295,21 @@ export default function MyGarden() {
           </div>
         )}
 
-        {actionToast && (
-          <div className="card" style={{ padding: '10px 16px', background: 'var(--oat)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-            <span style={{ fontWeight: 700 }}>{actionToast.message}</span>
-            <button
-              type="button"
-              className="secondary"
-              style={{ padding: '6px 12px', fontSize: 12.5, flexShrink: 0 }}
-              onClick={actionToast.onUndo}
-            >
-              실행 취소
-            </button>
+        {actionToasts.map((toast) => (
+          <div key={toast.id} className="card" style={{ padding: '10px 16px', background: 'var(--oat)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <span style={{ fontWeight: 700 }}>{toast.message}</span>
+            {toast.onUndo && (
+              <button
+                type="button"
+                className="secondary"
+                style={{ padding: '6px 12px', fontSize: 12.5, flexShrink: 0 }}
+                onClick={() => toast.onUndo(toast.id)}
+              >
+                실행 취소
+              </button>
+            )}
           </div>
-        )}
+        ))}
 
         {isGuest && (
           <div className="card" style={{ padding: '14px 16px', background: 'var(--oat)', border: 'none' }}>
@@ -382,6 +397,7 @@ export default function MyGarden() {
             const next = nextWateringDate(plant)
             const dueSoon = next && next <= new Date()
             const info = findSpeciesInfo(plant.species)
+            const wateredToday = plant.last_watered_at === new Date().toISOString().slice(0, 10)
 
             const today = new Date(); today.setHours(0, 0, 0, 0)
             let waterBadge = null
@@ -471,8 +487,11 @@ export default function MyGarden() {
                   ) : (
                     <div className="plant-card-actions">
                       {!isGuest && (
-                        <button className="plant-card-water-btn" onClick={() => handleWater(plant.id)}>
-                          <Droplets size={14} /> 물주기 완료
+                        <button
+                          className={wateredToday ? 'secondary plant-card-water-btn' : 'plant-card-water-btn'}
+                          onClick={() => handleWater(plant.id)}
+                        >
+                          <Droplets size={14} /> {wateredToday ? '오늘 물 줬어요' : '물주기 완료'}
                         </button>
                       )}
                       {!isGuest && (
