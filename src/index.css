@@ -96,6 +96,13 @@
   box-sizing: border-box;
 }
 
+/* 페이지마다 세로 스크롤이 생겼다 안 생겼다 하면서 스크롤바 폭(약 15px)만큼
+   콘텐츠 가로 폭이 미묘하게 들쭉날쭉해지는 걸 막는다 — 스크롤 여부와 무관하게
+   항상 같은 자리를 미리 확보해둔다. */
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   background: var(--oat);
@@ -2046,15 +2053,24 @@ input:focus, textarea:focus, select:focus {
   color: #d0453a;
 }
 
-/* 그린이 키우기 미니게임 */
-.greenie-card {
-  margin-top: 24px;
-  background: linear-gradient(160deg, var(--green-light), #fff);
-  border: 1px solid var(--border);
-  border-radius: 32px;
-  padding: 52px 24px;
-  min-height: 480px;
+/* 그린이 화면 공통 패널 — "방문하기" 탭 박스를 기준으로 너비/여백/모서리를
+   한 곳에서만 정의해서, 캐릭터 카드·옷장 카드·방문 카드가 항상 같은 규격을
+   갖도록 한다. 세 군데서 각자 값을 따로 들고 있으면 언젠가 또 어긋난다. */
+.greenie-panel {
   box-sizing: border-box;
+  width: 100%;
+  margin-top: 20px;
+  padding: 28px 26px;
+  min-height: 480px;
+  border-radius: 20px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+/* 그린이 키우기 미니게임 — 박스 규격은 .greenie-panel에서, 여기서는 배경/레이아웃만 */
+.greenie-card {
+  background: linear-gradient(160deg, var(--green-light), #fff);
   display: flex;
   flex-direction: column;
   align-items: center;
