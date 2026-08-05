@@ -87,6 +87,14 @@ export default function GreenieHome() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, user])
 
+  useEffect(() => {
+    // 탭 전환은 경로(pathname)가 아니라 쿼리스트링(?tab=)만 바뀌는 방식이라
+    // 전역 ScrollToTop이 반응하지 않는다. 이전 탭에서 스크롤을 내린 채로
+    // 전환하면 박스가 실제로는 같은 위치인데도 화면상 다른 위치로 보이므로
+    // 탭이 바뀔 때마다 여기서 직접 맨 위로 되돌린다.
+    window.scrollTo(0, 0)
+  }, [tab])
+
   const handleTap = () => {
     setGreenie((prev) => {
       const next = applyExp(prev.level, prev.exp, TAP_EXP)
