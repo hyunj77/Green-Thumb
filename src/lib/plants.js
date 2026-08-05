@@ -83,6 +83,27 @@ export async function fertilizePlant(id) {
   return { data, error }
 }
 
+// 물주기/영양제 버튼을 실수로 눌렀을 때 되돌리기 위해, 누르기 직전 값으로 복원한다
+export async function undoWaterPlant(id, previousDate) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ last_watered_at: previousDate })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
+export async function undoFertilizePlant(id, previousDate) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ last_fertilized_at: previousDate })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
 export async function updateFertilizingInterval(id, days) {
   const { data, error } = await supabase
     .from('plants')

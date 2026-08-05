@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowDown, ArrowUp, Bell, Camera, Check, Clapperboard, Droplets, GalleryHorizontal, Info, LayoutGrid, NotebookPen, Pencil, Play, Plus, Sprout, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, updatePlantOrder, deletePlant, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, undoWaterPlant, undoFertilizePlant, updateWateringInterval, updatePlantPhoto, updatePlantOrder, deletePlant, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
@@ -34,6 +34,8 @@ export default function MyGarden() {
   const [reminderDraft, setReminderDraft] = useState(7)
   const [savingReminder, setSavingReminder] = useState(false)
   const [greenieToast, setGreenieToast] = useState('')
+  const [actionToast, setActionToast] = useState(null)
+  const actionToastTimer = useRef(null)
   const [timelapsePlant, setTimelapsePlant] = useState(null)
   const [timelapseLogs, setTimelapseLogs] = useState([])
   const [photoCounts, setPhotoCounts] = useState({})
@@ -95,17 +97,41 @@ export default function MyGarden() {
     setName(''); setSpecies(''); setPhotoUrl(''); setInterval_(7); setIntervalTouched(false); setShowForm(false)
   }
 
+  const showActionToast = (toast) => {
+    clearTimeout(actionToastTimer.current)
+    setActionToast(toast)
+    actionToastTimer.current = setTimeout(() => setActionToast(null), 5000)
+  }
+
   const handleWater = async (id) => {
+    const previous = plants.find((p) => p.id === id)?.last_watered_at ?? null
     const { data } = await waterPlant(id)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
+    showActionToast({ message: '💧 물주기 완료', onUndo: () => handleUndoWater(id, previous) })
     const greenie = await addGreenieExpFromWatering(user.id)
     setGreenieToast(`🌱 그린이가 쑥쑥 자랐어요! (Lv.${greenie.level})`)
     setTimeout(() => setGreenieToast(''), 2500)
   }
 
+  const handleUndoWater = async (id, previousDate) => {
+    const { data } = await undoWaterPlant(id, previousDate)
+    if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
+    clearTimeout(actionToastTimer.current)
+    setActionToast(null)
+  }
+
   const handleFertilize = async (id) => {
+    const previous = plants.find((p) => p.id === id)?.last_fertilized_at ?? null
     const { data } = await fertilizePlant(id)
     if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
+    showActionToast({ message: '🌱 영양제 완료', onUndo: () => handleUndoFertilize(id, previous) })
+  }
+
+  const handleUndoFertilize = async (id, previousDate) => {
+    const { data } = await undoFertilizePlant(id, previousDate)
+    if (data) setPlants((prev) => prev.map((p) => (p.id === id ? data : p)))
+    clearTimeout(actionToastTimer.current)
+    setActionToast(null)
   }
 
   const handleCardPhotoSelect = async (plant, file) => {
@@ -253,6 +279,20 @@ export default function MyGarden() {
         {greenieToast && (
           <div className="card" style={{ padding: '10px 16px', background: 'var(--green-light)', border: 'none', textAlign: 'center', fontWeight: 700, color: 'var(--accent)' }}>
             {greenieToast}
+          </div>
+        )}
+
+        {actionToast && (
+          <div className="card" style={{ padding: '10px 16px', background: 'var(--oat)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <span style={{ fontWeight: 700 }}>{actionToast.message}</span>
+            <button
+              type="button"
+              className="secondary"
+              style={{ padding: '6px 12px', fontSize: 12.5, flexShrink: 0 }}
+              onClick={actionToast.onUndo}
+            >
+              실행 취소
+            </button>
           </div>
         )}
 
