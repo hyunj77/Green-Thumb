@@ -21,6 +21,7 @@ export async function fetchMyPlants(ownerId) {
     .from('plants')
     .select('*')
     .eq('owner_id', ownerId)
+    .order('sort_order', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
   return { data, error }
 }
@@ -44,10 +45,21 @@ export async function createPlant({ ownerId, name, species, photoUrl, acquiredDa
       photo_url: photoUrl || null,
       acquired_date: acquiredDate || null,
       watering_interval_days: wateringIntervalDays || 7,
+      sort_order: Date.now(),
     })
     .select()
     .single()
   if (data) await syncGardenScore(ownerId)
+  return { data, error }
+}
+
+export async function updatePlantOrder(id, sortOrder) {
+  const { data, error } = await supabase
+    .from('plants')
+    .update({ sort_order: sortOrder })
+    .eq('id', id)
+    .select()
+    .single()
   return { data, error }
 }
 

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Bell, Camera, Clapperboard, Droplets, GalleryHorizontal, Info, LayoutGrid, NotebookPen, Play, Plus, Sprout, Sun } from 'lucide-react'
+import { ArrowDown, ArrowUp, Bell, Camera, Check, Clapperboard, Droplets, GalleryHorizontal, Info, LayoutGrid, NotebookPen, Pencil, Play, Plus, Sprout, Sun, Trash2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
+import { fetchMyPlants, createPlant, waterPlant, fertilizePlant, updateWateringInterval, updatePlantPhoto, updatePlantOrder, deletePlant, nextWateringDate, syncGardenScore, SAMPLE_PLANTS } from '../lib/plants'
 import { fetchGrowthLogs, fetchPhotoCountsByPlantIds } from '../lib/growthLogs'
 import { findSpeciesInfo } from '../lib/encyclopedia'
 import { addGreenieExpFromWatering } from '../lib/greenie'
@@ -41,6 +41,7 @@ export default function MyGarden() {
   const [photoUploadError, setPhotoUploadError] = useState(null)
   const [activeSlide, setActiveSlide] = useState(0)
   const [plantView, setPlantView] = useState('slider')
+  const [editMode, setEditMode] = useState(false)
   const sliderRef = useRef(null)
   const dragRef = useRef({ dragging: false, startX: 0, startScroll: 0 })
 
@@ -174,18 +175,56 @@ export default function MyGarden() {
     setReminderId(null)
   }
 
+  // 순서 바꾸기 — 바로 옆 식물과 sort_order 값만 맞바꾼다
+  const handleMovePlant = async (index, direction) => {
+    const targetIndex = index + direction
+    if (targetIndex < 0 || targetIndex >= plants.length) return
+    const current = plants[index]
+    const target = plants[targetIndex]
+    const currentOrder = current.sort_order ?? Date.now()
+    const targetOrder = target.sort_order ?? Date.now() - 1
+
+    const next = [...plants]
+    next[index] = { ...target, sort_order: currentOrder }
+    next[targetIndex] = { ...current, sort_order: targetOrder }
+    setPlants(next)
+
+    await Promise.all([
+      updatePlantOrder(current.id, targetOrder),
+      updatePlantOrder(target.id, currentOrder),
+    ])
+  }
+
+  const handleDeletePlant = async (plant) => {
+    if (!window.confirm(`'${plant.name}'을(를) 삭제할까요? 기록도 함께 사라져요.`)) return
+    const { error } = await deletePlant(plant.id, user.id)
+    if (!error) setPlants((prev) => prev.filter((p) => p.id !== plant.id))
+  }
+
   return (
     <div style={{ padding: '0 20px 40px' }}>
       <div id="new-plant" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, scrollMarginTop: 20 }}>
         <h2 className="gt-page-title">마이 그린 도감</h2>
         {!isGuest && (
-          <button
-            onClick={() => setShowForm((v) => !v)}
-            aria-label="식물 추가하기"
-            style={{ width: 40, height: 40, padding: 0, borderRadius: '50%', flexShrink: 0 }}
-          >
-            <Plus size={18} />
-          </button>
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+            {plants.length > 0 && (
+              <button
+                onClick={() => setEditMode((v) => !v)}
+                aria-label={editMode ? '편집 완료' : '식물 순서 바꾸기·삭제'}
+                className={editMode ? '' : 'secondary'}
+                style={{ width: 40, height: 40, padding: 0, borderRadius: '50%' }}
+              >
+                {editMode ? <Check size={18} /> : <Pencil size={16} />}
+              </button>
+            )}
+            <button
+              onClick={() => setShowForm((v) => !v)}
+              aria-label="식물 추가하기"
+              style={{ width: 40, height: 40, padding: 0, borderRadius: '50%' }}
+            >
+              <Plus size={18} />
+            </button>
+          </div>
         )}
       </div>
 
@@ -340,33 +379,65 @@ export default function MyGarden() {
                     </p>
                   )}
 
-                  <div className="plant-card-actions">
-                    {!isGuest && (
-                      <button className="plant-card-water-btn" onClick={() => handleWater(plant.id)}>
-                        <Droplets size={14} /> 물주기 완료
+                  {editMode && !isGuest ? (
+                    <div className="plant-card-actions">
+                      <button
+                        className="secondary plant-card-icon-btn"
+                        onClick={() => handleMovePlant(slideIndex, -1)}
+                        disabled={slideIndex === 0}
+                        aria-label="위로 이동"
+                        title="위로 이동"
+                      >
+                        <ArrowUp size={14} />
                       </button>
-                    )}
-                    {!isGuest && (
-                      <button className="secondary plant-card-icon-btn" onClick={() => handleFertilize(plant.id)} title="영양제 줬어요" aria-label="영양제 줬어요">
-                        <Sprout size={14} />
+                      <button
+                        className="secondary plant-card-icon-btn"
+                        onClick={() => handleMovePlant(slideIndex, 1)}
+                        disabled={slideIndex === plants.length - 1}
+                        aria-label="아래로 이동"
+                        title="아래로 이동"
+                      >
+                        <ArrowDown size={14} />
                       </button>
-                    )}
-                    {info && (
-                      <button className="secondary plant-card-icon-btn" onClick={() => setTipId(tipId === plant.id ? null : plant.id)} title="키우기 팁 보기" aria-label="키우기 팁 보기">
-                        <Info size={14} />
+                      <button
+                        className="secondary plant-card-icon-btn"
+                        onClick={() => handleDeletePlant(plant)}
+                        aria-label="식물 삭제"
+                        title="식물 삭제"
+                        style={{ marginLeft: 'auto', color: '#d0453a', borderColor: '#f3c9c5' }}
+                      >
+                        <Trash2 size={14} />
                       </button>
-                    )}
-                    {!isGuest && (
-                      <>
-                        <button className="secondary plant-card-icon-btn" onClick={() => openReminder(plant)} title="물주기 알림 설정" aria-label="물주기 알림 설정">
-                          <Bell size={14} />
+                    </div>
+                  ) : (
+                    <div className="plant-card-actions">
+                      {!isGuest && (
+                        <button className="plant-card-water-btn" onClick={() => handleWater(plant.id)}>
+                          <Droplets size={14} /> 물주기 완료
                         </button>
-                        <button className="secondary plant-card-icon-btn" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)} title="성장일기 보기" aria-label="성장일기 보기">
-                          <NotebookPen size={14} />
+                      )}
+                      {!isGuest && (
+                        <button className="secondary plant-card-icon-btn" onClick={() => handleFertilize(plant.id)} title="영양제 줬어요" aria-label="영양제 줬어요">
+                          <Sprout size={14} />
                         </button>
-                      </>
-                    )}
-                  </div>
+                      )}
+                      {info && (
+                        <button className="secondary plant-card-icon-btn" onClick={() => setTipId(tipId === plant.id ? null : plant.id)} title="키우기 팁 보기" aria-label="키우기 팁 보기">
+                          <Info size={14} />
+                        </button>
+                      )}
+                      {!isGuest && (
+                        <>
+                          <button className="secondary plant-card-icon-btn" onClick={() => openReminder(plant)} title="물주기 알림 설정" aria-label="물주기 알림 설정">
+                            <Bell size={14} />
+                          </button>
+                          <button className="secondary plant-card-icon-btn" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)} title="성장일기 보기" aria-label="성장일기 보기">
+                            <NotebookPen size={14} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   {reminderId === plant.id && (
                     <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
