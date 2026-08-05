@@ -42,7 +42,9 @@ export default function MyGarden() {
   const [activeSlide, setActiveSlide] = useState(0)
   const [plantView, setPlantView] = useState('slider')
   const [editMode, setEditMode] = useState(false)
+  const [tlActiveIndex, setTlActiveIndex] = useState(0)
   const sliderRef = useRef(null)
+  const tlScrollRef = useRef(null)
   const dragRef = useRef({ dragging: false, startX: 0, startScroll: 0 })
 
   const speciesInfo = findSpeciesInfo(species)
@@ -140,6 +142,23 @@ export default function MyGarden() {
     if (maxScroll <= 0) return
     const idx = Math.round((el.scrollLeft / maxScroll) * (plants.length - 1))
     setActiveSlide((prev) => (prev === idx ? prev : idx))
+  }
+
+  const goToTlSlide = (i) => {
+    const el = tlScrollRef.current
+    if (!el || plants.length === 0) return
+    const clamped = Math.max(0, Math.min(plants.length - 1, i))
+    const maxScroll = el.scrollWidth - el.clientWidth
+    el.scrollTo({ left: maxScroll * (clamped / Math.max(1, plants.length - 1)), behavior: 'smooth' })
+  }
+
+  const handleTlScroll = () => {
+    const el = tlScrollRef.current
+    if (!el || plants.length <= 1) return
+    const maxScroll = el.scrollWidth - el.clientWidth
+    if (maxScroll <= 0) return
+    const idx = Math.round((el.scrollLeft / maxScroll) * (plants.length - 1))
+    setTlActiveIndex((prev) => (prev === idx ? prev : idx))
   }
 
   const handleTrackPointerDown = (e) => {
@@ -515,7 +534,7 @@ export default function MyGarden() {
           <div className="gt-section-head">
             <span className="gt-section-title"><Clapperboard size={16} style={{ verticalAlign: -3, marginRight: 5 }} />성장 타임랩스</span>
           </div>
-          <div className="tl-thumb-scroll">
+          <div className="tl-thumb-scroll" ref={tlScrollRef} onScroll={handleTlScroll}>
             {plants.map((plant) => {
               const days = plant.created_at
                 ? Math.max(0, Math.round((Date.now() - new Date(plant.created_at).getTime()) / 86400000))
@@ -547,6 +566,23 @@ export default function MyGarden() {
               )
             })}
           </div>
+          {plants.length > 1 && (
+            <div className="plant-slider-pagination">
+              <div className="plant-slider-dots">
+                {plants.map((p, i) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className="plant-slider-dot"
+                    data-active={i === tlActiveIndex}
+                    onClick={() => goToTlSlide(i)}
+                    aria-label={`${i + 1}번째 타임랩스`}
+                  />
+                ))}
+              </div>
+              <span className="plant-slider-counter">{tlActiveIndex + 1} / {plants.length}</span>
+            </div>
+          )}
         </div>
       )}
 
