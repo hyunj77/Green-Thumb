@@ -2816,7 +2816,9 @@ input:focus, textarea:focus, select:focus {
 .gt-today-plant-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+  /* 히어로 배너와 같은 이유 — 라벨+제목+부제+태그 2개까지 텍스트가 4줄이라
+     단순 2단 그라데이션으로는 태그 줄 즈음에서 이미 다 옅어졌다. */
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0) 100%);
   z-index: 0;
 }
 
