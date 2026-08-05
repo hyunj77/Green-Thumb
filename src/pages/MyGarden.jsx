@@ -437,21 +437,21 @@ export default function MyGarden() {
                       )}
                       {!isGuest && (
                         <button className="secondary plant-card-icon-btn" onClick={() => handleFertilize(plant.id)} title="영양제 줬어요" aria-label="영양제 줬어요">
-                          <Sprout size={14} />
+                          <Sprout size={14} /> 영양제
                         </button>
                       )}
                       {info && (
                         <button className="secondary plant-card-icon-btn" onClick={() => setTipId(tipId === plant.id ? null : plant.id)} title="키우기 팁 보기" aria-label="키우기 팁 보기">
-                          <Info size={14} />
+                          <Info size={14} /> 팁
                         </button>
                       )}
                       {!isGuest && (
                         <>
                           <button className="secondary plant-card-icon-btn" onClick={() => openReminder(plant)} title="물주기 알림 설정" aria-label="물주기 알림 설정">
-                            <Bell size={14} />
+                            <Bell size={14} /> 알림
                           </button>
                           <button className="secondary plant-card-icon-btn" onClick={() => setExpandedId(expandedId === plant.id ? null : plant.id)} title="성장일기 보기" aria-label="성장일기 보기">
-                            <NotebookPen size={14} />
+                            <NotebookPen size={14} /> 일기
                           </button>
                         </>
                       )}
