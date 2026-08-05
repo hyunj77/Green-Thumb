@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import MobileTabBar from './components/MobileTabBar'
 import ScrollToTop from './components/ScrollToTop'
+import HorizontalWheelScroll from './components/HorizontalWheelScroll'
 import ProtectedRoute from './components/ProtectedRoute'
 import Feed from './pages/Feed'
 import Community from './pages/Community'
@@ -31,6 +32,7 @@ export default function App() {
     <AuthProvider>
       <HashRouter>
         <ScrollToTop />
+        <HorizontalWheelScroll />
         <Navbar />
         <Routes>
           <Route path="/" element={<Feed />} />
