@@ -167,6 +167,50 @@ export default function Feed() {
         </div>
       </div>
 
+      {/* 도감 둘러보기 — 카테고리·품종 미리보기·오늘의 식물을 하나의 흐름으로 묶어서
+          예전처럼 "카테고리 → 도감 미리보기 → 오늘의 식물"이 따로따로 반복되지 않게 함 */}
+      <div className="gt-section">
+        <div className="gt-section-head">
+          <span className="gt-section-title">식물 도감 둘러보기</span>
+          <Link to="/encyclopedia" className="gt-section-link">전체 {ALL_DIRECTORY_PLANTS.length}종</Link>
+        </div>
+        <div className="gt-chip-row gt-category-row">
+          {HOME_CATEGORY_PREVIEW.map((type) => (
+            <Link key={type} to={`/encyclopedia?type=${encodeURIComponent(type)}`} className="gt-chip">
+              <span className="gt-chip-emoji">{TYPE_EMOJI[type]}</span>
+              {type.includes('·') ? (
+                <span>{type.split('·')[0]}·<br />{type.split('·')[1]}</span>
+              ) : type}
+            </Link>
+          ))}
+          <Link to="/encyclopedia" className="gt-chip gt-chip-more">
+            <span className="gt-chip-emoji">＋</span>
+            더보기
+          </Link>
+        </div>
+        <div className="gt-directory-scroll" style={{ marginTop: 10 }}>
+          {directoryPreview.map((p) => (
+            <Link key={p.name} to={`/encyclopedia?type=${encodeURIComponent(p.type)}`} className="gt-directory-card">
+              <span className="gt-directory-emoji">{p.emoji}</span>
+              <span className="gt-directory-name">{p.name}</span>
+            </Link>
+          ))}
+        </div>
+        <Link to={`/encyclopedia?type=${encodeURIComponent(todayPlant.type)}`} className="gt-card gt-today-plant" style={{ marginTop: 12 }}>
+          <div className="gt-today-plant-emoji">{todayPlant.emoji}</div>
+          <div>
+            <div className="muted" style={{ fontSize: 11, fontWeight: 700, marginBottom: 2 }}>오늘의 식물</div>
+            <div style={{ fontWeight: 800, fontSize: 15 }}>{todayPlant.name}</div>
+            <div className="gt-greenie-sub" style={{ marginTop: 2 }}>{todayPlant.watering} · {todayPlant.light}</div>
+            <div className="gt-today-plant-tags">
+              <span>난이도 {todayPlant.difficulty}</span>
+              <span>{todayPlant.petSafe ? '반려동물 안전' : '반려동물 주의'}</span>
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* 커뮤니티 — 인기 게시글과 추천 식집사를 한 흐름으로 */}
       {featuredPosts.length > 0 && (
         <div className="gt-section">
           <div className="gt-section-head">
@@ -198,72 +242,6 @@ export default function Feed() {
         </div>
       )}
 
-      <div className="gt-section">
-        <div className="gt-section-head">
-          <span className="gt-section-title">식물 카테고리</span>
-        </div>
-        <div className="gt-chip-row gt-category-row">
-          {HOME_CATEGORY_PREVIEW.map((type) => (
-            <Link key={type} to={`/encyclopedia?type=${encodeURIComponent(type)}`} className="gt-chip">
-              <span className="gt-chip-emoji">{TYPE_EMOJI[type]}</span>
-              {type.includes('·') ? (
-                <span>{type.split('·')[0]}·<br />{type.split('·')[1]}</span>
-              ) : type}
-            </Link>
-          ))}
-          <Link to="/encyclopedia" className="gt-chip gt-chip-more">
-            <span className="gt-chip-emoji">＋</span>
-            더보기
-          </Link>
-        </div>
-      </div>
-
-      <div className="gt-section">
-        <button
-          className="gt-ai-card"
-          style={{ width: '100%', textAlign: 'left' }}
-          onClick={() => navigate('/garden')}
-        >
-          <div className="gt-ai-eyebrow">AI 식물 진단</div>
-          <div className="gt-ai-title">사진 한 장으로 병충해·건강 상태 확인</div>
-          <p className="gt-ai-desc">마이 그린 도감에서 준비 중이에요.<br />조금만 기다려주세요.</p>
-          <span className="gt-pill-btn gt-ai-btn" style={{ alignSelf: 'center' }}><Camera size={14} /> 사진 촬영하고 진단받기</span>
-        </button>
-      </div>
-
-      <div className="gt-section">
-        <div className="gt-section-head">
-          <span className="gt-section-title">식물 도감</span>
-          <Link to="/encyclopedia" className="gt-section-link">전체 {ALL_DIRECTORY_PLANTS.length}종 보기</Link>
-        </div>
-        <div className="gt-directory-scroll">
-          {directoryPreview.map((p) => (
-            <Link key={p.name} to={`/encyclopedia?type=${encodeURIComponent(p.type)}`} className="gt-directory-card">
-              <span className="gt-directory-emoji">{p.emoji}</span>
-              <span className="gt-directory-name">{p.name}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="gt-section">
-        <div className="gt-section-head">
-          <span className="gt-section-title">오늘의 식물</span>
-          <Link to="/encyclopedia" className="gt-section-link">도감 보기</Link>
-        </div>
-        <Link to={`/encyclopedia?type=${encodeURIComponent(todayPlant.type)}`} className="gt-card gt-today-plant">
-          <div className="gt-today-plant-emoji">{todayPlant.emoji}</div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>{todayPlant.name}</div>
-            <div className="gt-greenie-sub" style={{ marginTop: 2 }}>{todayPlant.watering} · {todayPlant.light}</div>
-            <div className="gt-today-plant-tags">
-              <span>난이도 {todayPlant.difficulty}</span>
-              <span>{todayPlant.petSafe ? '반려동물 안전' : '반려동물 주의'}</span>
-            </div>
-          </div>
-        </Link>
-      </div>
-
       {gardeners.length > 0 && (
         <div className="gt-section">
           <div className="gt-section-head">
@@ -288,6 +266,20 @@ export default function Feed() {
           </div>
         </div>
       )}
+
+      {/* 준비중인 기능은 맨 아래, 눈에 덜 띄게 — 실제로 동작하는 기능들과 헷갈리지 않도록 */}
+      <div className="gt-section">
+        <button
+          className="gt-ai-card"
+          style={{ width: '100%', textAlign: 'left' }}
+          onClick={() => navigate('/garden')}
+        >
+          <div className="gt-ai-eyebrow">AI 식물 진단 · 준비중</div>
+          <div className="gt-ai-title">사진 한 장으로 병충해·건강 상태 확인</div>
+          <p className="gt-ai-desc">마이 그린 도감에서 준비 중이에요.<br />조금만 기다려주세요.</p>
+          <span className="gt-pill-btn gt-ai-btn" style={{ alignSelf: 'center' }}><Camera size={14} /> 미리보기</span>
+        </button>
+      </div>
     </div>
   )
 }
