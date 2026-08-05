@@ -249,8 +249,8 @@ input:focus, textarea:focus, select:focus {
   background: var(--bg);
   border-radius: 20px;
   padding: 20px 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  box-shadow: none;
+  border: 1px solid var(--card-border-soft);
 }
 
 .skeleton-block {
@@ -1260,8 +1260,8 @@ input:focus, textarea:focus, select:focus {
   border-radius: 20px;
   overflow: hidden;
   background: var(--bg);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--card-border-soft);
+  box-shadow: none;
 }
 
 .magazine-card-media {
@@ -1740,8 +1740,8 @@ input:focus, textarea:focus, select:focus {
 .stat-grid {
   background: var(--bg);
   border-radius: 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  box-shadow: none;
+  border: 1px solid var(--card-border-soft);
   padding: 20px 16px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1774,8 +1774,8 @@ input:focus, textarea:focus, select:focus {
 .shortcut-banner-row {
   background: var(--bg);
   border-radius: 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  box-shadow: none;
+  border: 1px solid var(--card-border-soft);
   padding: 6px 18px;
   margin-top: 24px;
 }
@@ -2077,8 +2077,8 @@ input:focus, textarea:focus, select:focus {
   min-height: 480px;
   border-radius: 20px;
   background: var(--bg);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  box-shadow: none;
+  border: 1px solid var(--card-border-soft);
 }
 
 /* 그린이 키우기 미니게임 — 박스 규격은 .greenie-panel에서, 여기서는 배경/레이아웃만 */
@@ -2748,7 +2748,7 @@ input:focus, textarea:focus, select:focus {
   background: linear-gradient(135deg, rgba(0, 200, 150, 0.9), rgba(0, 150, 111, 0.92));
   color: #fff;
   overflow: hidden;
-  box-shadow: var(--gt-glass-shadow);
+  box-shadow: none;
 }
 
 .gt-ai-card::after {
