@@ -143,6 +143,9 @@ export default function MyGarden() {
 
   const handleTrackPointerDown = (e) => {
     if (e.pointerType !== 'mouse' || !sliderRef.current) return
+    // 버튼/링크/사진 업로드 라벨 위에서 누르기 시작했으면 드래그로 잡아채지 않는다 —
+    // setPointerCapture가 트랙으로 걸리면 그 아래 버튼의 click이 안 터진다.
+    if (e.target.closest('button, a, label')) return
     dragRef.current = { dragging: true, startX: e.clientX, startScroll: sliderRef.current.scrollLeft }
     e.currentTarget.setPointerCapture(e.pointerId)
   }
