@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { BookOpen, House, Leaf, MessageSquare, PenSquare, Plus, Sprout, Stethoscope, User, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -42,7 +43,10 @@ export default function MobileTabBar() {
     navigate(action.to)
   }
 
-  return (
+  // #root에 zoom(0.96)이 걸려 있는데, 그 안에서 position:fixed로 %기반 left/right를 쓰면
+  // 크롬이 좌표 계산을 어긋나게 해서(특히 화면이 넓을수록 오차가 커짐) 하단바가 중앙이
+  // 아니라 왼쪽으로 쏠려 보였다. body에 직접 포탈로 그려서 zoom 영향권 밖으로 뺀다.
+  return createPortal(
     <>
       {open && (
         <div className="gt-sheet-backdrop" onClick={() => setOpen(false)}>
@@ -78,6 +82,7 @@ export default function MobileTabBar() {
         {renderTab(rightTab)}
         {renderTab(myTab)}
       </nav>
-    </>
+    </>,
+    document.body
   )
 }

@@ -1,9 +1,10 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Plus, Sprout } from 'lucide-react'
+import { Sprout } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import HeroBanner from '../components/HeroBanner'
 import CommunityFeedList from '../components/CommunityFeedList'
+import FloatingWriteButton from '../components/FloatingWriteButton'
 import { supabase } from '../lib/supabase'
 import { fetchPublicGrowthFeed } from '../lib/growthLogs'
 import { PAGE_SIZE } from '../lib/posts'
@@ -161,11 +162,7 @@ export default function Community() {
         />
       </div>
 
-      {user && (
-        <Link to="/write" className="fab-write">
-          <Plus size={18} /> 글쓰기
-        </Link>
-      )}
+      {user && <FloatingWriteButton />}
     </div>
   )
 }

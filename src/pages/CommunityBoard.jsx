@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import BackHeader from '../components/BackHeader'
 import CommunityFeedList from '../components/CommunityFeedList'
+import FloatingWriteButton from '../components/FloatingWriteButton'
 import { fetchPosts, PAGE_SIZE } from '../lib/posts'
 import { fetchPublicGrowthFeed } from '../lib/growthLogs'
 import { findTab, normalizeGrowthLog, normalizePost } from '../lib/communityTabs'
@@ -101,11 +101,7 @@ export default function CommunityBoard() {
         />
       </div>
 
-      {user && (
-        <Link to="/write" className="fab-write">
-          <Plus size={18} /> 글쓰기
-        </Link>
-      )}
+      {user && <FloatingWriteButton />}
     </div>
   )
 }
