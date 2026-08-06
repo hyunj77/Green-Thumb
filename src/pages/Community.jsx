@@ -42,7 +42,7 @@ export default function Community() {
   const [growthSpotlight, setGrowthSpotlight] = useState([])
 
   useEffect(() => {
-    fetchPublicGrowthFeed(10).then(({ data }) => setGrowthSpotlight(data || []))
+    fetchPublicGrowthFeed(5).then(({ data }) => setGrowthSpotlight(data || []))
   }, [])
 
   useEffect(() => {
