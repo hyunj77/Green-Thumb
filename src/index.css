@@ -67,7 +67,10 @@
     --gt-glass-strong: rgba(255, 255, 255, 0.1);
     --gt-glass-border: rgba(255, 255, 255, 0.14);
     --gt-glass-shadow: var(--shadow);
-    --card-border-soft: rgba(255, 255, 255, 0.1);
+    /* --gt-glass-strong 채우기가 다크모드에서 rgba(255,255,255,0.1)이라, 테두리를
+     같은 값으로 두면 카드 자기 채우기 색과 겹쳐서 경계가 아예 안 보였다 —
+     채우기보다 눈에 띄게 밝게 줘야 그림자 없이도 카드 윤곽이 잡힌다. */
+  --card-border-soft: rgba(255, 255, 255, 0.22);
   }
 }
 
@@ -98,7 +101,10 @@
   --gt-glass-strong: rgba(255, 255, 255, 0.1);
   --gt-glass-border: rgba(255, 255, 255, 0.14);
   --gt-glass-shadow: var(--shadow);
-  --card-border-soft: rgba(255, 255, 255, 0.1);
+  /* --gt-glass-strong 채우기가 다크모드에서 rgba(255,255,255,0.1)이라, 테두리를
+     같은 값으로 두면 카드 자기 채우기 색과 겹쳐서 경계가 아예 안 보였다 —
+     채우기보다 눈에 띄게 밝게 줘야 그림자 없이도 카드 윤곽이 잡힌다. */
+  --card-border-soft: rgba(255, 255, 255, 0.22);
 }
 
 * {
